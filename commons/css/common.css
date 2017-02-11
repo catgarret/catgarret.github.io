@@ -25,7 +25,15 @@ h1 {
     font-size: 2.4rem;
 }
 
-nav.translate {
+ul.translate {
     font-family: "KoPubDotum", sans-serif;
     font-size: 1.4rem;
+}
+
+ul.translate li {
+    margin-right: 5px;
+}
+
+ul.translate li:last-childe {
+    margin-right: 0;
 }

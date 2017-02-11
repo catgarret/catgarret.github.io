@@ -6,11 +6,11 @@ html {
 
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "KoPubDotum", sans-serif;
+    font-family: "ubuntu", "KoPubDotum", sans-serif;
 }
 
 body, p {
-    font-family: "KoPub Batang", serif;
+    font-family: "ubuntu", "KoPub Batang", serif;
     font-size: 1.4rem;
     line-height: 1.7;
 }
@@ -20,13 +20,13 @@ p {
 }
 
 h1 { 
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "ubuntu", sans-serif;
     font-weight: 300;
     font-size: 2.4rem;
 }
 
 ul.translate {
-    font-family: "KoPubDotum", sans-serif;
+    font-family: "ubuntu", "KoPubDotum", sans-serif;
     font-size: 1.4rem;
 }
 

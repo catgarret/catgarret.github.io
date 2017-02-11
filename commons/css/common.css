@@ -41,8 +41,18 @@ ul.translate li:last-childe {
 
 
 div.intro {
-    height: 300px;
+    width: 100%;
+    height: 100%;
     display: flex;
+    position: fixed;
     align-items: center;
     justify-content: center;
+}
+
+div.intro < div.content {
+    width: 600px;
+    height: 500px;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 0 0 0 rgba(0,0,0,0.35);
+    
 }

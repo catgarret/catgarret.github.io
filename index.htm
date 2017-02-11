@@ -3,25 +3,39 @@
 <head>
     <meta charset="utf-8" /> 
     <title>Guleum</title> 
-    <link rel="stylesheet" href="//unpkg.com/purecss@0.6.2/build/pure-min.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.3.1/css/bulma.min.css" />
     <link rel="stylesheet" href="./commons/css/common.css" />
     <link rel="stylesheet" href="./commons/css/webfont.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Quicksand" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     <link rel="stylesheet" href="./commons/css/animated.css" />
+    <link rel="stylesheet" href="./commons/css/nprogress.css" />
+    <script type="text/javascript" src="./commons/js/nprogress.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type="text/javascript">
         if (location.protocol == 'http:') location.href = location.href.replace(/^http:/, 'https:');
-    </script>
+        
+        $(document).ready(function() {
+            NProgress.configure({ showSpinner: false });
+            NProgress.start();
+            $('#nprogress .bar').css({'background': '#000'});
+            NProgress.done();
+        });
+    </script>    
 </head> 
 <body>
-    준비중...
+    <div id="google_translate_element"></div>
+    <h1>Guleum</h1>
+
+
     
-    <i class="fonti um-spinner-dot um-spin"> </i> 
-<i class="fonti um-spinner um-spin"> </i> 
-<i class="fonti um-spinner-time um-spin"> </i> 
-<i class="fonti um-spinner-brush um-spin"> </i> 
-<i class="fonti um-spinner-line um-spin"> </i> 
-<i class="fonti um-spinner-alt um-pulse"> </i> 
-<i class="fonti um-spinner-time-alt um-spin"> </i> 
-<i class="fonti um-spinner-brush-alt um-spin"> </i> 
 </body>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'ko', includedLanguages: 'en,ja,zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true, gaId: 'UA-78953518-1'}, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </html>

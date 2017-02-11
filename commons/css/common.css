@@ -12,7 +12,7 @@ h1, h2, h3, h4, h5, h6 {
 body, p {
     font-family: "ubuntu", "KoPub Batang", serif;
     font-size: 1.4rem;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 p {
@@ -36,4 +36,13 @@ ul.translate li {
 
 ul.translate li:last-childe {
     margin-right: 0;
+}
+
+
+
+div.intro {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

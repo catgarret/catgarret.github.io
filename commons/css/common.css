@@ -25,20 +25,6 @@ h1 {
     font-size: 2.4rem;
 }
 
-ul.translate {
-    font-family: "ubuntu", "KoPubDotum", sans-serif;
-    font-size: 1.4rem;
-}
-
-ul.translate li {
-    margin-right: 5px;
-}
-
-ul.translate li:last-childe {
-    margin-right: 0;
-}
-
-
 div.intro {
     width: 100%;
     height: 100%;

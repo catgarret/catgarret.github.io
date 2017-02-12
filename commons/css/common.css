@@ -46,6 +46,11 @@ div#wrap div.content {
     
 }
 
+header {
+    margin-bottom: 20px;
+}
+
+
 ul.contect li {
     margin-right: 5px;
     display: inline-block;

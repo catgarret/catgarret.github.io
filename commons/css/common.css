@@ -45,3 +45,7 @@ div#wrap div.content {
     box-shadow: 0 0 0 0 rgba(0,0,0,0.35);
     
 }
+
+ul.contect li {
+    margin-right: 5px;
+}

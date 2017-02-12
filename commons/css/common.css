@@ -33,6 +33,7 @@ h1 {
 
 div.box {
     padding: 3.25rem;
+    background: rgba(255, 255, 255, .8);
 }
 
 div#wrap {

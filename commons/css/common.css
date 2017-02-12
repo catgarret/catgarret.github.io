@@ -47,6 +47,10 @@ div#wrap div.content {
 }
 
 header {
+    margin-bottom: 50px;
+}
+
+article {
     margin-bottom: 20px;
 }
 

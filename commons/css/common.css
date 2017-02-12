@@ -48,4 +48,9 @@ div#wrap div.content {
 
 ul.contect li {
     margin-right: 5px;
+    display: inline-block;
+}
+
+ul.contect li:last-child {
+    margin-right: 0;
 }

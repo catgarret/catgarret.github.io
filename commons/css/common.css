@@ -15,6 +15,10 @@ body, p {
     line-height: 1.8;
 }
 
+.sans-serif {
+    font-family: "ubuntu", "KoPubDotum", sans-serif;
+}
+
 p {
     margin-bottom: 10px;
 }

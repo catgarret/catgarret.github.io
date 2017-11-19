@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Guleum.Lab - 이미지 위에 글자 띄우기</title>
+<style type="text/css">
+	/* Common */
+	html, body, h1, p, a {padding:0;margin:0;line-height:1} img {border: 0}
+
+	/* Style */
+	div.imgTopic {position:relative;width:300px;height:200px;font-family:'Dotum','돋움',sans-serif;border: 1px solid #eee}
+	div.imgTopic a {text-decoration: none}
+	h1.title {position:absolute;z-index:1;left:5px;bottom:30px}
+	h1.title a{font-size:18px;font-weight:bold;color:#fff;}
+	h1.title a:hover, h1.title a:focus {text-decoration:underline;}
+	p.content a {font-size:11px;color:#ccc;}
+	span.date {position:absolute;display:block;left:0;bottom:0;width:295px;height:25px;padding:35px 0 0 5px;background:url('./blackOpacity.png') repeat;}
+</style>
+</head>
+
+<body>
+<div class="imgTopic">
+<h1 class="title"><a href="#">큰 제목</a></h1>
+<p class="content"><a href="#"><img src="./image.jpg" alt="" /><span class="date">2013년02월27일 오후3:00</span></a></p>
+</div>
+ </body>
+</html>

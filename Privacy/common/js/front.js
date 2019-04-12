@@ -25,8 +25,6 @@ function ReferrerCheck() {
 /* Into movie */
 function IntroMovie() {
     var referrer = ReferrerCheck();
-    /* DEBUG */
-    referrer = true;
     if(referrer) {
         $("#introMovie").hide(0);
         $("#wrap").show(0);

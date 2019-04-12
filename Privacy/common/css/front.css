@@ -1,0 +1,34 @@
+#wrap { display: none; }
+
+#introMovie {
+    position: fixed;
+    z-index: 50;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+div#content.front { width: 100%; height: 980px; overflow: hidden; background: #222222; }
+div#content.front div.animation { background: url("../images/front_wallpaper.jpg") no-repeat; position: relative; width: 1920px; height: 980px; margin: 0 auto; }
+
+div#content.front a.sticker { position: absolute; bottom: 54px; right: 125px; animation: stickerRotating 5s linear infinite; transition: opacity .3s; z-index: 1; }
+div#content.front a.sticker:hover, div#content.front a.sticker:focus { animation-play-state: paused; opacity: .8; transition: opacity .3s; }
+@keyframes stickerRotating {
+    from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+}
+
+div#content.front div.animation span { position: absolute; display: block; background: url("../images/front_wallpaper_ani.jpg") no-repeat; display: none; }
+div#content.front div.animation span:nth-of-type(1) { width: 558px; height: 397px; background-position: -548px -1111px; top: 0; left: 0; }
+div#content.front div.animation span:nth-of-type(2) { width: 506px; height: 527px; background-position: -10px -564px; top: 0; left: 485px; }
+div#content.front div.animation span:nth-of-type(3) { width: 598px; height: 534px; background-position: -10px -10px; top: 78px; left: 914px; }
+div#content.front div.animation span:nth-of-type(4) { width: 582px; height: 509px; background-position: -628px -10px; top: 198px; right: 0; }
+div#content.front div.animation span:nth-of-type(5) { width: 538px; height: 495px; background-position: -536px -564px; top: 343px; left: 172px; }
+div#content.front div.animation span:nth-of-type(6) { width: 500px; height: 482px; background-position: -1230px -10px; top: 433px; left: 684px; }
+div#content.front div.animation span:nth-of-type(7) { width: 518px; height: 441px; background-position: -10px -1111px; bottom: 0; right: 278px; }
+

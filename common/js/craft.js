@@ -5,26 +5,11 @@ $(document).ready(function() {
 
     /* LOAD LIST */
     $("nav#list").load("./craft/craft_list.html", function() {
-        $("#list").mixItUp({
-            selectors: {
-                target: '.item'
-            },
-            animation: {
-                enable: false
-            },
-            callbacks: {
-                onMixLoad: function(state){
-                    scrollBarMake();
-                },
-                onMixEnd: function(state){
-                    $('.mCSB_container').css('width', $('.mCSB_container ul').outerWidth());
-                }
-            }
-        });
-    });
 
-    /* LIST GET NUM */
-    var craftsNum = $("#list ul li").length;
+        /* LIST GET NUM */
+        var craftsNum = $("#list ul li").length;
+        
+    });
 
     $("div.documentTitle h3 span.num").animate({
         Counter: craftsNum
@@ -46,6 +31,22 @@ $(document).ready(function() {
 
     });
 
+    $("#list").mixItUp({
+        selectors: {
+            target: '.item'
+        },
+        animation: {
+            enable: false
+        },
+        callbacks: {
+            onMixLoad: function(state){
+                scrollBarMake();
+            },
+            onMixEnd: function(state){
+                $('.mCSB_container').css('width', $('.mCSB_container ul').outerWidth());
+            }
+        }
+    });
 
     /* SCROLL BTN */
     $(".scrollBtn .left").click(function() {

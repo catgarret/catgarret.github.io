@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        html{color:#000;background:#FFF} body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td{margin:0;padding:0} table{border-collapse:collapse;border-spacing:0} fieldset, img{border:0} address, caption, cite, code, dfn, em, strong, th, var{font-style:normal;font-weight:normal} ol, ul{list-style:none} caption, th{text-align:left} h1, h2, h3, h4, h5, h6{font-size:100%;font-weight:normal} q:before, q:after{content:''} abbr, acronym{border:0;font-variant:normal} sup{vertical-align:text-top} sub{vertical-align:text-bottom} input, textarea, select{font-family:inherit;font-size:inherit;font-weight:inherit} input, textarea, select{*font-size:100%} legend{color:#000}#yui3-css-stamp.cssreset-context{display:none}
+
+        div.wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            height: 100vh;
+            background: #fefefe;
+        }
+
+        div.image_container {
+            position: relative;
+            width: 640px;
+            height: 360px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, .2);
+        }
+
+        div.image_container::before {
+            display: block;
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 640px;
+            height: 360px;
+            border-radius: 10px;
+            background: url(./10.gif) no-repeat;
+            background-size: cover;
+            filter: blur(50px);
+            opacity: .75;
+        }
+
+        div.image_container figure {
+            position: absolute;
+            padding: 0;
+            margin: 0;
+            width: 640px;
+            height: 360px;
+            background: #fff url(./50.gif) no-repeat;
+            background-size: cover;
+            image-rendering: pixelated;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        div.image_container figure img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            image-rendering: pixelated;
+            animation: 0s mosaic forwards;
+            border-radius: 10px;
+        }
+
+        div.image_container figure img:nth-of-type(1) {
+            animation-delay: .5s;
+        }
+
+        div.image_container figure img:nth-of-type(2) {
+            animation-delay: 1s;
+        }
+
+        div.image_container figure img:nth-of-type(3) {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes mosaic {
+            0% { 
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="image_container">
+            <figure>
+                <img src="./100.gif" alt="" />
+                <img src="./original.gif" alt="Finn the human" /> 
+            </figure>
+        </div>
+    </div>
+</body>
+</html>

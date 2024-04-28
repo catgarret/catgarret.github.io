@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Pixelation</title>
+<style>
+    body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #fefefe;
+    }
+    canvas {
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, .2);
+    }
+</style>
+</head>
+<body>
+    <canvas id="pixelCanvas" width="640" height="360"></canvas>
+    <script>
+        const canvas = document.getElementById('pixelCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const image = new Image();
+        image.src = './original.gif';
+
+        let sizes = [50, 100, 300, 'auto']; // 크기 배열
+        let currentSizeIndex = 0;
+
+        image.onload = function() {
+            startAnimation();
+        };
+
+        function startAnimation() {
+            drawImageWithSize(image, sizes[currentSizeIndex]);
+            currentSizeIndex++; // 다음 크기로 이동
+
+            if (currentSizeIndex < sizes.length) {
+                setTimeout(startAnimation, 1000); // 다음 프레임으로 이동
+            }
+        }
+
+        function drawImageWithSize(img, size) {
+            const aspectRatio = img.width / img.height;
+            let width, height;
+
+            if (size === 'auto') {
+                width = canvas.width;
+                height = canvas.height;
+            } else {
+                width = size;
+                height = size / aspectRatio;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <title>GSAP ScrollTrigger - 가로 스크롤</title>
+  <meta charset="UTF-8">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+  <script src="//unpkg.com/@studio-freight/lenis@1.0.32/dist/lenis.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrap {
+      overflow-x: hidden;
+    }
+
+    .section {
+      display: flex;
+      align-items: center;
+
+      text-align: center;
+      min-width: 100vw;
+      min-height: 100vh;
+
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    /* 첫번째 섹션 */
+    .intro {
+      justify-content: center;
+      background: #f2f2f2;
+    }
+
+
+    /* 두번째 섹션 (가로 스크롤) */
+    .xScroll {
+      gap: 200px;
+      background: #ddd;
+      width: max-content;
+    }
+
+    .xScroll p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 800px;
+      height: 400px;
+      background: #fff;
+      margin-left: calc((100vw - 800px)/2);
+    }
+
+    .xScroll img:last-child {
+      margin-right: calc((100vw - 800px)/2);
+    }
+
+    .xScroll img {
+      width: 800px;
+      height: 400px;
+    }
+    
+    .xScroll.done {
+      background: #ffcccc;
+    }
+
+    /* 세번째 섹션 */
+    .end {
+      justify-content: center;
+      background: #000;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="section intro">
+      Section 01
+    </div>
+    <div class="section xScroll">
+      <p>Section 02</p>
+      <img src="https://dummyimage.com/800x400/000/fff">
+      <img src="https://dummyimage.com/800x400/000/fff">
+      <img src="https://dummyimage.com/800x400/000/fff">
+      <img src="https://dummyimage.com/800x400/000/fff">
+      <img src="https://dummyimage.com/800x400/000/fff">
+    </div>
+    <div class="section end">
+      Section 03<br>DONE!
+    </div>
+  </div>
+</body>
+<script>
+  // use a script tag or an external JS file
+  document.addEventListener("DOMContentLoaded", (event) => {
+    gsap.registerPlugin(ScrollTrigger);
+    const xScroll = document.querySelector(".xScroll");
+    const xScrollWidth = xScroll.scrollWidth - window.innerWidth;
+
+    // xScroll을 가로 스크롤 애니메이션으로 변환
+    gsap.to(xScroll, {
+      x: -xScrollWidth, // 콘텐츠가 가로로 이동(스크롤)되게끔 음수로 설정
+      ease: "none", // 애니메이션에 가속도 효과를 사용하지 않음
+      scrollTrigger: {
+        trigger: xScroll, // 트리거 요소 지정
+        start: "top top", // xScroll의 상단과 브라우저 상단이 맞닿을 때 애니메이션 시작
+        end: `+=${xScrollWidth}`, // xScroll의 콘텐츠 너비만큼 스크롤 후 애니메이션 종료
+        scrub: true, // 스크롤 진행에 따라 애니메이션이 동기화되어 진행
+        pin: true, // 스크롤 중에 요소를 고정하여 애니메이션을 실행
+        anticipatePin: 1, // 스크롤 트리거 요소의 위치를 예측하여 스크롤 시 튀는 효과 방지
+        markers: false, // 디버그용 마커 표시
+        onUpdate: (self) => {
+          if (self.progress === 1) {
+            xScroll.classList.toggle("done", true); // 애니메이션이 끝났을 때 .done 클래스 추가
+          } else {
+            xScroll.classList.toggle("done", false); // 애니메이션이 진행 중일 때 .done 클래스 제거
+          }
+        }
+      }
+    });
+  });
+</script>
+</html>

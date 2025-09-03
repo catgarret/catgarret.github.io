@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Size Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #result {
+      white-space: pre-line;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>화면/창 크기 확인</h2>
+  <button onclick="displaySize()">크기 확인하기</button>
+  
+  <div id="result">여기에 결과가 표시됩니다.</div>
+
+  <script>
+    class Size {
+      static get screenWidth() {
+        return Math.round(window.screen.width * window.devicePixelRatio)
+      }
+
+      static get screenHeight() {
+        return Math.round(window.screen.height * window.devicePixelRatio)
+      }
+
+      static get pageWidth() {
+        return document.body.clientWidth
+      }
+
+      static get pageHeight() {
+        return document.body.clientHeight
+      }
+
+      static get windowWidth() {
+        return window.innerWidth
+      }
+
+      static get windowHeight() {
+        return window.innerHeight
+      }
+    }
+
+    function displaySize() {
+      const resultDiv = document.getElementById('result')
+      resultDiv.textContent =
+        `screenWidth : ${Size.screenWidth}\n` +
+        `screenHeight: ${Size.screenHeight}\n` +
+        `pageWidth   : ${Size.pageWidth}\n` +
+        `pageHeight  : ${Size.pageHeight}\n` +
+        `windowWidth : ${Size.windowWidth}\n` +
+        `windowHeight: ${Size.windowHeight}`
+    }
+
+    // 창 크기 변경 시 자동으로 갱신
+    window.addEventListener('resize', displaySize)
+  </script>
+</body>
+</html>

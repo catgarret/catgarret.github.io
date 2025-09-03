@@ -4,27 +4,44 @@
   <meta charset="UTF-8">
   <title>Size Checker</title>
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
+      display: flex;
+      justify-content: center; /* 수평 중앙 */
+      align-items: center;     /* 수직 중앙 */
       font-family: Arial, sans-serif;
+      background: #fafafa;
+    }
+    .container {
+      text-align: center;
       padding: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
-      margin-bottom: 20px;
+      margin: 15px 0;
     }
     #ua-box {
       background: #eef6ff;
       border: 1px solid #99c2ff;
       padding: 12px 15px;
       border-radius: 6px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-size: 14px;
       word-break: break-all; /* 긴 UA 문자열 줄바꿈 */
+      text-align: left;
     }
     table {
       border-collapse: collapse;
+      margin: 0 auto;
       width: 100%;
       max-width: 700px;
     }
@@ -43,41 +60,43 @@
   </style>
 </head>
 <body>
-  <h2>브라우저 정보 & 화면 크기 확인</h2>
-  <div id="ua-box"></div>
-  <button onclick="displaySize()">크기 갱신하기</button>
+  <div class="container">
+    <h2>브라우저 정보 & 화면 크기 확인</h2>
+    <div id="ua-box"></div>
+    <button onclick="displaySize()">크기 갱신하기</button>
 
-  <table>
-    <caption>브라우저 크기 정보</caption>
-    <thead>
-      <tr>
-        <th>구분</th>
-        <th>가로</th>
-        <th>세로</th>
-        <th>설명</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Screen</td>
-        <td id="screenWidth"></td>
-        <td id="screenHeight"></td>
-        <td>모니터(디바이스) 전체 물리적 픽셀 크기</td>
-      </tr>
-      <tr>
-        <td>Page (body)</td>
-        <td id="pageWidth"></td>
-        <td id="pageHeight"></td>
-        <td>&lt;body&gt; 콘텐츠 폭 (스크롤바 제외)</td>
-      </tr>
-      <tr>
-        <td>Window (viewport)</td>
-        <td id="windowWidth"></td>
-        <td id="windowHeight"></td>
-        <td>브라우저 창 내부 표시 영역 (스크롤바 포함)</td>
-      </tr>
-    </tbody>
-  </table>
+    <table>
+      <caption>브라우저 크기 정보</caption>
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>가로</th>
+          <th>세로</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Screen</td>
+          <td id="screenWidth"></td>
+          <td id="screenHeight"></td>
+          <td>모니터(디바이스) 전체 물리적 픽셀 크기</td>
+        </tr>
+        <tr>
+          <td>Page (body)</td>
+          <td id="pageWidth"></td>
+          <td id="pageHeight"></td>
+          <td>&lt;body&gt; 콘텐츠 폭 (스크롤바 제외)</td>
+        </tr>
+        <tr>
+          <td>Window (viewport)</td>
+          <td id="windowWidth"></td>
+          <td id="windowHeight"></td>
+          <td>브라우저 창 내부 표시 영역 (스크롤바 포함)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <script>
     class Size {

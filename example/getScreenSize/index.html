@@ -14,10 +14,19 @@
       cursor: pointer;
       margin-bottom: 20px;
     }
+    #ua-box {
+      background: #eef6ff;
+      border: 1px solid #99c2ff;
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      word-break: break-all; /* 긴 UA 문자열 줄바꿈 */
+    }
     table {
       border-collapse: collapse;
       width: 100%;
-      max-width: 600px;
+      max-width: 700px;
     }
     th, td {
       border: 1px solid #ddd;
@@ -34,8 +43,9 @@
   </style>
 </head>
 <body>
-  <h2>화면/창 크기 확인</h2>
-  <button onclick="displaySize()">크기 확인하기</button>
+  <h2>브라우저 정보 & 화면 크기 확인</h2>
+  <div id="ua-box"></div>
+  <button onclick="displaySize()">크기 갱신하기</button>
 
   <table>
     <caption>브라우저 크기 정보</caption>
@@ -92,6 +102,10 @@
     }
 
     function displaySize() {
+      // User-Agent 표시
+      document.getElementById('ua-box').textContent = "User-Agent: " + navigator.userAgent
+
+      // 사이즈 정보 표시
       document.getElementById('screenWidth').textContent = Size.screenWidth
       document.getElementById('screenHeight').textContent = Size.screenHeight
       document.getElementById('pageWidth').textContent = Size.pageWidth

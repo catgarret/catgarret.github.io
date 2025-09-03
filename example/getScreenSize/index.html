@@ -14,61 +14,95 @@
       cursor: pointer;
       margin-bottom: 20px;
     }
-    #result {
-      white-space: pre-line;
-      background: #f8f8f8;
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+    }
+    th, td {
       border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    caption {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <h2>화면/창 크기 확인</h2>
-  <button onclick="displaySize()">크기 확인하기</button>
-  
-  <div id="result">여기에 결과가 표시됩니다.</div>
+  <button onclick="displaySize()">크기 갱신하기</button>
+
+  <table>
+    <caption>브라우저 크기 정보</caption>
+    <thead>
+      <tr>
+        <th>구분</th>
+        <th>가로</th>
+        <th>세로</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Screen</td>
+        <td id="screenWidth"></td>
+        <td id="screenHeight"></td>
+        <td>모니터(디바이스) 전체 물리적 픽셀 크기</td>
+      </tr>
+      <tr>
+        <td>Page (body)</td>
+        <td id="pageWidth"></td>
+        <td id="pageHeight"></td>
+        <td>&lt;body&gt; 콘텐츠 폭 (스크롤바 제외)</td>
+      </tr>
+      <tr>
+        <td>Window (viewport)</td>
+        <td id="windowWidth"></td>
+        <td id="windowHeight"></td>
+        <td>브라우저 창 내부 표시 영역 (스크롤바 포함)</td>
+      </tr>
+    </tbody>
+  </table>
 
   <script>
     class Size {
       static get screenWidth() {
         return Math.round(window.screen.width * window.devicePixelRatio)
       }
-
       static get screenHeight() {
         return Math.round(window.screen.height * window.devicePixelRatio)
       }
-
       static get pageWidth() {
         return document.body.clientWidth
       }
-
       static get pageHeight() {
         return document.body.clientHeight
       }
-
       static get windowWidth() {
         return window.innerWidth
       }
-
       static get windowHeight() {
         return window.innerHeight
       }
     }
 
     function displaySize() {
-      const resultDiv = document.getElementById('result')
-      resultDiv.textContent =
-        `screenWidth : ${Size.screenWidth}\n` +
-        `screenHeight: ${Size.screenHeight}\n` +
-        `pageWidth   : ${Size.pageWidth}\n` +
-        `pageHeight  : ${Size.pageHeight}\n` +
-        `windowWidth : ${Size.windowWidth}\n` +
-        `windowHeight: ${Size.windowHeight}`
+      document.getElementById('screenWidth').textContent = Size.screenWidth
+      document.getElementById('screenHeight').textContent = Size.screenHeight
+      document.getElementById('pageWidth').textContent = Size.pageWidth
+      document.getElementById('pageHeight').textContent = Size.pageHeight
+      document.getElementById('windowWidth').textContent = Size.windowWidth
+      document.getElementById('windowHeight').textContent = Size.windowHeight
     }
 
-    // 창 크기 변경 시 자동으로 갱신
+    // 페이지 로드 시와 창 크기 변경 시 자동 갱신
     window.addEventListener('resize', displaySize)
+    window.addEventListener('load', displaySize)
   </script>
 </body>
 </html>

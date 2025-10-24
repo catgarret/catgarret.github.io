@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로컬 폰트 PostScript 이름 확인기</title>
-    <!-- Tailwind CSS 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Inter 폰트 로드 */
@@ -34,27 +33,22 @@
 
     <div class="flex flex-col md:flex-row h-screen">
         
-        <!-- 왼쪽: 폰트 목록 및 검색 -->
         <aside class="w-full md:w-1/3 lg:w-1/4 h-1/2 md:h-screen bg-white shadow-lg flex flex-col">
             <div class="p-4 border-b">
                 <h2 class="text-xl font-semibold text-gray-900">설치된 폰트 목록</h2>
                 <input type="text" id="searchInput" placeholder="폰트 이름 검색... (예: San)" class="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
-            <!-- 폰트 목록 스크롤 영역 -->
             <div id="fontListContainer" class="flex-1 overflow-y-auto p-2">
                 <ul id="fontList" class="divide-y divide-gray-200">
-                    <!-- 폰트 목록이 여기에 동적으로 추가됩니다 -->
-                </ul>
+                    </ul>
             </div>
 
-            <!-- 상태 메시지 영역 -->
             <div id="statusMessage" class="p-4 border-t bg-gray-50 text-center">
                 <p class="text-gray-600">폰트 목록을 불러오는 중...</p>
             </div>
         </aside>
 
-        <!-- 오른쪽: 폰트 상세 정보 -->
         <main class="flex-1 h-1/2 md:h-screen overflow-y-auto p-6 md:p-10">
             <div id="welcomeMessage" class="h-full flex flex-col items-center justify-center text-center text-gray-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
@@ -63,15 +57,17 @@
                 <h2 class="text-2xl font-semibold mt-4">폰트 확인기</h2>
                 <p class="mt-2 max-w-md">왼쪽 목록에서 폰트 패밀리를 선택하면 상세 정보(PostScript 이름, Weight 등)가 여기에 표시됩니다.</p>
                 
-                <!-- API 지원 불가 시 메시지 -->
                 <div id="apiError" class="hidden mt-6 p-4 bg-red-100 text-red-700 rounded-lg">
                     <p class="font-bold">호환성 오류</p>
-                    <p class="mt-1">이 브라우저는 '로컬 폰트 접근 API'를 지원하지 않습니다.<br>PostScript 이름을 확인하려면 <strong class="font-semibold">최신 버전의 Chrome 또는 Edge 브라우저</strong>를 사용해 주세요.</p>
+                    <p class="mt-1">
+                        이 브라우저는 '로컬 폰트 접근 API'를 지원하지 않거나, 보안 컨텍스트(https, localhost)에서 실행되지 않았습니다.
+                        <br>
+                        <strong class="font-semibold">최신 Chrome/Edge 브라우저에서 로컬 서버(예: VS Code 'Live Server')로 실행</strong>해 주세요.
+                    </p>
                 </div>
             </div>
 
             <div id="fontDetails" class="hidden">
-                <!-- 1. 폰트 미리보기 -->
                 <section>
                     <h3 class="text-2xl font-bold text-gray-900" id="fontFamilyName">Font Family</h3>
                     <div id="fontPreview" class="mt-4 p-6 bg-white rounded-xl shadow-inner overflow-hidden text-3xl md:text-5xl" style="font-family: 'Inter';">
@@ -79,20 +75,17 @@
                     </div>
                 </section>
 
-                <!-- 2. PostScript 이름 및 웨이트 -->
                 <section class="mt-8">
                     <h4 class="text-xl font-semibold text-gray-800">PostScript 이름 및 상세 정보</h4>
                     <p class="text-sm text-gray-600 mt-1">이름을 클릭하면 클립보드에 복사됩니다.</p>
                     
                     <div id="postscriptList" class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <!-- PostScript 이름 카드가 여기에 동적으로 추가됩니다 -->
-                    </div>
+                        </div>
                 </section>
             </div>
         </main>
     </div>
 
-    <!-- 클립보드 복사 알림창 (Toast) -->
     <div id="toast" class="fixed bottom-10 right-10 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transform translate-y-2">
         클립보드에 복사되었습니다!
     </div>
@@ -118,18 +111,18 @@
          */
         window.addEventListener('load', async () => {
             // 1. API 지원 여부 확인
+            // 'fonts' in navigator 대신 'query' 까지 확인해야 함.
             if (!('fonts' in navigator) || !('query' in navigator.fonts)) {
+                console.error("Local Font Access API is not supported in this browser or context.");
                 statusMessageEl.innerHTML = '<p class="text-red-600 font-semibold">API 미지원</p>';
-                welcomeMessageEl.classList.add('hidden'); // 환영 메시지 숨기기
                 apiErrorEl.classList.remove('hidden'); // 에러 메시지 표시
-                fontDetailsEl.innerHTML = '';
-                fontListEl.innerHTML = '';
                 return;
             }
 
             // 2. 폰트 쿼리 실행 (사용자 권한 요청)
             try {
                 statusMessageEl.innerHTML = '<p class="text-blue-600">사용자 권한을 기다리는 중...</p>';
+                // 이 부분이 권한 팝업을 띄웁니다.
                 const allFonts = await navigator.fonts.query();
                 
                 if (allFonts.length === 0) {
@@ -139,8 +132,7 @@
 
                 statusMessageEl.innerHTML = '<p class="text-gray-600">폰트 데이터 처리 중...</p>';
                 
-                // 3. 폰트 데이터 그룹화 (가장 중요)
-                // fontDataMap: { "Sandoll Gothic Neo1": [FontData, FontData, ...], "Inter": [...] }
+                // 3. 폰트 데이터 그룹화
                 fontDataMap.clear();
                 allFonts.forEach(fontData => {
                     const family = fontData.family;
@@ -255,42 +247,26 @@
 
             // 동적으로 생성된 '복사' 버튼 및 텍스트에 이벤트 리스너 추가
             postscriptListEl.querySelectorAll('.copy-btn, .copy-text').forEach(el => {
-                el.addEventListener('click', (e) => {
+                // (★수정) async / await 적용
+                el.addEventListener('click', async (e) => {
                     const nameToCopy = e.currentTarget.dataset.psName;
-                    copyToClipboard(nameToCopy);
+                    await copyToClipboard(nameToCopy);
                 });
             });
         }
 
         /**
-         * 텍스트를 클립보드에 복사하는 함수
-         * (iframe이나 로컬 파일 환경에서도 잘 작동하는 document.execCommand 사용)
+         * (★수정) 텍스트를 클립보드에 복사하는 함수 (최신 비동기 방식)
          * @param {string} text - 복사할 텍스트
          */
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed'; // 화면에 보이지 않게 처리
-            textarea.style.top = '-9999px';
-            textarea.style.left = '-9999px';
-            document.body.appendChild(textarea);
-            textarea.focus();
-    
+        async function copyToClipboard(text) {
             try {
-                // 모바일 Safari 등에서 select()가 실패할 수 있으므로 setSelectionRange 사용
-                textarea.setSelectionRange(0, textarea.value.length);
-                const successful = document.execCommand('copy');
-                
-                if (successful) {
-                    showToast(); // 복사 성공 알림
-                } else {
-                    alert('클립보드 복사에 실패했습니다.');
-                }
+                // navigator.clipboard API 사용 (보안 컨텍스트 필요)
+                await navigator.clipboard.writeText(text);
+                showToast(); // 복사 성공 알림
             } catch (err) {
                 console.error('클립보드 복사 실패:', err);
                 alert('클립보드 복사에 실패했습니다.');
-            } finally {
-                document.body.removeChild(textarea); // 임시 요소 제거
             }
         }
 

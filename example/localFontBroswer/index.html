@@ -3,270 +3,290 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Local Font Browser – PostScript Name Finder</title>
-  <style>
-    :root {
-      --bg: #0f172a; /* slate-900 */
-      --panel: #111827; /* gray-900 */
-      --soft: #1f2937; /* gray-800 */
-      --text: #e5e7eb; /* gray-200 */
-      --muted: #9ca3af; /* gray-400 */
-      --brand: #60a5fa; /* blue-400 */
-      --accent: #22d3ee; /* cyan-400 */
-      --ok: #34d399; /* green-400 */
-      --warn: #f59e0b; /* amber-500 */
-      --err: #f87171; /* red-400 */
-    }
-    html, body { height: 100%; }
-    body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, Apple SD Gothic Neo, sans-serif;
-    }
-    .wrap { display: grid; grid-template-rows: auto 1fr; height: 100%; }
-    header {
-      padding: 16px 20px; border-bottom: 1px solid #1f2937;
-      display: grid; gap: 10px; align-items: center; grid-template-columns: auto 1fr auto; column-gap: 16px;
-      background: linear-gradient(180deg, rgba(96,165,250,0.1), transparent);
-    }
-    h1 { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: .2px; }
-    .hint { font-size: 12px; color: var(--muted); }
-    .btn { cursor: pointer; border: 1px solid #1f2937; background: var(--soft); color: var(--text);
-           padding: 10px 14px; border-radius: 10px; font-weight: 600; }
-    .btn.brand { border-color: #1e40af; background: #1e3a8a; }
-    .btn:hover { filter: brightness(1.05); }
-    .btn:disabled { opacity: .6; cursor: not-allowed; }
+  <title>Local Font Access — Bootstrap 기본 테마 + 검색</title>
 
-    .layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 74px); }
-
-    .left {
-      border-right: 1px solid #1f2937; padding: 14px; overflow: hidden; display: grid; grid-template-rows: auto auto 1fr; gap: 10px;
-      background: radial-gradient(1200px 400px at 0% 0%, rgba(34,211,238,0.06), transparent);
-    }
-    .searchbox { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-    .input, .select {
-      width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 10px; border: 1px solid #1f2937; background: #0b1220; color: var(--text);
-      font-size: 14px;
-    }
-    .small { font-size: 12px; color: var(--muted); }
-
-    .list { overflow: auto; border: 1px solid #1f2937; border-radius: 12px; background: #0b1220; }
-    .item { padding: 10px 12px; border-bottom: 1px solid #111827; cursor: pointer; display:flex; justify-content: space-between; gap: 6px; align-items: center; }
-    .item:hover { background: #0f172a; }
-    .item .fam { font-weight: 700; }
-    .item .sub { font-size: 12px; color: var(--muted); }
-
-    .right { padding: 18px; overflow: auto; }
-    .panel { border: 1px solid #1f2937; border-radius: 14px; background: #0b1220; padding: 16px; display: grid; gap: 14px; }
-    .row { display: grid; gap: 10px; }
-    .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; }
-
-    .sample {
-      border: 1px dashed #1f2937; border-radius: 12px; padding: 20px; background: #0a0f1a;
-    }
-    .weights { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-    .card { border: 1px solid #1f2937; background: #08101a; border-radius: 12px; padding: 12px; display: grid; gap: 10px; }
-    .meta { display: grid; gap: 6px; }
-    .copy { display: flex; gap: 8px; }
-    .chip { font-size: 12px; padding: 4px 8px; border-radius: 999px; border: 1px solid #1f2937; color: var(--muted); display: inline-block; }
-
-    .footer { color: var(--muted); font-size: 12px; margin-top: 8px; }
-    .kbd { border:1px solid #1f2937; border-bottom-width: 2px; background:#0a0f1a; border-radius:6px; padding:2px 6px; font-family:ui-monospace,Consolas,monospace; font-size:12px; }
-  </style>
+  <!-- ✅ Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Local Font Browser — PostScript Name Finder</h1>
-    <div class="hint">1) <span class="kbd">Chrome/Edge</span> 등 Chromium 계열에서 열기 → 2) <b>폰트 불러오기</b> 클릭 → 3) 검색/선택</div>
-    <button id="btnLoad" class="btn brand">① 폰트 불러오기 (권한 필요)</button>
-  </header>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h4 mb-0">Local Font Access — Bootstrap 기본 스타일</h1>
+      <button id="btnLoad" class="btn btn-primary">Get local fonts</button>
+    </div>
 
-  <div class="layout">
-    <aside class="left">
-      <div class="searchbox">
-        <input id="q" class="input" list="fontlist" placeholder="폰트 검색 (가족명/전체명/PostScript) – 예: Sandoll, Malgun, San ..." />
-        <button id="btnClear" class="btn" title="검색 지우기">지우기</button>
-        <datalist id="fontlist"></datalist>
-      </div>
-      <div class="small">검색은 <b>가족명(family)</b>, <b>전체명(fullName)</b>, <b>PostScript</b>에 대해 부분 일치합니다.</div>
-      <div id="list" class="list" role="listbox" aria-label="폰트 목록"></div>
-    </aside>
+    <div id="alertHost"></div>
 
-    <main class="right">
-      <section class="panel">
-        <div class="row">
-          <div class="label">선택한 폰트</div>
-          <div id="selFamily" style="font-size:20px; font-weight:800;">(아직 선택되지 않음)</div>
-          <div class="small">아래 샘플 텍스트는 선택한 변형(스타일/웨이트)에 적용됩니다.</div>
-          <div class="row">
-            <label class="small" for="sample">샘플 텍스트</label>
-            <textarea id="sample" class="input" rows="3">다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox jumps over the lazy dog 0123456789</textarea>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <label class="small">글자 크기</label>
-              <input id="size" class="input" type="number" min="8" value="28" style="width:90px" />
-              <button id="btnApply" class="btn">적용</button>
+    <div class="row g-3">
+      <!-- 왼쪽 패널 -->
+      <div class="col-lg-5">
+        <div class="card p-3">
+          <div class="mb-3">
+            <label class="form-label">폰트 검색</label>
+            <div class="input-group">
+              <input id="q" type="search" class="form-control" placeholder="예: 산 / 산돌 / 구름 / Noto ..." />
+              <button id="btnClear" class="btn btn-outline-secondary">지우기</button>
             </div>
-            <div id="sampleView" class="sample" style="font-size:28px; line-height:1.4;">샘플 미리보기</div>
+            <div class="form-text">입력한 글자가 포함된 패밀리를 필터링합니다.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">폰트 패밀리 <span class="text-muted" id="famCount"></span></label>
+            <select id="family" size="12" class="form-select"></select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">변형(Variant)</label>
+            <select id="variant" size="6" class="form-select"></select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">PostScript Name</label>
+            <input id="psName" class="form-control" type="text" readonly />
           </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="label">가족 내 변형(Style/Weight)</div>
-          <div id="weights" class="weights"></div>
+      <!-- 오른쪽 패널 -->
+      <div class="col-lg-7">
+        <div class="card p-3">
+          <div class="mb-3">
+            <label class="form-label">샘플 텍스트</label>
+            <textarea id="sample" class="form-control" rows="3">다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox jumps over the lazy dog</textarea>
+          </div>
+
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col-auto">
+              <label class="col-form-label">글자 크기</label>
+            </div>
+            <div class="col">
+              <input id="size" type="range" class="form-range" min="10" max="96" step="1" value="28">
+            </div>
+            <div class="col-auto">
+              <input id="sizePx" type="number" class="form-control" style="width:90px" value="28" min="10" max="96" />
+            </div>
+            <div class="col-auto">
+              <button id="btnApply" class="btn btn-outline-primary">적용</button>
+            </div>
+          </div>
+
+          <div id="preview" class="border rounded p-3" style="font-size:28px; line-height:1.5;">
+            샘플 미리보기
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div class="footer">※ 이 페이지는 <b>Local Font Access API</b>를 사용합니다. <span class="kbd">Chrome 103+</span> 기반 브라우저에서 동작하며, 버튼 클릭 시 로컬 폰트 접근 권한을 요청할 수 있습니다. 일부 환경에서는 보안 정책상 제한될 수 있습니다.</div>
-      </section>
-    </main>
+    <p class="mt-3 text-muted small">
+      HTTPS 또는 http://localhost 환경에서 실행해야 합니다. Chrome/Edge 103+ 이상 권장.
+    </p>
   </div>
-</div>
 
-<script>
-// ===== Local Font Access (MDN 스타일, 호환/진단 포함) =====
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossorigin="anonymous"></script>
 
-// 필수 DOM
-const selectElem = document.querySelector("select");
-const selectElemContainer = document.querySelector(".select-container");
-const startButton = document.querySelector("button");
-const startButtonContainer = document.querySelector(".start-button-container");
-const sampleText = document.querySelector(".sample-text");
+  <script>
+    // ===== Local Font Access — Bootstrap 기본 테마 + 검색 =====
+    const $ = (s) => document.querySelector(s);
 
-// 초기 상태
-if (selectElemContainer) selectElemContainer.style.display = "none";
+    const $btnLoad = $('#btnLoad');
+    const $alertHost = $('#alertHost');
+    const $q = $('#q');
+    const $btnClear = $('#btnClear');
+    const $family = $('#family');
+    const $famCount = $('#famCount');
+    const $variant = $('#variant');
+    const $psName = $('#psName');
+    const $sample = $('#sample');
+    const $size = $('#size');
+    const $sizePx = $('#sizePx');
+    const $btnApply = $('#btnApply');
+    const $preview = $('#preview');
 
-// 유틸
-function supportsLocalFonts() {
-  return typeof window.queryLocalFonts === "function" ||
-         (navigator.fonts && typeof navigator.fonts.queryLocalFonts === "function");
-}
-function getQueryLocalFonts() {
-  if (typeof window.queryLocalFonts === "function") {
-    return window.queryLocalFonts.bind(window);
-  }
-  if (navigator.fonts && typeof navigator.fonts.queryLocalFonts === "function") {
-    return navigator.fonts.queryLocalFonts.bind(navigator.fonts);
-  }
-  return null;
-}
-function setStartBtn(text, disabled) {
-  if (!startButton) return;
-  startButton.textContent = text;
-  startButton.disabled = !!disabled;
-}
-function ensureSecureContext() {
-  // Local Font Access는 보안 컨텍스트(HTTPS/localhost) 필요
-  return window.isSecureContext === true;
-}
-async function readPermissionState() {
-  // 일부 브라우저만 지원
-  try {
-    if (navigator.permissions && navigator.permissions.query) {
-      const res = await navigator.permissions.query({ name: "local-fonts" });
-      return res?.state || "unknown";
-    }
-  } catch {}
-  return "unknown";
-}
+    let fontsByFamily = new Map();
+    let allFamilies = [];
+    let filteredFamilies = [];
+    let currentFamily = null;
 
-// 메인 로직
-async function populatefonts() {
-  setStartBtn("Fetching local fonts...", true);
-
-  // 환경 체크
-  if (!ensureSecureContext()) {
-    console.warn("[LocalFonts] Not a secure context (use HTTPS or http://localhost)");
-    setStartBtn("Get your local fonts", false);
-    alert("이 페이지가 보안 컨텍스트가 아닙니다. HTTPS 또는 http://localhost 에서 실행하세요.");
-    return;
-  }
-  if (!supportsLocalFonts()) {
-    console.warn("[LocalFonts] API not available: window.queryLocalFonts / navigator.fonts.queryLocalFonts");
-    setStartBtn("Get your local fonts", false);
-    alert("이 브라우저는 Local Font Access API를 지원하지 않습니다. Chrome/Edge 최신 버전을 사용하세요.");
-    return;
-  }
-
-  // 권한 상태(가능 시)
-  const permState = await readPermissionState();
-  if (permState !== "granted") {
-    console.log(`[LocalFonts] permission state: ${permState} (권한 프롬프트가 표시될 수 있음)`);
-  }
-
-  try {
-    const query = getQueryLocalFonts();
-    // 버튼 클릭(사용자 제스처) 내부에서 호출해야 권한 프롬프트가 정상 표시됨
-    const availableFonts = await query();
-    console.log("[LocalFonts] fetched:", availableFonts?.length, "items");
-
-    // family만 옵션으로, fullName을 라벨로 표시 (동일 family 중복 제거)
-    const familySeen = new Set();
-    const options = [];
-    for (const fontData of availableFonts) {
-      if (!fontData?.family) continue;
-      if (familySeen.has(fontData.family)) continue;
-      familySeen.add(fontData.family);
-      options.push({ value: fontData.family, label: fontData.fullName || fontData.family });
-    }
-    // 정렬
-    options.sort((a, b) => a.value.localeCompare(b.value));
-
-    // 셀렉트 갱신
-    selectElem.innerHTML = "";
-    for (const opt of options) {
-      const option = document.createElement("option");
-      option.value = opt.value;
-      option.textContent = opt.label;
-      selectElem.appendChild(option);
+    function showAlert(msg, type='warning') {
+      $alertHost.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${msg}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
     }
 
-    if (selectElemContainer) selectElemContainer.style.display = "block";
-    if (startButtonContainer) startButtonContainer.style.display = "none";
+    function supportsLocalFonts() {
+      return typeof window.queryLocalFonts === 'function' ||
+        (navigator.fonts && typeof navigator.fonts.queryLocalFonts === 'function');
+    }
+    function getQueryLocalFonts() {
+      if (typeof window.queryLocalFonts === 'function') return window.queryLocalFonts.bind(window);
+      if (navigator.fonts && typeof navigator.fonts.queryLocalFonts === 'function') return navigator.fonts.queryLocalFonts.bind(navigator.fonts);
+      return null;
+    }
+    function ensureSecureContext() { return window.isSecureContext === true; }
 
-    // 이벤트 바인딩 & 초기 적용
-    selectElem.addEventListener("change", applyFont, { once: true });
-    // 첫 적용 후에는 change마다 적용되도록 다시 가볍게 바인딩
-    selectElem.addEventListener("change", applyFont);
-    applyFont();
+    function renderFamilyList(list) {
+      $family.innerHTML = '';
+      for (const fam of list) {
+        const opt = document.createElement('option');
+        opt.value = fam;
+        opt.textContent = fam;
+        $family.appendChild(opt);
+      }
+      $famCount.textContent = list.length ? `(${list.length}개)` : '(0개)';
+    }
 
-  } catch (err) {
-    console.error("[LocalFonts] error:", err?.name, err?.message, err);
-    // 에러 유형별 힌트
-    const hints = {
-      SecurityError:
-        "보안 컨텍스트가 아니거나, 교차 출처 iframe/정책으로 차단되었습니다. HTTPS 또는 http://localhost 에서 직접 열어보세요.",
-      NotAllowedError:
-        "Permissions-Policy 또는 사이트 권한(로컬 폰트 읽기) 문제일 수 있습니다. 서버 응답 헤더와 브라우저 사이트 권한을 확인하세요."
-    };
-    alert(
-      `로컬 폰트를 불러오지 못했습니다.\n\n` +
-      `에러: ${err?.name || "Unknown"}\n` +
-      (hints[err?.name] ? `\n힌트: ${hints[err.name]}` : "")
-    );
-    setStartBtn("Get your local fonts", false);
-    return;
-  }
+    function renderVariants(fam) {
+      $variant.innerHTML = '';
+      const arr = fontsByFamily.get(fam) || [];
+      arr.sort((a,b) => (a.style||'').localeCompare(b.style||'') || (a.fullName||'').localeCompare(b.fullName||''));
+      for (const f of arr) {
+        const opt = document.createElement('option');
+        opt.value = f.postscriptName || '';
+        opt.textContent = f.fullName || f.style || 'Regular';
+        opt.dataset.family = f.family || fam;
+        $variant.appendChild(opt);
+      }
+      if (arr[0]) {
+        $variant.selectedIndex = 0;
+        $psName.value = arr[0].postscriptName || '';
+        setPreview(arr[0]);
+      } else {
+        $psName.value = '';
+        setPreview(null);
+      }
+    }
 
-  // 완료 UI
-  setStartBtn("Done", false);
-}
+    function setPreview(fontMeta) {
+      const size = parseInt($sizePx.value || '28', 10);
+      $preview.style.fontFamily = `'${fontMeta?.family || currentFamily || 'system-ui'}', system-ui, sans-serif`;
+      $preview.style.fontSize = size + 'px';
+      $preview.textContent = $sample.value || '';
+    }
 
-function applyFont() {
-  if (!sampleText || !selectElem) return;
-  const family = selectElem.value || "system-ui";
-  // 시스템 폴백 추가
-  sampleText.style.fontFamily =
-    `'${family}', system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif`;
-}
+    function onFamilyChange() {
+      const fam = $family.value;
+      currentFamily = fam;
+      renderVariants(fam);
+    }
 
-// 버튼 핸들러(사용자 제스처)
-if (startButton) {
-  startButton.addEventListener("click", populatefonts);
-}
+    function onVariantChange() {
+      const idx = $variant.selectedIndex;
+      if (idx < 0) return;
+      const fam = currentFamily;
+      const arr = fontsByFamily.get(fam) || [];
+      const chosen = arr[idx];
+      $psName.value = chosen?.postscriptName || '';
+      setPreview(chosen);
+    }
 
-// 초기 버튼 라벨
-setStartBtn("Get your local fonts", false);
+    function applySize() {
+      const v = parseInt($size.value, 10);
+      $sizePx.value = v;
+      const fam = currentFamily;
+      const arr = fam ? (fontsByFamily.get(fam) || []) : [];
+      const chosen = arr[$variant.selectedIndex] || null;
+      setPreview(chosen);
+    }
 
-</script>
+    function syncSizeFromNumber() {
+      let v = parseInt($sizePx.value, 10);
+      if (isNaN(v)) v = 28;
+      v = Math.max(10, Math.min(96, v));
+      $sizePx.value = v;
+      $size.value = v;
+      applySize();
+    }
+
+    function normalize(str) { return (str || '').toLowerCase(); }
+    function filterFamilies(keyword) {
+      const q = normalize(keyword);
+      if (!q) return [...allFamilies];
+      return allFamilies.filter(fam => normalize(fam).includes(q));
+    }
+
+    async function loadFonts() {
+      try {
+        $btnLoad.disabled = true;
+        $alertHost.innerHTML = '';
+
+        if (!ensureSecureContext()) {
+          showAlert('HTTPS 또는 http://localhost 에서 실행해야 합니다.', 'danger');
+          return;
+        }
+        if (!supportsLocalFonts()) {
+          showAlert('이 브라우저는 Local Font Access API를 지원하지 않습니다.', 'danger');
+          return;
+        }
+
+        const query = getQueryLocalFonts();
+        const fonts = await query();
+        if (!Array.isArray(fonts)) {
+          showAlert('queryLocalFonts() 반환값이 잘못되었습니다.', 'danger');
+          return;
+        }
+
+        fontsByFamily = new Map();
+        for (const f of fonts) {
+          if (!f?.family) continue;
+          if (!fontsByFamily.has(f.family)) fontsByFamily.set(f.family, []);
+          fontsByFamily.get(f.family).push(f);
+        }
+
+        allFamilies = [...fontsByFamily.keys()].sort((a,b)=>a.localeCompare(b));
+        filteredFamilies = [...allFamilies];
+        renderFamilyList(filteredFamilies);
+
+        if (filteredFamilies.length) {
+          $family.selectedIndex = 0;
+          onFamilyChange();
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert(`폰트를 불러오지 못했습니다.<br><small>${err?.name || ''} ${err?.message || ''}</small>`, 'danger');
+      } finally {
+        $btnLoad.disabled = false;
+      }
+    }
+
+    function debounce(fn, ms) { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
+    $btnLoad.addEventListener('click', loadFonts);
+    $family.addEventListener('change', onFamilyChange);
+    $variant.addEventListener('change', onVariantChange);
+    $size.addEventListener('input', applySize);
+    $sizePx.addEventListener('change', syncSizeFromNumber);
+    $btnApply.addEventListener('click', syncSizeFromNumber);
+
+    $q.addEventListener('input', debounce(() => {
+      filteredFamilies = filterFamilies($q.value);
+      renderFamilyList(filteredFamilies);
+      if (filteredFamilies.length) {
+        $family.selectedIndex = 0;
+        onFamilyChange();
+      } else {
+        $variant.innerHTML = '';
+        $psName.value = '';
+        setPreview(null);
+      }
+    }, 120));
+
+    $btnClear.addEventListener('click', () => {
+      $q.value = '';
+      filteredFamilies = [...allFamilies];
+      renderFamilyList(filteredFamilies);
+      if (filteredFamilies.length) {
+        $family.selectedIndex = 0;
+        onFamilyChange();
+      }
+    });
+
+    syncSizeFromNumber();
+  </script>
 </body>
 </html>

@@ -236,10 +236,17 @@
     if (arr[0]) applyPreview(arr[0]);
   }
 
-  function applyPreview(fontMeta) {
-    currentFontFullName = fontMeta.fullName || fontMeta.family;
+function applyPreview(fontMeta) {
+    currentFontFullName = fontMeta.fullName || fontMeta.family; // 이 줄은 내부 상태용이라 그대로 둬도 됩니다.
     const size = parseInt($size.value || '28', 10);
-    $sampleView.style.fontFamily = `'${currentFontFullName}', '${fontMeta.family}', system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif`;
+    
+    // ▼▼▼ 이 부분을 수정하세요 ▼▼▼
+    // Windows 환경 대응: fullName이 아닌 postscriptName을 사용해야 미리보기가 적용됩니다.
+    const familyToApply = fontMeta.postscriptName || fontMeta.fullName || fontMeta.family;
+    
+    $sampleView.style.fontFamily = `'${familyToApply}', '${fontMeta.family}', system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif`;
+    // ▲▲▲ 여기까지 수정 ▲▲▲
+    
     $sampleView.style.fontSize = size + 'px';
     $sampleView.textContent = $sample.value || '';
   }

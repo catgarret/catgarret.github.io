@@ -1,12 +1,12 @@
 /*
- * Pixel Mosaic v1.2.6
+ * Pixel Mosaic v1.3.4
  * Progressive pixel-mosaic reveal for still and animated web images.
  * No dependencies. Keeps the semantic <img> element intact.
  */
 (function (global) {
   'use strict';
 
-  const VERSION = '1.2.6';
+  const VERSION = '1.3.4';
   const KB = 1024;
   const MB = 1024 * KB;
 

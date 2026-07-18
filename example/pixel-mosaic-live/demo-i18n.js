@@ -21,6 +21,8 @@
     ko: {
       metaDescription: '정적 이미지와 GIF, Animated WebP, APNG에 적용할 수 있는 픽셀 모자이크 레이지 로더 데모입니다.',
       languageLabel: '언어',
+      projectLinksLabel: '프로젝트 링크',
+      blogLink: '블로그',
       heroLine1: '이미지가 화면에 들어오면 큰 픽셀에서 원본으로 전환합니다.',
       heroLine2: 'GIF·Animated WebP·APNG도 재생을 멈추지 않습니다.',
       previewTitle: '미리 보기',
@@ -87,6 +89,8 @@
     en: {
       metaDescription: 'A pixel mosaic lazy loader demo for static images, GIF, animated WebP, and APNG.',
       languageLabel: 'Language',
+      projectLinksLabel: 'Project links',
+      blogLink: 'Blog',
       heroLine1: 'Images transition from large pixel blocks to the original as they enter the viewport.',
       heroLine2: 'GIF, animated WebP, and APNG keep playing throughout the effect.',
       previewTitle: 'Preview',
@@ -153,6 +157,8 @@
     ja: {
       metaDescription: '静止画像、GIF、Animated WebP、APNGに対応したピクセルモザイク・レイジーローダーのデモです。',
       languageLabel: '言語',
+      projectLinksLabel: 'プロジェクトリンク',
+      blogLink: 'ブログ',
       heroLine1: '画像が表示領域に入ると、大きなピクセルから元画像へ段階的に切り替わります。',
       heroLine2: 'GIF・Animated WebP・APNGも再生を止めずに効果を適用します。',
       previewTitle: 'プレビュー',
@@ -219,6 +225,8 @@
     'zh-TW': {
       metaDescription: '支援靜態圖片、GIF、Animated WebP 與 APNG 的像素馬賽克延遲載入器示範。',
       languageLabel: '語言',
+      projectLinksLabel: '專案連結',
+      blogLink: '部落格',
       heroLine1: '圖片進入畫面時，會從大型像素方塊逐步還原成原圖。',
       heroLine2: 'GIF、Animated WebP 與 APNG 在效果期間仍會持續播放。',
       previewTitle: '預覽',
@@ -285,6 +293,8 @@
     th: {
       metaDescription: 'เดโมตัวโหลดภาพแบบ Pixel Mosaic Lazy Loader สำหรับภาพนิ่ง GIF, Animated WebP และ APNG',
       languageLabel: 'ภาษา',
+      projectLinksLabel: 'ลิงก์โปรเจกต์',
+      blogLink: 'บล็อก',
       heroLine1: 'เมื่อภาพเข้าสู่หน้าจอ ภาพจะค่อย ๆ เปลี่ยนจากพิกเซลขนาดใหญ่เป็นภาพต้นฉบับ',
       heroLine2: 'GIF, Animated WebP และ APNG ยังคงเล่นต่อเนื่องตลอดเอฟเฟกต์',
       previewTitle: 'ตัวอย่าง',
@@ -351,6 +361,8 @@
     'zh-CN': {
       metaDescription: '适用于静态图片、GIF、Animated WebP 和 APNG 的像素马赛克懒加载器演示。',
       languageLabel: '语言',
+      projectLinksLabel: '项目链接',
+      blogLink: '博客',
       heroLine1: '图片进入视口后，会从大像素块逐步还原为原图。',
       heroLine2: 'GIF、Animated WebP 和 APNG 在效果期间也会持续播放。',
       previewTitle: '预览',
@@ -417,6 +429,8 @@
     'zh-Hant': {
       metaDescription: '支援靜態圖片、GIF、Animated WebP 及 APNG 的像素馬賽克延遲載入器示範。',
       languageLabel: '語言',
+      projectLinksLabel: '專案連結',
+      blogLink: '部落格',
       heroLine1: '圖片進入畫面時，會由大型像素方格逐步還原為原圖。',
       heroLine2: 'GIF、Animated WebP 及 APNG 在效果期間仍會繼續播放。',
       previewTitle: '預覽',
@@ -483,6 +497,8 @@
     ru: {
       metaDescription: 'Демонстрация ленивой загрузки с пиксельной мозаикой для статичных изображений, GIF, Animated WebP и APNG.',
       languageLabel: 'Язык',
+      projectLinksLabel: 'Ссылки проекта',
+      blogLink: 'Блог',
       heroLine1: 'При появлении в области просмотра изображение переходит от крупных пикселей к оригиналу.',
       heroLine2: 'GIF, Animated WebP и APNG продолжают воспроизводиться во время эффекта.',
       previewTitle: 'Предпросмотр',
@@ -549,6 +565,8 @@
     it: {
       metaDescription: 'Demo di un lazy loader con mosaico pixel per immagini statiche, GIF, WebP animate e APNG.',
       languageLabel: 'Lingua',
+      projectLinksLabel: 'Link del progetto',
+      blogLink: 'Blog',
       heroLine1: 'Quando entra nell’area visibile, l’immagine passa dai pixel grandi all’originale.',
       heroLine2: 'GIF, WebP animate e APNG continuano a muoversi durante l’effetto.',
       previewTitle: 'Anteprima',

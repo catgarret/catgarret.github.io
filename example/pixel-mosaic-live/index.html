@@ -10,7 +10,7 @@
   <link rel="preload" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./pixel-mosaic.css?v=1.3.3">
+  <link rel="stylesheet" href="./pixel-mosaic.css?v=1.3.4">
   <style>
     :root {
       font-family: "Wanted Sans Variable", "Wanted Sans", sans-serif;
@@ -41,9 +41,35 @@
 
     .topbar {
       display: flex;
-      justify-content: flex-end;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
       padding-top: 22px;
     }
+
+    .project-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-link {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 12px;
+      border: 1px solid #d9d9dd;
+      border-radius: 10px;
+      color: #343438;
+      background: rgba(255, 255, 255, .8);
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .project-link:hover { background: #fff; }
+    .project-link svg { width: 16px; height: 16px; }
 
     .language-field {
       display: flex;
@@ -724,7 +750,8 @@
 
     @media (max-width: 640px) {
       .shell { width: min(100% - 24px, var(--page-width)); }
-      .topbar { padding-top: 14px; }
+      .topbar { flex-wrap: wrap; padding-top: 14px; }
+      .project-links { width: 100%; }
       .language-field { width: 100%; justify-content: space-between; }
       .language-field select { max-width: 190px; }
       .hero { padding: 52px 0 36px; }
@@ -769,6 +796,15 @@
 <body>
   <main class="shell">
     <div class="topbar">
+      <nav class="project-links" aria-label="Project links" data-i18n-aria-label="projectLinksLabel">
+        <a class="project-link" href="https://github.com/catgarret/Pixel-Mosaic-Lazy-Loader" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2.7a9.5 9.5 0 0 0-3 18.52c.47.09.64-.2.64-.45v-1.68c-2.62.57-3.17-1.11-3.17-1.11-.43-1.09-1.05-1.38-1.05-1.38-.86-.59.07-.58.07-.58.95.07 1.45.98 1.45.98.85 1.45 2.22 1.03 2.76.79.09-.61.33-1.03.6-1.27-2.09-.24-4.29-1.05-4.29-4.69 0-1.04.37-1.88.98-2.55-.1-.24-.43-1.2.09-2.51 0 0 .8-.26 2.61.97A9.1 9.1 0 0 1 12 7.38a9.1 9.1 0 0 1 2.38.32c1.81-1.23 2.61-.97 2.61-.97.52 1.31.19 2.27.09 2.51.61.67.98 1.51.98 2.55 0 3.65-2.2 4.45-4.3 4.69.34.29.64.86.64 1.74v2.55c0 .25.17.54.65.45A9.5 9.5 0 0 0 12 2.7Z" fill="currentColor"/>
+          </svg>
+          GitHub
+        </a>
+        <a class="project-link" href="https://lab.dongri.me/p/pixel-mosaic-lazy-loader" target="_blank" rel="noreferrer" data-i18n="blogLink">Blog</a>
+      </nav>
       <label class="language-field" for="language-select">
         <span data-i18n="languageLabel">언어</span>
         <select id="language-select" aria-label="언어" data-i18n-aria-label="languageLabel"></select>
@@ -876,12 +912,13 @@
             <div class="install-option">
               <strong>npm</strong>
               <span data-i18n="npmDescription">Vite, webpack 등 번들러를 사용하는 프로젝트</span>
-              <code class="install-command">npm install pixel-mosaic-lazy-loader</code>
+              <code class="install-command">npm install @dong-gri/pixel-mosaic-lazy-loader</code>
             </div>
             <div class="install-option">
               <strong>CDN</strong>
               <span data-i18n="cdnDescription">별도 빌드 과정 없이 HTML에서 바로 사용하는 방식</span>
-              <code class="install-command">cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.3</code>
+              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.css</code>
+              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.js</code>
             </div>
           </div>
           <h3 class="usage-subtitle" data-i18n="usageOrder">사용 순서</h3>
@@ -1027,8 +1064,8 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script src="./demo-i18n.js?v=1.3.3"></script>
-  <script src="./pixel-mosaic.js?v=1.3.3"></script>
+  <script src="./demo-i18n.js?v=1.3.4"></script>
+  <script src="./pixel-mosaic.js?v=1.3.4"></script>
   <script>
     const demoI18n = window.PixelMosaicDemoI18n;
     demoI18n.init();
@@ -1090,7 +1127,7 @@
 
     function updateGeneratedCode() {
       const noise = Number(noiseAmount.value);
-      generatedCode.textContent = `<link rel="stylesheet" href="/pixel-mosaic.css">
+      generatedCode.textContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.css">
 
 <img
   data-pixel-mosaic
@@ -1100,7 +1137,7 @@
   alt="${t('codeImageAlt')}"
 >
 
-<script src="/pixel-mosaic.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.js"><\/script>
 <script>
 const mosaic = PixelMosaic.init({
   duration: ${Number(duration.value)},

@@ -1,0 +1,42 @@
+/* Pixel Mosaic Live — required runtime styles */
+.pm-portal {
+  position: fixed;
+  display: block;
+  overflow: hidden;
+  box-sizing: border-box;
+  pointer-events: none;
+  user-select: none;
+  contain: strict;
+  isolation: isolate;
+  will-change: opacity;
+}
+
+.pm-canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+  max-height: none;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.pm-css-fallback {
+  animation: pm-css-fallback var(--pm-duration, 1200ms) steps(8, end) var(--pm-delay, 100ms) both;
+}
+
+@keyframes pm-css-fallback {
+  0% {
+    filter: blur(18px) contrast(0.92) saturate(0.82);
+    opacity: 0.78;
+  }
+  100% {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-css-fallback {
+    animation: none !important;
+  }
+}

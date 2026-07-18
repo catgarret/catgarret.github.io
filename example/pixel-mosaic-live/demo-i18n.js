@@ -1,0 +1,946 @@
+(function () {
+  'use strict';
+
+  const DEFAULT_LOCALE = 'en';
+  const STORAGE_KEY = 'pixel-mosaic-demo-language';
+  const SUPPORTED_LOCALES = ['ko', 'en', 'ja', 'zh-TW', 'th', 'zh-CN', 'zh-Hant', 'ru', 'it'];
+
+  const localeNames = {
+    ko: '한국어',
+    en: 'English',
+    ja: '日本語',
+    'zh-TW': '繁體中文（台灣）',
+    th: 'ไทย',
+    'zh-CN': '简体中文',
+    'zh-Hant': '繁體中文',
+    ru: 'Русский',
+    it: 'Italiano'
+  };
+
+  const messages = {
+    ko: {
+      metaDescription: '정적 이미지와 GIF, Animated WebP, APNG에 적용할 수 있는 픽셀 모자이크 레이지 로더 데모입니다.',
+      languageLabel: '언어',
+      heroLine1: '이미지가 화면에 들어오면 큰 픽셀에서 원본으로 전환합니다.',
+      heroLine2: 'GIF·Animated WebP·APNG도 재생을 멈추지 않습니다.',
+      previewTitle: '미리 보기',
+      previewDescription: '대표 이미지에서 현재 설정을 바로 확인할 수 있습니다.',
+      controlsTitle: '효과 설정',
+      controlsDescription: '값을 바꾸고 다시 재생하면 대표 이미지와 아래 예시에 함께 적용됩니다.',
+      durationLabel: '전환 속도',
+      delayLabel: '시작 지연',
+      stepModeLabel: '단계 설정',
+      stepModeAuto: '단계 수로 설정',
+      stepModeCustom: '픽셀 크기 직접 입력',
+      mosaicStagesLabel: '모자이크 단계',
+      stageOption: '{count}단계',
+      pixelSizeLabel: '픽셀 크기',
+      noiseLabel: '노이즈 강도',
+      stepsHelp: '큰 픽셀부터 작은 픽셀 순으로 쉼표로 구분합니다.',
+      replay: '다시 재생',
+      implementationLabel: '설치 및 사용 방법',
+      settingsCodeTitle: '현재 설정 코드',
+      copyCode: '코드 복사',
+      copied: '복사됨',
+      codeNote: '파일 경로는 배포 환경에 맞게 수정하세요.',
+      installTitle: '설치 방법',
+      installIntro: 'npm에 배포한 뒤 패키지 설치 또는 CDN 주소로 불러올 수 있습니다.',
+      npmDescription: 'Vite, webpack 등 번들러를 사용하는 프로젝트',
+      cdnDescription: '별도 빌드 과정 없이 HTML에서 바로 사용하는 방식',
+      usageOrder: '사용 순서',
+      connectFiles: '파일 연결',
+      connectFilesDesc: '<code>pixel-mosaic.css</code>와 <code>pixel-mosaic.js</code>를 불러옵니다.',
+      selectImage: '이미지 지정',
+      selectImageDesc: '효과를 적용할 <code>&lt;img&gt;</code>에 <code>data-pixel-mosaic</code>를 추가합니다.',
+      applySettings: '설정 적용',
+      applySettingsDesc: '위 설정값이 반영된 코드를 복사해 페이지에 붙여 넣습니다.',
+      formatsTitle: '같은 움직임, 다른 포맷',
+      formatsDescription: '같은 원본을 GIF, Animated WebP, APNG로 비교합니다.',
+      gifDescription: '프레임 디코딩을 지원하지 않는 환경에서도 원본 재생을 유지하며 효과를 적용합니다.',
+      webpDescription: '자동 판별이 어려운 파일은 <code>data-pm-animated="true"</code>로 지정할 수 있습니다.',
+      apngDescription: '이미지 바이트를 읽을 수 없는 경우에도 애니메이션은 멈추지 않습니다.',
+      staticTitle: '정적 이미지와 투명 PNG',
+      staticDescription: '투명 영역과 이미지 비율, 둥근 모서리를 유지합니다.',
+      staticPngDescription: '현재 이미지 요소를 그대로 사용하므로 별도의 저해상도 파일이 필요하지 않습니다.',
+      transparentPngDescription: '체크 패턴 위에서 투명 영역이 유지되는지 확인할 수 있습니다.',
+      footnote: '기기에서 동작 줄이기를 사용 중이면 모자이크와 노이즈를 생략하고 원본 이미지를 바로 표시합니다.',
+      status: '{duration} 전환 · {delay} 대기 · {stages} · 노이즈 {noise}',
+      customStages: '직접 지정 {values}',
+      statusDelay: '{delay} 동안 첫 픽셀 상태를 유지한 뒤 전환합니다.',
+      statusTransitioning: '전환 중입니다.',
+      statusReduced: '동작 줄이기 설정에 따라 원본 이미지를 표시합니다.',
+      statusSkipped: '이 이미지에는 효과를 적용하지 않았습니다.',
+      supportFull: '현재 브라우저: 프레임 디코딩과 Canvas 모자이크 지원',
+      supportCanvas: '현재 브라우저: 애니메이션 재생 유지 모드와 Canvas 모자이크 지원',
+      supportBasic: '현재 브라우저: 기본 전환 효과 사용',
+      replayImage: '{name} 다시 재생',
+      imageFallbackName: '이미지',
+      secondUnit: '초',
+      heroAlt: '핀과 제이크가 등장하는 반복 GIF 애니메이션',
+      gifAlt: '핀과 제이크 GIF 애니메이션',
+      webpAlt: '핀과 제이크 Animated WebP 애니메이션',
+      apngAlt: '핀과 제이크 APNG 애니메이션',
+      stillAlt: '핀과 제이크 애니메이션의 정지 프레임',
+      transparentAlt: '투명 배경 위에 배치된 핀과 제이크 이미지',
+      codeImageAlt: '이미지 설명'
+    },
+    en: {
+      metaDescription: 'A pixel mosaic lazy loader demo for static images, GIF, animated WebP, and APNG.',
+      languageLabel: 'Language',
+      heroLine1: 'Images transition from large pixel blocks to the original as they enter the viewport.',
+      heroLine2: 'GIF, animated WebP, and APNG keep playing throughout the effect.',
+      previewTitle: 'Preview',
+      previewDescription: 'See the current settings applied to the main example.',
+      controlsTitle: 'Effect settings',
+      controlsDescription: 'Change a value and replay to apply it to the preview and every example below.',
+      durationLabel: 'Transition duration',
+      delayLabel: 'Start delay',
+      stepModeLabel: 'Step mode',
+      stepModeAuto: 'Set by step count',
+      stepModeCustom: 'Enter pixel sizes',
+      mosaicStagesLabel: 'Mosaic steps',
+      stageOption: '{count} steps',
+      pixelSizeLabel: 'Pixel sizes',
+      noiseLabel: 'Noise intensity',
+      stepsHelp: 'Enter pixel sizes from largest to smallest, separated by commas.',
+      replay: 'Replay',
+      implementationLabel: 'Installation and usage',
+      settingsCodeTitle: 'Code for current settings',
+      copyCode: 'Copy code',
+      copied: 'Copied',
+      codeNote: 'Update the file paths to match your deployment environment.',
+      installTitle: 'Installation',
+      installIntro: 'After publishing to npm, load it as a package or directly from a CDN.',
+      npmDescription: 'For projects using a bundler such as Vite or webpack',
+      cdnDescription: 'Use directly in HTML without a build step',
+      usageOrder: 'How to use',
+      connectFiles: 'Load the files',
+      connectFilesDesc: 'Load <code>pixel-mosaic.css</code> and <code>pixel-mosaic.js</code>.',
+      selectImage: 'Mark an image',
+      selectImageDesc: 'Add <code>data-pixel-mosaic</code> to the target <code>&lt;img&gt;</code>.',
+      applySettings: 'Apply settings',
+      applySettingsDesc: 'Copy the generated code above and paste it into your page.',
+      formatsTitle: 'Same motion, different formats',
+      formatsDescription: 'Compare the same source as GIF, animated WebP, and APNG.',
+      gifDescription: 'The original animation keeps playing even when frame decoding is unavailable.',
+      webpDescription: 'For files that are difficult to detect automatically, set <code>data-pm-animated="true"</code>.',
+      apngDescription: 'The animation stays active even when the image bytes cannot be read.',
+      staticTitle: 'Static images and transparent PNG',
+      staticDescription: 'Transparency, aspect ratio, and rounded corners are preserved.',
+      staticPngDescription: 'It uses the existing image element, so no separate low-resolution asset is required.',
+      transparentPngDescription: 'The checkerboard makes it easy to verify that transparent areas are preserved.',
+      footnote: 'When reduced motion is enabled on the device, the mosaic and noise effects are skipped and the original image is shown immediately.',
+      status: '{duration} transition · {delay} delay · {stages} · Noise {noise}',
+      customStages: 'Custom {values}',
+      statusDelay: 'Holding the first pixel state for {delay}, then starting the transition.',
+      statusTransitioning: 'Transition in progress.',
+      statusReduced: 'Reduced motion is enabled, so the original image is shown.',
+      statusSkipped: 'The effect was skipped for this image.',
+      supportFull: 'Current browser: frame decoding and Canvas mosaic supported',
+      supportCanvas: 'Current browser: animation-preserving mode and Canvas mosaic supported',
+      supportBasic: 'Current browser: basic transition mode',
+      replayImage: 'Replay {name}',
+      imageFallbackName: 'image',
+      secondUnit: 's',
+      heroAlt: 'Looping GIF animation featuring Finn and Jake',
+      gifAlt: 'GIF animation featuring Finn and Jake',
+      webpAlt: 'Animated WebP featuring Finn and Jake',
+      apngAlt: 'APNG animation featuring Finn and Jake',
+      stillAlt: 'Still frame from the Finn and Jake animation',
+      transparentAlt: 'Finn and Jake image on a transparent background',
+      codeImageAlt: 'Image description'
+    },
+    ja: {
+      metaDescription: '静止画像、GIF、Animated WebP、APNGに対応したピクセルモザイク・レイジーローダーのデモです。',
+      languageLabel: '言語',
+      heroLine1: '画像が表示領域に入ると、大きなピクセルから元画像へ段階的に切り替わります。',
+      heroLine2: 'GIF・Animated WebP・APNGも再生を止めずに効果を適用します。',
+      previewTitle: 'プレビュー',
+      previewDescription: '現在の設定をメイン画像ですぐに確認できます。',
+      controlsTitle: 'エフェクト設定',
+      controlsDescription: '値を変更して再生すると、プレビューと下のすべての例に反映されます。',
+      durationLabel: '切り替え時間',
+      delayLabel: '開始遅延',
+      stepModeLabel: 'ステップ設定',
+      stepModeAuto: 'ステップ数で設定',
+      stepModeCustom: 'ピクセルサイズを直接入力',
+      mosaicStagesLabel: 'モザイクのステップ数',
+      stageOption: '{count}段階',
+      pixelSizeLabel: 'ピクセルサイズ',
+      noiseLabel: 'ノイズの強さ',
+      stepsHelp: '大きいピクセルから小さいピクセルの順に、カンマで区切って入力します。',
+      replay: '再生',
+      implementationLabel: 'インストールと使い方',
+      settingsCodeTitle: '現在の設定コード',
+      copyCode: 'コードをコピー',
+      copied: 'コピーしました',
+      codeNote: 'ファイルパスは配信環境に合わせて変更してください。',
+      installTitle: 'インストール',
+      installIntro: 'npmに公開した後、パッケージまたはCDNから読み込めます。',
+      npmDescription: 'Viteやwebpackなどのバンドラーを使うプロジェクト向け',
+      cdnDescription: 'ビルドせずにHTMLから直接使う方法',
+      usageOrder: '使い方',
+      connectFiles: 'ファイルを読み込む',
+      connectFilesDesc: '<code>pixel-mosaic.css</code>と<code>pixel-mosaic.js</code>を読み込みます。',
+      selectImage: '画像を指定する',
+      selectImageDesc: '対象の<code>&lt;img&gt;</code>に<code>data-pixel-mosaic</code>を追加します。',
+      applySettings: '設定を適用する',
+      applySettingsDesc: '上で生成されたコードをコピーしてページに貼り付けます。',
+      formatsTitle: '同じ動き、異なるフォーマット',
+      formatsDescription: '同じ素材をGIF、Animated WebP、APNGで比較します。',
+      gifDescription: 'フレームデコード非対応の環境でも、元のアニメーションを止めずに効果を適用します。',
+      webpDescription: '自動判定が難しいファイルは<code>data-pm-animated="true"</code>で指定できます。',
+      apngDescription: '画像バイトを読み取れない場合でも、アニメーションは停止しません。',
+      staticTitle: '静止画像と透過PNG',
+      staticDescription: '透過領域、アスペクト比、角丸を維持します。',
+      staticPngDescription: '既存の画像要素をそのまま使うため、低解像度画像を別途用意する必要はありません。',
+      transparentPngDescription: 'チェック柄の上で透過領域が維持されていることを確認できます。',
+      footnote: '端末で「視差効果を減らす」が有効な場合、モザイクとノイズを省略し、元画像をすぐに表示します。',
+      status: '切り替え {duration} · 待機 {delay} · {stages} · ノイズ {noise}',
+      customStages: '直接指定 {values}',
+      statusDelay: '{delay}の間、最初のピクセル状態を維持してから切り替えます。',
+      statusTransitioning: '切り替え中です。',
+      statusReduced: '動きを減らす設定に従い、元画像を表示します。',
+      statusSkipped: 'この画像には効果を適用しませんでした。',
+      supportFull: '現在のブラウザー：フレームデコードとCanvasモザイクに対応',
+      supportCanvas: '現在のブラウザー：アニメーション維持モードとCanvasモザイクに対応',
+      supportBasic: '現在のブラウザー：基本切り替えモード',
+      replayImage: '{name}を再生',
+      imageFallbackName: '画像',
+      secondUnit: '秒',
+      heroAlt: 'フィンとジェイクが登場するループGIFアニメーション',
+      gifAlt: 'フィンとジェイクのGIFアニメーション',
+      webpAlt: 'フィンとジェイクのAnimated WebPアニメーション',
+      apngAlt: 'フィンとジェイクのAPNGアニメーション',
+      stillAlt: 'フィンとジェイクのアニメーションの静止フレーム',
+      transparentAlt: '透明な背景に配置されたフィンとジェイクの画像',
+      codeImageAlt: '画像の説明'
+    },
+    'zh-TW': {
+      metaDescription: '支援靜態圖片、GIF、Animated WebP 與 APNG 的像素馬賽克延遲載入器示範。',
+      languageLabel: '語言',
+      heroLine1: '圖片進入畫面時，會從大型像素方塊逐步還原成原圖。',
+      heroLine2: 'GIF、Animated WebP 與 APNG 在效果期間仍會持續播放。',
+      previewTitle: '預覽',
+      previewDescription: '可直接在主圖上查看目前設定的效果。',
+      controlsTitle: '效果設定',
+      controlsDescription: '調整數值並重新播放，即可套用到預覽與下方所有範例。',
+      durationLabel: '轉場時間',
+      delayLabel: '開始延遲',
+      stepModeLabel: '階段設定',
+      stepModeAuto: '依階段數設定',
+      stepModeCustom: '直接輸入像素尺寸',
+      mosaicStagesLabel: '馬賽克階段',
+      stageOption: '{count} 階段',
+      pixelSizeLabel: '像素尺寸',
+      noiseLabel: '雜訊強度',
+      stepsHelp: '請依像素由大到小的順序，以逗號分隔輸入。',
+      replay: '重新播放',
+      implementationLabel: '安裝與使用方式',
+      settingsCodeTitle: '目前設定程式碼',
+      copyCode: '複製程式碼',
+      copied: '已複製',
+      codeNote: '請依部署環境調整檔案路徑。',
+      installTitle: '安裝方式',
+      installIntro: '發佈至 npm 後，可透過套件安裝或 CDN 網址載入。',
+      npmDescription: '適用於使用 Vite、webpack 等打包工具的專案',
+      cdnDescription: '不經建置流程，直接在 HTML 中使用',
+      usageOrder: '使用步驟',
+      connectFiles: '載入檔案',
+      connectFilesDesc: '載入 <code>pixel-mosaic.css</code> 與 <code>pixel-mosaic.js</code>。',
+      selectImage: '指定圖片',
+      selectImageDesc: '在目標 <code>&lt;img&gt;</code> 加上 <code>data-pixel-mosaic</code>。',
+      applySettings: '套用設定',
+      applySettingsDesc: '複製上方產生的程式碼，貼到頁面中。',
+      formatsTitle: '相同動態，不同格式',
+      formatsDescription: '比較同一份素材的 GIF、Animated WebP 與 APNG。',
+      gifDescription: '即使環境不支援影格解碼，仍會維持原始動畫播放並套用效果。',
+      webpDescription: '難以自動判斷的檔案，可設定 <code>data-pm-animated="true"</code>。',
+      apngDescription: '即使無法讀取圖片位元組，動畫也不會停止。',
+      staticTitle: '靜態圖片與透明 PNG',
+      staticDescription: '保留透明區域、圖片比例與圓角。',
+      staticPngDescription: '直接使用現有圖片元素，不需要另外準備低解析度圖片。',
+      transparentPngDescription: '可在棋盤格背景上確認透明區域是否完整保留。',
+      footnote: '若裝置已啟用減少動態效果，將略過馬賽克與雜訊，直接顯示原圖。',
+      status: '轉場 {duration} · 等待 {delay} · {stages} · 雜訊 {noise}',
+      customStages: '自訂 {values}',
+      statusDelay: '先維持第一個像素狀態 {delay}，再開始轉場。',
+      statusTransitioning: '正在轉場。',
+      statusReduced: '依減少動態效果設定，直接顯示原圖。',
+      statusSkipped: '此圖片未套用效果。',
+      supportFull: '目前瀏覽器：支援影格解碼與 Canvas 馬賽克',
+      supportCanvas: '目前瀏覽器：支援動畫持續播放模式與 Canvas 馬賽克',
+      supportBasic: '目前瀏覽器：使用基本轉場模式',
+      replayImage: '重新播放{name}',
+      imageFallbackName: '圖片',
+      secondUnit: '秒',
+      heroAlt: '芬恩與老皮登場的循環 GIF 動畫',
+      gifAlt: '芬恩與老皮的 GIF 動畫',
+      webpAlt: '芬恩與老皮的 Animated WebP 動畫',
+      apngAlt: '芬恩與老皮的 APNG 動畫',
+      stillAlt: '芬恩與老皮動畫的靜止畫面',
+      transparentAlt: '透明背景上的芬恩與老皮圖片',
+      codeImageAlt: '圖片說明'
+    },
+    th: {
+      metaDescription: 'เดโมตัวโหลดภาพแบบ Pixel Mosaic Lazy Loader สำหรับภาพนิ่ง GIF, Animated WebP และ APNG',
+      languageLabel: 'ภาษา',
+      heroLine1: 'เมื่อภาพเข้าสู่หน้าจอ ภาพจะค่อย ๆ เปลี่ยนจากพิกเซลขนาดใหญ่เป็นภาพต้นฉบับ',
+      heroLine2: 'GIF, Animated WebP และ APNG ยังคงเล่นต่อเนื่องตลอดเอฟเฟกต์',
+      previewTitle: 'ตัวอย่าง',
+      previewDescription: 'ดูผลของการตั้งค่าปัจจุบันได้ทันทีจากภาพตัวอย่างหลัก',
+      controlsTitle: 'ตั้งค่าเอฟเฟกต์',
+      controlsDescription: 'ปรับค่าแล้วกดเล่นอีกครั้งเพื่อใช้กับตัวอย่างหลักและตัวอย่างทั้งหมดด้านล่าง',
+      durationLabel: 'ระยะเวลาเปลี่ยนภาพ',
+      delayLabel: 'หน่วงเวลาก่อนเริ่ม',
+      stepModeLabel: 'รูปแบบขั้น',
+      stepModeAuto: 'กำหนดตามจำนวนขั้น',
+      stepModeCustom: 'ระบุขนาดพิกเซลเอง',
+      mosaicStagesLabel: 'จำนวนขั้นโมเสก',
+      stageOption: '{count} ขั้น',
+      pixelSizeLabel: 'ขนาดพิกเซล',
+      noiseLabel: 'ความเข้มของนอยส์',
+      stepsHelp: 'กรอกขนาดพิกเซลจากใหญ่ไปเล็ก โดยคั่นด้วยเครื่องหมายจุลภาค',
+      replay: 'เล่นอีกครั้ง',
+      implementationLabel: 'การติดตั้งและวิธีใช้',
+      settingsCodeTitle: 'โค้ดตามการตั้งค่าปัจจุบัน',
+      copyCode: 'คัดลอกโค้ด',
+      copied: 'คัดลอกแล้ว',
+      codeNote: 'แก้ไขพาธไฟล์ให้ตรงกับสภาพแวดล้อมที่นำไปใช้งาน',
+      installTitle: 'การติดตั้ง',
+      installIntro: 'หลังเผยแพร่บน npm สามารถติดตั้งเป็นแพ็กเกจหรือโหลดผ่าน CDN ได้',
+      npmDescription: 'สำหรับโปรเจกต์ที่ใช้บันเดลเลอร์ เช่น Vite หรือ webpack',
+      cdnDescription: 'ใช้ใน HTML ได้โดยตรงโดยไม่ต้องมีขั้นตอนบิลด์',
+      usageOrder: 'วิธีใช้',
+      connectFiles: 'โหลดไฟล์',
+      connectFilesDesc: 'โหลด <code>pixel-mosaic.css</code> และ <code>pixel-mosaic.js</code>',
+      selectImage: 'กำหนดรูปภาพ',
+      selectImageDesc: 'เพิ่ม <code>data-pixel-mosaic</code> ให้กับ <code>&lt;img&gt;</code> ที่ต้องการ',
+      applySettings: 'ใช้การตั้งค่า',
+      applySettingsDesc: 'คัดลอกโค้ดที่สร้างไว้ด้านบนแล้ววางลงในหน้าเว็บ',
+      formatsTitle: 'การเคลื่อนไหวเดียวกัน หลายรูปแบบไฟล์',
+      formatsDescription: 'เปรียบเทียบไฟล์ต้นฉบับเดียวกันในรูปแบบ GIF, Animated WebP และ APNG',
+      gifDescription: 'ภาพเคลื่อนไหวยังคงเล่นต่อ แม้เบราว์เซอร์จะไม่รองรับการถอดรหัสแต่ละเฟรม',
+      webpDescription: 'หากตรวจจับอัตโนมัติได้ยาก ให้กำหนด <code>data-pm-animated="true"</code>',
+      apngDescription: 'ภาพเคลื่อนไหวจะไม่หยุด แม้ไม่สามารถอ่านข้อมูลไบต์ของภาพได้',
+      staticTitle: 'ภาพนิ่งและ PNG โปร่งใส',
+      staticDescription: 'คงพื้นที่โปร่งใส อัตราส่วนภาพ และมุมโค้งไว้',
+      staticPngDescription: 'ใช้แท็กภาพเดิมโดยตรง จึงไม่ต้องเตรียมไฟล์ความละเอียดต่ำแยกต่างหาก',
+      transparentPngDescription: 'พื้นหลังลายตารางช่วยให้ตรวจสอบพื้นที่โปร่งใสได้ง่าย',
+      footnote: 'หากอุปกรณ์เปิดการลดการเคลื่อนไหว ระบบจะข้ามเอฟเฟกต์โมเสกและนอยส์ แล้วแสดงภาพต้นฉบับทันที',
+      status: 'เปลี่ยนภาพ {duration} · หน่วง {delay} · {stages} · นอยส์ {noise}',
+      customStages: 'กำหนดเอง {values}',
+      statusDelay: 'คงสถานะพิกเซลแรกไว้ {delay} แล้วจึงเริ่มเปลี่ยนภาพ',
+      statusTransitioning: 'กำลังเปลี่ยนภาพ',
+      statusReduced: 'เปิดการลดการเคลื่อนไหว จึงแสดงภาพต้นฉบับ',
+      statusSkipped: 'ข้ามเอฟเฟกต์สำหรับภาพนี้',
+      supportFull: 'เบราว์เซอร์ปัจจุบัน: รองรับการถอดรหัสเฟรมและ Canvas Mosaic',
+      supportCanvas: 'เบราว์เซอร์ปัจจุบัน: รองรับโหมดคงการเล่นภาพเคลื่อนไหวและ Canvas Mosaic',
+      supportBasic: 'เบราว์เซอร์ปัจจุบัน: ใช้โหมดเปลี่ยนภาพพื้นฐาน',
+      replayImage: 'เล่น {name} อีกครั้ง',
+      imageFallbackName: 'รูปภาพ',
+      secondUnit: ' วินาที',
+      heroAlt: 'ภาพ GIF วนซ้ำที่มีฟินน์และเจค',
+      gifAlt: 'ภาพเคลื่อนไหว GIF ของฟินน์และเจค',
+      webpAlt: 'ภาพ Animated WebP ของฟินน์และเจค',
+      apngAlt: 'ภาพเคลื่อนไหว APNG ของฟินน์และเจค',
+      stillAlt: 'ภาพนิ่งจากแอนิเมชันของฟินน์และเจค',
+      transparentAlt: 'ภาพฟินน์และเจคบนพื้นหลังโปร่งใส',
+      codeImageAlt: 'คำอธิบายรูปภาพ'
+    },
+    'zh-CN': {
+      metaDescription: '适用于静态图片、GIF、Animated WebP 和 APNG 的像素马赛克懒加载器演示。',
+      languageLabel: '语言',
+      heroLine1: '图片进入视口后，会从大像素块逐步还原为原图。',
+      heroLine2: 'GIF、Animated WebP 和 APNG 在效果期间也会持续播放。',
+      previewTitle: '预览',
+      previewDescription: '可直接在主示例中查看当前设置。',
+      controlsTitle: '效果设置',
+      controlsDescription: '修改数值并重新播放，即可应用到预览和下方所有示例。',
+      durationLabel: '过渡时长',
+      delayLabel: '开始延迟',
+      stepModeLabel: '阶段设置',
+      stepModeAuto: '按阶段数设置',
+      stepModeCustom: '直接输入像素尺寸',
+      mosaicStagesLabel: '马赛克阶段',
+      stageOption: '{count} 个阶段',
+      pixelSizeLabel: '像素尺寸',
+      noiseLabel: '噪点强度',
+      stepsHelp: '请按像素尺寸从大到小的顺序，用逗号分隔输入。',
+      replay: '重新播放',
+      implementationLabel: '安装与使用方法',
+      settingsCodeTitle: '当前设置代码',
+      copyCode: '复制代码',
+      copied: '已复制',
+      codeNote: '请根据部署环境修改文件路径。',
+      installTitle: '安装',
+      installIntro: '发布到 npm 后，可通过包管理器安装或使用 CDN 地址加载。',
+      npmDescription: '适用于使用 Vite、webpack 等打包工具的项目',
+      cdnDescription: '无需构建，直接在 HTML 中使用',
+      usageOrder: '使用步骤',
+      connectFiles: '加载文件',
+      connectFilesDesc: '加载 <code>pixel-mosaic.css</code> 和 <code>pixel-mosaic.js</code>。',
+      selectImage: '指定图片',
+      selectImageDesc: '在目标 <code>&lt;img&gt;</code> 上添加 <code>data-pixel-mosaic</code>。',
+      applySettings: '应用设置',
+      applySettingsDesc: '复制上方生成的代码并粘贴到页面中。',
+      formatsTitle: '相同动效，不同格式',
+      formatsDescription: '比较同一素材的 GIF、Animated WebP 和 APNG 格式。',
+      gifDescription: '即使环境不支持帧解码，也会保持原动画播放并应用效果。',
+      webpDescription: '难以自动识别的文件可设置 <code>data-pm-animated="true"</code>。',
+      apngDescription: '即使无法读取图片字节，动画也不会停止。',
+      staticTitle: '静态图片与透明 PNG',
+      staticDescription: '保留透明区域、图片比例和圆角。',
+      staticPngDescription: '直接使用现有图片元素，无需额外准备低分辨率图片。',
+      transparentPngDescription: '可在棋盘格背景上确认透明区域是否完整保留。',
+      footnote: '如果设备启用了“减少动态效果”，将跳过马赛克和噪点，直接显示原图。',
+      status: '过渡 {duration} · 等待 {delay} · {stages} · 噪点 {noise}',
+      customStages: '自定义 {values}',
+      statusDelay: '先保持第一个像素状态 {delay}，然后开始过渡。',
+      statusTransitioning: '正在过渡。',
+      statusReduced: '已启用减少动态效果，正在显示原图。',
+      statusSkipped: '此图片未应用效果。',
+      supportFull: '当前浏览器：支持帧解码和 Canvas 马赛克',
+      supportCanvas: '当前浏览器：支持保持动画播放模式和 Canvas 马赛克',
+      supportBasic: '当前浏览器：使用基础过渡模式',
+      replayImage: '重新播放{name}',
+      imageFallbackName: '图片',
+      secondUnit: '秒',
+      heroAlt: '芬恩和杰克出场的循环 GIF 动画',
+      gifAlt: '芬恩和杰克的 GIF 动画',
+      webpAlt: '芬恩和杰克的 Animated WebP 动画',
+      apngAlt: '芬恩和杰克的 APNG 动画',
+      stillAlt: '芬恩和杰克动画的静止帧',
+      transparentAlt: '透明背景上的芬恩和杰克图片',
+      codeImageAlt: '图片说明'
+    },
+    'zh-Hant': {
+      metaDescription: '支援靜態圖片、GIF、Animated WebP 及 APNG 的像素馬賽克延遲載入器示範。',
+      languageLabel: '語言',
+      heroLine1: '圖片進入畫面時，會由大型像素方格逐步還原為原圖。',
+      heroLine2: 'GIF、Animated WebP 及 APNG 在效果期間仍會繼續播放。',
+      previewTitle: '預覽',
+      previewDescription: '可直接在主要示例查看目前設定。',
+      controlsTitle: '效果設定',
+      controlsDescription: '更改數值並重新播放，即可套用至預覽及下方所有示例。',
+      durationLabel: '轉場時間',
+      delayLabel: '開始延遲',
+      stepModeLabel: '階段設定',
+      stepModeAuto: '按階段數設定',
+      stepModeCustom: '直接輸入像素大小',
+      mosaicStagesLabel: '馬賽克階段',
+      stageOption: '{count} 個階段',
+      pixelSizeLabel: '像素大小',
+      noiseLabel: '雜訊強度',
+      stepsHelp: '請按像素由大至小，以逗號分隔輸入。',
+      replay: '重新播放',
+      implementationLabel: '安裝及使用方法',
+      settingsCodeTitle: '目前設定程式碼',
+      copyCode: '複製程式碼',
+      copied: '已複製',
+      codeNote: '請按部署環境修改檔案路徑。',
+      installTitle: '安裝方法',
+      installIntro: '發佈至 npm 後，可安裝套件或透過 CDN 網址載入。',
+      npmDescription: '適合使用 Vite、webpack 等打包工具的專案',
+      cdnDescription: '毋須建置，直接在 HTML 使用',
+      usageOrder: '使用步驟',
+      connectFiles: '載入檔案',
+      connectFilesDesc: '載入 <code>pixel-mosaic.css</code> 及 <code>pixel-mosaic.js</code>。',
+      selectImage: '指定圖片',
+      selectImageDesc: '在目標 <code>&lt;img&gt;</code> 加上 <code>data-pixel-mosaic</code>。',
+      applySettings: '套用設定',
+      applySettingsDesc: '複製上方產生的程式碼並貼到頁面。',
+      formatsTitle: '相同動態，不同格式',
+      formatsDescription: '比較同一素材的 GIF、Animated WebP 及 APNG。',
+      gifDescription: '即使環境不支援影格解碼，仍會保持原有動畫播放並套用效果。',
+      webpDescription: '難以自動辨識的檔案，可設定 <code>data-pm-animated="true"</code>。',
+      apngDescription: '即使無法讀取圖片位元組，動畫亦不會停止。',
+      staticTitle: '靜態圖片及透明 PNG',
+      staticDescription: '保留透明範圍、圖片比例及圓角。',
+      staticPngDescription: '直接使用現有圖片元素，毋須另備低解像度圖片。',
+      transparentPngDescription: '可在棋盤格背景上檢查透明範圍是否完整保留。',
+      footnote: '如裝置已啟用減少動態效果，將略過馬賽克及雜訊，直接顯示原圖。',
+      status: '轉場 {duration} · 等待 {delay} · {stages} · 雜訊 {noise}',
+      customStages: '自訂 {values}',
+      statusDelay: '先維持第一個像素狀態 {delay}，然後開始轉場。',
+      statusTransitioning: '正在轉場。',
+      statusReduced: '已啟用減少動態效果，現正顯示原圖。',
+      statusSkipped: '此圖片未套用效果。',
+      supportFull: '目前瀏覽器：支援影格解碼及 Canvas 馬賽克',
+      supportCanvas: '目前瀏覽器：支援動畫持續播放模式及 Canvas 馬賽克',
+      supportBasic: '目前瀏覽器：使用基本轉場模式',
+      replayImage: '重新播放{name}',
+      imageFallbackName: '圖片',
+      secondUnit: '秒',
+      heroAlt: '阿寶與老皮登場的循環 GIF 動畫',
+      gifAlt: '阿寶與老皮的 GIF 動畫',
+      webpAlt: '阿寶與老皮的 Animated WebP 動畫',
+      apngAlt: '阿寶與老皮的 APNG 動畫',
+      stillAlt: '阿寶與老皮動畫的靜止畫面',
+      transparentAlt: '透明背景上的阿寶與老皮圖片',
+      codeImageAlt: '圖片說明'
+    },
+    ru: {
+      metaDescription: 'Демонстрация ленивой загрузки с пиксельной мозаикой для статичных изображений, GIF, Animated WebP и APNG.',
+      languageLabel: 'Язык',
+      heroLine1: 'При появлении в области просмотра изображение переходит от крупных пикселей к оригиналу.',
+      heroLine2: 'GIF, Animated WebP и APNG продолжают воспроизводиться во время эффекта.',
+      previewTitle: 'Предпросмотр',
+      previewDescription: 'Текущие настройки сразу применяются к главному примеру.',
+      controlsTitle: 'Настройки эффекта',
+      controlsDescription: 'Измените значения и запустите повторно, чтобы применить их ко всем примерам.',
+      durationLabel: 'Длительность перехода',
+      delayLabel: 'Задержка запуска',
+      stepModeLabel: 'Режим этапов',
+      stepModeAuto: 'По количеству этапов',
+      stepModeCustom: 'Задать размеры пикселей',
+      mosaicStagesLabel: 'Этапы мозаики',
+      stageOption: '{count} этапов',
+      pixelSizeLabel: 'Размеры пикселей',
+      noiseLabel: 'Интенсивность шума',
+      stepsHelp: 'Укажите размеры пикселей от большего к меньшему через запятую.',
+      replay: 'Повторить',
+      implementationLabel: 'Установка и использование',
+      settingsCodeTitle: 'Код текущих настроек',
+      copyCode: 'Копировать код',
+      copied: 'Скопировано',
+      codeNote: 'Измените пути к файлам в соответствии со средой развертывания.',
+      installTitle: 'Установка',
+      installIntro: 'После публикации в npm пакет можно установить или подключить через CDN.',
+      npmDescription: 'Для проектов со сборщиками Vite, webpack и другими',
+      cdnDescription: 'Прямое подключение в HTML без этапа сборки',
+      usageOrder: 'Порядок использования',
+      connectFiles: 'Подключите файлы',
+      connectFilesDesc: 'Подключите <code>pixel-mosaic.css</code> и <code>pixel-mosaic.js</code>.',
+      selectImage: 'Отметьте изображение',
+      selectImageDesc: 'Добавьте <code>data-pixel-mosaic</code> к нужному элементу <code>&lt;img&gt;</code>.',
+      applySettings: 'Примените настройки',
+      applySettingsDesc: 'Скопируйте созданный выше код и вставьте его на страницу.',
+      formatsTitle: 'Одно движение, разные форматы',
+      formatsDescription: 'Сравнение одного исходника в GIF, Animated WebP и APNG.',
+      gifDescription: 'Оригинальная анимация продолжает воспроизводиться даже без поддержки декодирования кадров.',
+      webpDescription: 'Для файлов, которые сложно определить автоматически, задайте <code>data-pm-animated="true"</code>.',
+      apngDescription: 'Анимация не останавливается, даже если байты изображения недоступны.',
+      staticTitle: 'Статичные изображения и прозрачный PNG',
+      staticDescription: 'Сохраняются прозрачность, соотношение сторон и скругленные углы.',
+      staticPngDescription: 'Используется существующий элемент изображения, поэтому отдельный файл низкого разрешения не нужен.',
+      transparentPngDescription: 'Шахматный фон позволяет проверить сохранение прозрачных областей.',
+      footnote: 'Если на устройстве включено уменьшение движения, мозаика и шум пропускаются, а оригинал показывается сразу.',
+      status: 'Переход {duration} · Задержка {delay} · {stages} · Шум {noise}',
+      customStages: 'Вручную: {values}',
+      statusDelay: 'Первый пиксельный этап сохраняется {delay}, затем начинается переход.',
+      statusTransitioning: 'Выполняется переход.',
+      statusReduced: 'Включено уменьшение движения, поэтому показан оригинал.',
+      statusSkipped: 'Эффект для этого изображения пропущен.',
+      supportFull: 'Текущий браузер: поддерживаются декодирование кадров и Canvas-мозаика',
+      supportCanvas: 'Текущий браузер: поддерживаются сохранение анимации и Canvas-мозаика',
+      supportBasic: 'Текущий браузер: базовый режим перехода',
+      replayImage: 'Повторить: {name}',
+      imageFallbackName: 'изображение',
+      secondUnit: ' с',
+      heroAlt: 'Зацикленная GIF-анимация с Финном и Джейком',
+      gifAlt: 'GIF-анимация с Финном и Джейком',
+      webpAlt: 'Animated WebP с Финном и Джейком',
+      apngAlt: 'APNG-анимация с Финном и Джейком',
+      stillAlt: 'Статичный кадр анимации с Финном и Джейком',
+      transparentAlt: 'Финн и Джейк на прозрачном фоне',
+      codeImageAlt: 'Описание изображения'
+    },
+    it: {
+      metaDescription: 'Demo di un lazy loader con mosaico pixel per immagini statiche, GIF, WebP animate e APNG.',
+      languageLabel: 'Lingua',
+      heroLine1: 'Quando entra nell’area visibile, l’immagine passa dai pixel grandi all’originale.',
+      heroLine2: 'GIF, WebP animate e APNG continuano a muoversi durante l’effetto.',
+      previewTitle: 'Anteprima',
+      previewDescription: 'Verifica subito le impostazioni correnti sull’esempio principale.',
+      controlsTitle: 'Impostazioni effetto',
+      controlsDescription: 'Modifica un valore e ripeti la riproduzione per applicarlo a tutti gli esempi.',
+      durationLabel: 'Durata transizione',
+      delayLabel: 'Ritardo iniziale',
+      stepModeLabel: 'Modalità passaggi',
+      stepModeAuto: 'Imposta il numero di passaggi',
+      stepModeCustom: 'Inserisci le dimensioni dei pixel',
+      mosaicStagesLabel: 'Passaggi mosaico',
+      stageOption: '{count} passaggi',
+      pixelSizeLabel: 'Dimensioni pixel',
+      noiseLabel: 'Intensità rumore',
+      stepsHelp: 'Inserisci le dimensioni dei pixel dalla più grande alla più piccola, separate da virgole.',
+      replay: 'Riproduci di nuovo',
+      implementationLabel: 'Installazione e utilizzo',
+      settingsCodeTitle: 'Codice delle impostazioni correnti',
+      copyCode: 'Copia codice',
+      copied: 'Copiato',
+      codeNote: 'Modifica i percorsi dei file in base all’ambiente di distribuzione.',
+      installTitle: 'Installazione',
+      installIntro: 'Dopo la pubblicazione su npm, puoi installare il pacchetto o caricarlo tramite CDN.',
+      npmDescription: 'Per progetti che usano bundler come Vite o webpack',
+      cdnDescription: 'Utilizzo diretto in HTML senza processo di build',
+      usageOrder: 'Come si usa',
+      connectFiles: 'Carica i file',
+      connectFilesDesc: 'Carica <code>pixel-mosaic.css</code> e <code>pixel-mosaic.js</code>.',
+      selectImage: 'Indica un’immagine',
+      selectImageDesc: 'Aggiungi <code>data-pixel-mosaic</code> all’elemento <code>&lt;img&gt;</code> desiderato.',
+      applySettings: 'Applica le impostazioni',
+      applySettingsDesc: 'Copia il codice generato qui sopra e incollalo nella pagina.',
+      formatsTitle: 'Stesso movimento, formati diversi',
+      formatsDescription: 'Confronta la stessa sorgente in GIF, WebP animata e APNG.',
+      gifDescription: 'L’animazione originale continua anche quando la decodifica dei fotogrammi non è disponibile.',
+      webpDescription: 'Per i file difficili da rilevare automaticamente, imposta <code>data-pm-animated="true"</code>.',
+      apngDescription: 'L’animazione non si interrompe anche se non è possibile leggere i byte dell’immagine.',
+      staticTitle: 'Immagini statiche e PNG trasparenti',
+      staticDescription: 'Trasparenza, proporzioni e angoli arrotondati vengono mantenuti.',
+      staticPngDescription: 'Usa l’elemento immagine esistente, quindi non serve un file separato a bassa risoluzione.',
+      transparentPngDescription: 'Lo sfondo a scacchi consente di verificare che le aree trasparenti siano conservate.',
+      footnote: 'Se sul dispositivo è attiva la riduzione del movimento, mosaico e rumore vengono ignorati e l’originale appare subito.',
+      status: 'Transizione {duration} · Ritardo {delay} · {stages} · Rumore {noise}',
+      customStages: 'Personalizzati: {values}',
+      statusDelay: 'Il primo stato pixel rimane visibile per {delay}, poi inizia la transizione.',
+      statusTransitioning: 'Transizione in corso.',
+      statusReduced: 'La riduzione del movimento è attiva: viene mostrata l’immagine originale.',
+      statusSkipped: 'L’effetto è stato ignorato per questa immagine.',
+      supportFull: 'Browser corrente: decodifica fotogrammi e mosaico Canvas supportati',
+      supportCanvas: 'Browser corrente: modalità con animazione continua e mosaico Canvas supportati',
+      supportBasic: 'Browser corrente: modalità di transizione base',
+      replayImage: 'Riproduci di nuovo {name}',
+      imageFallbackName: 'immagine',
+      secondUnit: ' s',
+      heroAlt: 'Animazione GIF in loop con Finn e Jake',
+      gifAlt: 'Animazione GIF con Finn e Jake',
+      webpAlt: 'WebP animata con Finn e Jake',
+      apngAlt: 'Animazione APNG con Finn e Jake',
+      stillAlt: 'Fotogramma statico dell’animazione con Finn e Jake',
+      transparentAlt: 'Immagine di Finn e Jake su sfondo trasparente',
+      codeImageAlt: 'Descrizione immagine'
+    }
+  };
+
+
+  const compatibilityMessages = {
+    ko: {
+      supportTitle: '지원 환경',
+      supportIntro: '브라우저에서 실행되는 효과이므로 실제 성능은 이미지 해상도, 화면 배율, 동시 실행 수, 노이즈 프레임 수에 따라 달라집니다.',
+      currentEnvironment: '현재 환경',
+      minimumBrowsers: '최소 지원 브라우저',
+      minimumBrowsersText: 'Chrome·Edge 80+, Firefox 74+, Safari 13.1+, iOS Safari 13.4+, Samsung Internet 13+, Android WebView 80+',
+      recommendedBrowsers: '권장 브라우저',
+      recommendedBrowsersText: 'Chrome, Edge, Firefox, Safari의 최신 2개 주요 버전. HTTPS 환경을 권장합니다.',
+      fullAnimationSupport: '프레임 단위 애니메이션 모자이크',
+      fullAnimationSupportText: 'HTTPS에서 ImageDecoder와 해당 이미지 코덱을 사용할 수 있을 때 활성화됩니다. 기준 버전은 Chrome·Edge·Android WebView 94+, Firefox 133+, Samsung Internet 17+이며 Safari는 애니메이션 유지 폴백을 사용합니다.',
+      minimumDevice: '최소 권장 사양',
+      minimumDeviceText: '2코어 CPU, 메모리 2GB 이상, 하드웨어 가속 사용. 1280×720 이하 이미지, 동시 실행 1개, 노이즈 12fps 이하 권장.',
+      recommendedDevice: '원활한 권장 사양',
+      recommendedDeviceText: '4코어 CPU, 메모리 4GB 이상, 하드웨어 가속 사용. 1920×1080 이하 이미지, 동시 실행 2개, 노이즈 20~24fps 권장.',
+      fallbackTitle: '단계적 기능 축소',
+      fallbackDecoder: 'ImageDecoder 미지원: 원본 애니메이션 재생 + Canvas 모자이크',
+      fallbackCanvas: 'Canvas 미지원: 기본 CSS 전환 효과',
+      fallbackReduced: '동작 줄이기 사용: 효과를 생략하고 원본 즉시 표시',
+      unsupportedBrowser: 'Internet Explorer는 지원하지 않습니다.',
+      performanceNotice: '고해상도 이미지나 여러 이미지를 동시에 처리할 때는 maxConcurrent, renderFps, noise.fps를 낮추세요.'
+    },
+    en: {
+      supportTitle: 'Browser and device support',
+      supportIntro: 'This effect runs in the browser, so actual performance depends on image resolution, device pixel ratio, concurrency, and noise frame rate.',
+      currentEnvironment: 'Current environment',
+      minimumBrowsers: 'Minimum browser versions',
+      minimumBrowsersText: 'Chrome and Edge 80+, Firefox 74+, Safari 13.1+, iOS Safari 13.4+, Samsung Internet 13+, Android WebView 80+',
+      recommendedBrowsers: 'Recommended browsers',
+      recommendedBrowsersText: 'The latest two major versions of Chrome, Edge, Firefox, and Safari. HTTPS is recommended.',
+      fullAnimationSupport: 'Frame-by-frame animated mosaic',
+      fullAnimationSupportText: 'Enabled over HTTPS when ImageDecoder and the image codec are available: Chrome, Edge, and Android WebView 94+, Firefox 133+, and Samsung Internet 17+. Safari uses the animation-preserving fallback.',
+      minimumDevice: 'Minimum recommended device',
+      minimumDeviceText: '2-core CPU, 2 GB RAM or more, hardware acceleration enabled. Prefer images up to 1280×720, one concurrent effect, and noise at 12 fps or lower.',
+      recommendedDevice: 'Recommended for smooth playback',
+      recommendedDeviceText: '4-core CPU, 4 GB RAM or more, hardware acceleration enabled. Prefer images up to 1920×1080, two concurrent effects, and noise at 20–24 fps.',
+      fallbackTitle: 'Progressive fallback',
+      fallbackDecoder: 'No ImageDecoder: original animation playback + Canvas mosaic',
+      fallbackCanvas: 'No Canvas: basic CSS transition',
+      fallbackReduced: 'Reduced motion enabled: skip effects and show the original immediately',
+      unsupportedBrowser: 'Internet Explorer is not supported.',
+      performanceNotice: 'For large images or multiple simultaneous effects, reduce maxConcurrent, renderFps, and noise.fps.'
+    },
+    ja: {
+      supportTitle: '対応環境',
+      supportIntro: 'ブラウザー上で動作するため、実際の性能は画像解像度、デバイスピクセル比、同時実行数、ノイズのフレームレートによって変わります。',
+      currentEnvironment: '現在の環境',
+      minimumBrowsers: '最低対応ブラウザー',
+      minimumBrowsersText: 'Chrome・Edge 80以降、Firefox 74以降、Safari 13.1以降、iOS Safari 13.4以降、Samsung Internet 13以降、Android WebView 80以降',
+      recommendedBrowsers: '推奨ブラウザー',
+      recommendedBrowsersText: 'Chrome、Edge、Firefox、Safariの最新2メジャーバージョン。HTTPS環境を推奨します。',
+      fullAnimationSupport: 'フレーム単位のアニメーションモザイク',
+      fullAnimationSupportText: 'HTTPS上でImageDecoderと対象コーデックが利用できる場合に有効です。目安はChrome・Edge・Android WebView 94以降、Firefox 133以降、Samsung Internet 17以降です。Safariではアニメーション維持フォールバックを使用します。',
+      minimumDevice: '最低推奨スペック',
+      minimumDeviceText: '2コアCPU、2GB以上のメモリ、ハードウェアアクセラレーション有効。1280×720以下、同時実行1件、ノイズ12fps以下を推奨します。',
+      recommendedDevice: '快適な推奨スペック',
+      recommendedDeviceText: '4コアCPU、4GB以上のメモリ、ハードウェアアクセラレーション有効。1920×1080以下、同時実行2件、ノイズ20～24fpsを推奨します。',
+      fallbackTitle: '段階的フォールバック',
+      fallbackDecoder: 'ImageDecoder非対応：元アニメーション再生 + Canvasモザイク',
+      fallbackCanvas: 'Canvas非対応：基本CSSトランジション',
+      fallbackReduced: '動きを減らす設定：効果を省略して元画像を即時表示',
+      unsupportedBrowser: 'Internet Explorerは対応していません。',
+      performanceNotice: '高解像度画像や複数同時実行では、maxConcurrent、renderFps、noise.fpsを下げてください。'
+    },
+    'zh-TW': {
+      supportTitle: '支援環境',
+      supportIntro: '效果在瀏覽器中執行，實際效能會受到圖片解析度、裝置像素比、同時執行數與雜訊幀率影響。',
+      currentEnvironment: '目前環境',
+      minimumBrowsers: '最低支援瀏覽器',
+      minimumBrowsersText: 'Chrome、Edge 80 以上，Firefox 74 以上，Safari 13.1 以上，iOS Safari 13.4 以上，Samsung Internet 13 以上，Android WebView 80 以上',
+      recommendedBrowsers: '建議瀏覽器',
+      recommendedBrowsersText: 'Chrome、Edge、Firefox、Safari 最新兩個主要版本，並建議使用 HTTPS。',
+      fullAnimationSupport: '逐影格動畫馬賽克',
+      fullAnimationSupportText: '在 HTTPS 環境且 ImageDecoder 與圖片編碼可用時啟用：Chrome、Edge、Android WebView 94 以上，Firefox 133 以上，Samsung Internet 17 以上。Safari 會使用維持動畫播放的備援模式。',
+      minimumDevice: '最低建議規格',
+      minimumDeviceText: '2 核心 CPU、2GB 以上記憶體、開啟硬體加速。建議圖片不超過 1280×720、同時執行 1 個、雜訊不超過 12fps。',
+      recommendedDevice: '流暢運作建議規格',
+      recommendedDeviceText: '4 核心 CPU、4GB 以上記憶體、開啟硬體加速。建議圖片不超過 1920×1080、同時執行 2 個、雜訊 20～24fps。',
+      fallbackTitle: '漸進式備援',
+      fallbackDecoder: '不支援 ImageDecoder：原始動畫播放 + Canvas 馬賽克',
+      fallbackCanvas: '不支援 Canvas：基本 CSS 轉場',
+      fallbackReduced: '啟用減少動態效果：略過效果並立即顯示原圖',
+      unsupportedBrowser: '不支援 Internet Explorer。',
+      performanceNotice: '處理高解析度圖片或多張圖片時，請降低 maxConcurrent、renderFps 與 noise.fps。'
+    },
+    th: {
+      supportTitle: 'สภาพแวดล้อมที่รองรับ',
+      supportIntro: 'เอฟเฟกต์ทำงานในเบราว์เซอร์ ประสิทธิภาพจริงจึงขึ้นอยู่กับความละเอียดภาพ อัตราพิกเซลของอุปกรณ์ จำนวนงานพร้อมกัน และเฟรมเรตของนอยส์',
+      currentEnvironment: 'สภาพแวดล้อมปัจจุบัน',
+      minimumBrowsers: 'เบราว์เซอร์ขั้นต่ำ',
+      minimumBrowsersText: 'Chrome และ Edge 80+, Firefox 74+, Safari 13.1+, iOS Safari 13.4+, Samsung Internet 13+, Android WebView 80+',
+      recommendedBrowsers: 'เบราว์เซอร์ที่แนะนำ',
+      recommendedBrowsersText: 'Chrome, Edge, Firefox และ Safari สองเวอร์ชันหลักล่าสุด แนะนำให้ใช้งานผ่าน HTTPS',
+      fullAnimationSupport: 'โมเสกแอนิเมชันแบบทีละเฟรม',
+      fullAnimationSupportText: 'เปิดใช้ผ่าน HTTPS เมื่อมี ImageDecoder และรองรับโคเดกของภาพ: Chrome, Edge และ Android WebView 94+, Firefox 133+ และ Samsung Internet 17+ ส่วน Safari ใช้โหมดสำรองที่เล่นแอนิเมชันต่อเนื่อง',
+      minimumDevice: 'สเปกขั้นต่ำที่แนะนำ',
+      minimumDeviceText: 'CPU 2 คอร์, RAM 2GB ขึ้นไป และเปิดการเร่งด้วยฮาร์ดแวร์ แนะนำภาพไม่เกิน 1280×720 ทำงานพร้อมกัน 1 ภาพ และนอยส์ไม่เกิน 12fps',
+      recommendedDevice: 'สเปกที่แนะนำเพื่อความลื่นไหล',
+      recommendedDeviceText: 'CPU 4 คอร์, RAM 4GB ขึ้นไป และเปิดการเร่งด้วยฮาร์ดแวร์ แนะนำภาพไม่เกิน 1920×1080 ทำงานพร้อมกัน 2 ภาพ และนอยส์ 20–24fps',
+      fallbackTitle: 'การลดระดับฟีเจอร์',
+      fallbackDecoder: 'ไม่มี ImageDecoder: เล่นแอนิเมชันต้นฉบับ + โมเสก Canvas',
+      fallbackCanvas: 'ไม่มี Canvas: ใช้ทรานซิชัน CSS พื้นฐาน',
+      fallbackReduced: 'เปิดลดการเคลื่อนไหว: ข้ามเอฟเฟกต์และแสดงภาพต้นฉบับทันที',
+      unsupportedBrowser: 'ไม่รองรับ Internet Explorer',
+      performanceNotice: 'เมื่อใช้ภาพขนาดใหญ่หรือหลายภาพพร้อมกัน ให้ลด maxConcurrent, renderFps และ noise.fps'
+    },
+    'zh-CN': {
+      supportTitle: '支持环境',
+      supportIntro: '该效果在浏览器中运行，实际性能取决于图片分辨率、设备像素比、并发数量和噪点帧率。',
+      currentEnvironment: '当前环境',
+      minimumBrowsers: '最低支持浏览器',
+      minimumBrowsersText: 'Chrome、Edge 80+，Firefox 74+，Safari 13.1+，iOS Safari 13.4+，Samsung Internet 13+，Android WebView 80+',
+      recommendedBrowsers: '推荐浏览器',
+      recommendedBrowsersText: 'Chrome、Edge、Firefox、Safari 的最新两个主要版本，建议使用 HTTPS。',
+      fullAnimationSupport: '逐帧动画马赛克',
+      fullAnimationSupportText: '在 HTTPS 环境且 ImageDecoder 与对应图片编解码器可用时启用：Chrome、Edge、Android WebView 94+，Firefox 133+，Samsung Internet 17+。Safari 使用保持动画播放的降级方案。',
+      minimumDevice: '最低建议配置',
+      minimumDeviceText: '双核 CPU、2GB 以上内存并开启硬件加速。建议图片不超过 1280×720、同时运行 1 个效果、噪点不超过 12fps。',
+      recommendedDevice: '流畅运行建议配置',
+      recommendedDeviceText: '四核 CPU、4GB 以上内存并开启硬件加速。建议图片不超过 1920×1080、同时运行 2 个效果、噪点 20～24fps。',
+      fallbackTitle: '渐进式降级',
+      fallbackDecoder: '不支持 ImageDecoder：原动画播放 + Canvas 马赛克',
+      fallbackCanvas: '不支持 Canvas：基础 CSS 过渡',
+      fallbackReduced: '开启减少动态效果：跳过效果并立即显示原图',
+      unsupportedBrowser: '不支持 Internet Explorer。',
+      performanceNotice: '处理高分辨率图片或多个并发效果时，请降低 maxConcurrent、renderFps 和 noise.fps。'
+    },
+    'zh-Hant': {
+      supportTitle: '支援環境',
+      supportIntro: '效果於瀏覽器內執行，實際效能取決於圖片解像度、裝置像素比、同時執行數量及雜訊幀率。',
+      currentEnvironment: '目前環境',
+      minimumBrowsers: '最低支援瀏覽器',
+      minimumBrowsersText: 'Chrome、Edge 80 或以上，Firefox 74 或以上，Safari 13.1 或以上，iOS Safari 13.4 或以上，Samsung Internet 13 或以上，Android WebView 80 或以上',
+      recommendedBrowsers: '建議瀏覽器',
+      recommendedBrowsersText: 'Chrome、Edge、Firefox、Safari 最新兩個主要版本，並建議使用 HTTPS。',
+      fullAnimationSupport: '逐幀動畫馬賽克',
+      fullAnimationSupportText: '在 HTTPS 環境且 ImageDecoder 與圖片編碼可用時啟用：Chrome、Edge、Android WebView 94 或以上，Firefox 133 或以上，Samsung Internet 17 或以上。Safari 會使用維持動畫播放的備援模式。',
+      minimumDevice: '最低建議規格',
+      minimumDeviceText: '雙核心 CPU、2GB 或以上記憶體及啟用硬件加速。建議圖片不超過 1280×720、同時執行 1 個效果、雜訊不超過 12fps。',
+      recommendedDevice: '流暢運作建議規格',
+      recommendedDeviceText: '四核心 CPU、4GB 或以上記憶體及啟用硬件加速。建議圖片不超過 1920×1080、同時執行 2 個效果、雜訊 20～24fps。',
+      fallbackTitle: '漸進式備援',
+      fallbackDecoder: '不支援 ImageDecoder：原始動畫播放 + Canvas 馬賽克',
+      fallbackCanvas: '不支援 Canvas：基本 CSS 過場',
+      fallbackReduced: '啟用減少動態效果：略過效果並即時顯示原圖',
+      unsupportedBrowser: '不支援 Internet Explorer。',
+      performanceNotice: '處理高解像度圖片或多個同時效果時，請降低 maxConcurrent、renderFps 及 noise.fps。'
+    },
+    ru: {
+      supportTitle: 'Поддерживаемая среда',
+      supportIntro: 'Эффект выполняется в браузере, поэтому производительность зависит от разрешения изображения, плотности пикселей, числа одновременных эффектов и частоты шума.',
+      currentEnvironment: 'Текущая среда',
+      minimumBrowsers: 'Минимальные версии браузеров',
+      minimumBrowsersText: 'Chrome и Edge 80+, Firefox 74+, Safari 13.1+, iOS Safari 13.4+, Samsung Internet 13+, Android WebView 80+',
+      recommendedBrowsers: 'Рекомендуемые браузеры',
+      recommendedBrowsersText: 'Две последние основные версии Chrome, Edge, Firefox и Safari. Рекомендуется HTTPS.',
+      fullAnimationSupport: 'Покадровая анимированная мозаика',
+      fullAnimationSupportText: 'Работает по HTTPS, если доступны ImageDecoder и нужный кодек: Chrome, Edge и Android WebView 94+, Firefox 133+, Samsung Internet 17+. В Safari используется режим с сохранением оригинальной анимации.',
+      minimumDevice: 'Минимальная рекомендуемая конфигурация',
+      minimumDeviceText: '2-ядерный CPU, от 2 ГБ ОЗУ, включённое аппаратное ускорение. Рекомендуются изображения до 1280×720, один эффект одновременно и шум не выше 12fps.',
+      recommendedDevice: 'Рекомендуется для плавной работы',
+      recommendedDeviceText: '4-ядерный CPU, от 4 ГБ ОЗУ, включённое аппаратное ускорение. Рекомендуются изображения до 1920×1080, два эффекта одновременно и шум 20–24fps.',
+      fallbackTitle: 'Постепенное упрощение',
+      fallbackDecoder: 'Нет ImageDecoder: оригинальная анимация + Canvas-мозаика',
+      fallbackCanvas: 'Нет Canvas: базовый CSS-переход',
+      fallbackReduced: 'Включено уменьшение движения: эффекты пропускаются, оригинал показывается сразу',
+      unsupportedBrowser: 'Internet Explorer не поддерживается.',
+      performanceNotice: 'Для больших изображений или нескольких эффектов уменьшите maxConcurrent, renderFps и noise.fps.'
+    },
+    it: {
+      supportTitle: 'Ambiente supportato',
+      supportIntro: 'L’effetto viene eseguito nel browser: le prestazioni dipendono da risoluzione, device pixel ratio, numero di effetti simultanei e frame rate del rumore.',
+      currentEnvironment: 'Ambiente corrente',
+      minimumBrowsers: 'Versioni minime dei browser',
+      minimumBrowsersText: 'Chrome ed Edge 80+, Firefox 74+, Safari 13.1+, iOS Safari 13.4+, Samsung Internet 13+, Android WebView 80+',
+      recommendedBrowsers: 'Browser consigliati',
+      recommendedBrowsersText: 'Le ultime due versioni principali di Chrome, Edge, Firefox e Safari. È consigliato HTTPS.',
+      fullAnimationSupport: 'Mosaico animato fotogramma per fotogramma',
+      fullAnimationSupportText: 'Attivo tramite HTTPS quando sono disponibili ImageDecoder e il codec: Chrome, Edge e Android WebView 94+, Firefox 133+, Samsung Internet 17+. Safari usa il fallback che mantiene in riproduzione l’animazione originale.',
+      minimumDevice: 'Configurazione minima consigliata',
+      minimumDeviceText: 'CPU dual-core, almeno 2 GB di RAM e accelerazione hardware attiva. Preferire immagini fino a 1280×720, un effetto simultaneo e rumore a 12fps o meno.',
+      recommendedDevice: 'Configurazione consigliata per fluidità',
+      recommendedDeviceText: 'CPU quad-core, almeno 4 GB di RAM e accelerazione hardware attiva. Preferire immagini fino a 1920×1080, due effetti simultanei e rumore a 20–24fps.',
+      fallbackTitle: 'Fallback progressivo',
+      fallbackDecoder: 'Senza ImageDecoder: animazione originale + mosaico Canvas',
+      fallbackCanvas: 'Senza Canvas: transizione CSS di base',
+      fallbackReduced: 'Riduzione del movimento attiva: effetti ignorati e originale mostrato subito',
+      unsupportedBrowser: 'Internet Explorer non è supportato.',
+      performanceNotice: 'Con immagini grandi o più effetti simultanei, riduci maxConcurrent, renderFps e noise.fps.'
+    }
+  };
+
+  Object.entries(compatibilityMessages).forEach(([locale, dictionary]) => {
+    Object.assign(messages[locale], dictionary);
+  });
+
+  let currentLocale = DEFAULT_LOCALE;
+
+  function normalizeLocale(value) {
+    if (!value) return null;
+    const normalized = String(value).trim().replace(/_/g, '-');
+    const lower = normalized.toLowerCase();
+
+    if (lower === 'zh-tw') return 'zh-TW';
+    if (lower === 'zh-hk' || lower === 'zh-mo' || lower === 'zh-hant') return 'zh-Hant';
+    if (lower === 'zh-cn' || lower === 'zh-sg' || lower === 'zh-hans' || lower === 'zh') return 'zh-CN';
+
+    const base = lower.split('-')[0];
+    return SUPPORTED_LOCALES.find((locale) => locale.toLowerCase() === lower)
+      || SUPPORTED_LOCALES.find((locale) => locale.toLowerCase() === base)
+      || null;
+  }
+
+  function interpolate(template, values) {
+    return String(template).replace(/\{(\w+)\}/g, (_, key) => values?.[key] ?? '');
+  }
+
+  function translate(key, values, locale = currentLocale) {
+    const dictionary = messages[locale] || messages[DEFAULT_LOCALE];
+    const fallback = messages[DEFAULT_LOCALE];
+    return interpolate(dictionary[key] ?? fallback[key] ?? key, values);
+  }
+
+  function detectLocale() {
+    const params = new URLSearchParams(window.location.search);
+    const queryLocale = normalizeLocale(params.get('lang'));
+    if (queryLocale) return queryLocale;
+
+    try {
+      const savedLocale = normalizeLocale(window.localStorage.getItem(STORAGE_KEY));
+      if (savedLocale) return savedLocale;
+    } catch (_) {}
+
+    const browserLocales = Array.isArray(navigator.languages) && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language];
+
+    for (const locale of browserLocales) {
+      const matched = normalizeLocale(locale);
+      if (matched) return matched;
+    }
+
+    return DEFAULT_LOCALE;
+  }
+
+  function applyStaticTranslations(locale) {
+    document.documentElement.lang = locale;
+    document.title = 'Pixel Mosaic Lazy Loader';
+
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.setAttribute('content', translate('metaDescription', null, locale));
+
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
+      element.textContent = translate(element.dataset.i18n, null, locale);
+    });
+
+    document.querySelectorAll('[data-i18n-html]').forEach((element) => {
+      element.innerHTML = translate(element.dataset.i18nHtml, null, locale);
+    });
+
+    document.querySelectorAll('[data-i18n-alt]').forEach((element) => {
+      element.setAttribute('alt', translate(element.dataset.i18nAlt, null, locale));
+    });
+
+    document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+      element.setAttribute('aria-label', translate(element.dataset.i18nAriaLabel, null, locale));
+    });
+
+    document.querySelectorAll('[data-stage-count]').forEach((option) => {
+      option.textContent = translate('stageOption', { count: option.dataset.stageCount }, locale);
+    });
+
+    const languageSelect = document.querySelector('#language-select');
+    if (languageSelect) languageSelect.value = locale;
+  }
+
+  function updateUrl(locale) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', locale);
+    window.history.replaceState({}, '', url);
+  }
+
+  function setLocale(locale, options = {}) {
+    const nextLocale = normalizeLocale(locale) || DEFAULT_LOCALE;
+    currentLocale = nextLocale;
+    applyStaticTranslations(nextLocale);
+
+    if (options.persist !== false) {
+      try { window.localStorage.setItem(STORAGE_KEY, nextLocale); } catch (_) {}
+    }
+    if (options.updateUrl !== false) updateUrl(nextLocale);
+
+    document.dispatchEvent(new CustomEvent('pixelmosaicdemo:localechange', {
+      detail: { locale: nextLocale }
+    }));
+
+    return nextLocale;
+  }
+
+  function init() {
+    const languageSelect = document.querySelector('#language-select');
+    if (languageSelect && languageSelect.options.length === 0) {
+      SUPPORTED_LOCALES.forEach((locale) => {
+        const option = document.createElement('option');
+        option.value = locale;
+        option.textContent = localeNames[locale];
+        languageSelect.append(option);
+      });
+    }
+
+    const initialLocale = detectLocale();
+    setLocale(initialLocale, { persist: false, updateUrl: false });
+
+    languageSelect?.addEventListener('change', (event) => {
+      setLocale(event.target.value, { persist: true, updateUrl: true });
+    });
+
+    return initialLocale;
+  }
+
+  window.PixelMosaicDemoI18n = {
+    init,
+    setLocale,
+    t: translate,
+    get locale() { return currentLocale; },
+    locales: [...SUPPORTED_LOCALES],
+    localeNames: { ...localeNames }
+  };
+})();

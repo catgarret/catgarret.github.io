@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="MotionKit v0.5 — 28 modules interactive demo">
+<title>MotionKit v0.5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,900&family=JetBrains+Mono:wght@300;400;500&family=Pretendard+Variable:wght@300;400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.1.14/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@11.1.14/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="../dist/motionkit.css">
+<style>
+/* ── TOKENS ───────────────────────────────────────────── */
+:root{
+  --bg:#080706;--bg2:#111009;--bg3:#181511;--bg4:#201d19;
+  --ink:#f0ece4;--dim:#7a746c;--faint:#232019;
+  --acc:#ff5b1c;--acc2:#ffd166;--acc3:#4fffb0;
+  --line:rgba(240,236,228,.07);
+  --r:4px;--r8:8px;--r12:12px;
+  --s:'Fraunces',serif;--ss:'Pretendard Variable',sans-serif;--m:'JetBrains Mono',monospace;
+  --nav:58px;
+  color-scheme:dark;
+}
+html.lt{
+  --bg:#f6f3ee;--bg2:#ede9e2;--bg3:#e4e0d8;--bg4:#d8d4cc;
+  --ink:#1a1714;--dim:#6b655e;--faint:#d0ccc4;
+  --line:rgba(26,23,20,.09);
+  color-scheme:light;
+}
+/* ── RESET ────────────────────────────────────────────── */
+*,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{background:var(--bg);color:var(--ink);font-family:var(--ss);font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img,video{max-width:100%;display:block;}
+button,select,input{font-family:inherit;}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:2px;}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--faint);border-radius:2px}
+[hidden]{display:none!important;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+/* ── NAV ──────────────────────────────────────────────── */
+:root{--nav:52px;}
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav);
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  align-items:center;gap:0;
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  background:rgba(8,7,6,.92);
+  border-bottom:1px solid var(--line);
+}
+html.lt .nav{background:rgba(246,243,238,.94);}
+
+/* Logo */
+.nav-logo{
+  font-family:var(--s);font-weight:900;font-size:16px;
+  color:var(--ink);text-decoration:none;letter-spacing:-.03em;
+  padding-right:14px;flex-shrink:0;
+  border-right:1px solid var(--line);margin-right:0;
+}
+.nav-logo span{color:var(--acc);}
+.nav-logo sup{font-size:8px;color:var(--dim);font-family:var(--m);font-weight:400;letter-spacing:.1em;vertical-align:super;margin-left:3px;}
+
+/* Filter tabs */
+.nav-tabs{
+  display:flex;gap:0;flex-wrap:nowrap;overflow-x:auto;
+  scrollbar-width:none;padding:0 4px;height:var(--nav);
+  align-items:stretch;
+}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.tab{
+  display:flex;align-items:center;
+  padding:0 13px;
+  background:transparent;border:none;color:var(--dim);
+  font-family:var(--m);font-size:9px;text-transform:uppercase;letter-spacing:.13em;
+  cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;
+  position:relative;top:1px; /* border-bottom offset */
+}
+.tab:hover{color:var(--ink);}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc);}
+
+/* Search */
+.nav-search{
+  position:relative;
+  padding:0 12px;
+  border-left:1px solid var(--line);
+}
+.nav-search input{
+  background:transparent;border:none;color:var(--ink);
+  padding:5px 24px 5px 0;
+  font-family:var(--m);font-size:10px;width:160px;
+  transition:width .2s;outline:none;
+}
+.nav-search input:focus{width:220px;}
+.nav-search input::placeholder{color:var(--dim);}
+.nav-search-clear{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--dim);cursor:pointer;font-size:11px;padding:2px;
+}
+
+/* Theme */
+.th-btn{
+  width:30px;height:16px;border-radius:8px;border:none;
+  background:var(--faint);position:relative;cursor:pointer;
+  transition:background .3s;flex-shrink:0;margin-left:10px;
+}
+.th-btn::after{content:'';position:absolute;top:3px;left:3px;width:10px;height:10px;border-radius:50%;background:var(--dim);transition:transform .3s;}
+html.lt .th-btn{background:var(--acc);}html.lt .th-btn::after{transform:translateX(14px);background:#fff;}
+/* ── LAYOUT ───────────────────────────────────────────── */
+main{padding-top:var(--nav);}
+section{padding:64px 20px;position:relative;z-index:1;}
+.w{max-width:1200px;margin:0 auto;}
+.div{height:1px;background:var(--line);}
+/* ── SECTION HEADER ───────────────────────────────────── */
+.sh{margin-bottom:24px;}
+.sn{font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.22em;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.sn::before{content:'';width:12px;height:1px;background:var(--acc);}
+.sh h2{font-family:var(--s);font-weight:300;font-size:clamp(18px,3vw,44px);line-height:1.05;letter-spacing:-.03em;margin-bottom:6px;}
+.sh h2 em{font-style:italic;color:var(--acc2);}
+.sh p{font-size:13px;color:var(--dim);max-width:560px;line-height:1.6;}
+/* ── GRIDS ────────────────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.g6{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:900px){.g3,.g6{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.g2,.g3,.g4,.g6{grid-template-columns:1fr;}section{padding:48px 14px;}}
+/* ── CARD ─────────────────────────────────────────────── */
+.card{padding:18px 20px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);}
+.cl{font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.18em;margin-bottom:8px;display:block;}
+/* ── BUTTONS ──────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;
+  background:var(--faint);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--m);font-size:9px;text-transform:uppercase;letter-spacing:.15em;
+  cursor:pointer;border-radius:var(--r);transition:background .2s,border-color .2s,color .2s;}
+.btn:hover,.btn.on,.btn[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff;}
+.rb{display:inline-flex;align-items:center;gap:3px;padding:4px 8px;
+  background:rgba(255,91,28,.07);border:1px solid rgba(255,91,28,.2);
+  color:var(--acc);font-family:var(--m);font-size:9px;cursor:pointer;border-radius:var(--r);transition:background .2s;}
+.rb:hover{background:rgba(255,91,28,.18);}
+.row-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+/* ── OPTION PANEL ─────────────────────────────────────── */
+.mk-panel{background:var(--bg3);border:1px solid var(--line);border-radius:var(--r8);
+  padding:14px 16px;margin:12px 0 0;}
+.mk-opts{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;}
+.mk-field{display:flex;flex-direction:column;gap:3px;}
+.mk-field label,.mk-label{font-family:var(--m);font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;}
+.mk-field input[type=range]{accent-color:var(--acc);width:88px;cursor:pointer;height:3px;}
+.mk-field input[type=color]{width:26px;height:22px;border:none;cursor:pointer;border-radius:var(--r);padding:0;background:none;}
+.mk-field select{background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:4px 6px;font-family:var(--m);font-size:9px;border-radius:var(--r);cursor:pointer;}
+.mk-field input[type=number]{background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:4px 6px;font-family:var(--m);font-size:9px;border-radius:var(--r);width:64px;}
+.mk-field input[type=text]{background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:4px 8px;font-family:var(--m);font-size:9px;border-radius:var(--r);width:120px;}
+.mk-field .mk-row{display:flex;align-items:center;gap:5px;}
+.mk-val{font-family:var(--m);font-size:9px;color:var(--ink);min-width:32px;}
+/* ── CODE SNIPPET ─────────────────────────────────────── */
+.mk-snip{background:#0c0c0c;border:1px solid rgba(255,255,255,.07);border-radius:var(--r8);margin-top:10px;position:relative;overflow:hidden;}
+html.lt .mk-snip{background:#141414;}
+.mk-snip pre{padding:10px 44px 10px 12px;font-family:var(--m);font-size:10px;line-height:1.55;overflow-x:auto;white-space:pre;margin:0;}
+.mk-snip code{color:#a8ff78;}
+.mk-copy{position:absolute;top:7px;right:7px;padding:3px 8px;
+  background:#1a1a1a;border:1px solid #333;color:#888;
+  border-radius:var(--r);font-size:9px;font-family:var(--m);cursor:pointer;transition:all .2s;}
+.mk-copy:hover,.mk-copy.ok{background:var(--acc);color:#fff;border-color:var(--acc);}
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{min-height:calc(100vh - var(--nav));display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:60px;}
+.hero-headline{font-family:var(--s);font-weight:300;font-size:clamp(44px,10vw,130px);line-height:.9;letter-spacing:-.04em;margin-bottom:20px;}
+.hero-headline em{font-style:italic;font-weight:900;color:var(--acc);}
+.hero-sub{font-size:13px;color:var(--dim);max-width:460px;line-height:1.6;margin-bottom:18px;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:5px;}
+.pill{padding:3px 9px;background:rgba(255,91,28,.1);border:1px solid rgba(255,91,28,.18);
+  color:var(--acc);font-family:var(--m);font-size:9px;text-transform:uppercase;letter-spacing:.1em;border-radius:20px;}
+/* ── CURSOR CARDS ─────────────────────────────────────── */
+.cur-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:14px;}
+@media(max-width:768px){.cur-grid{grid-template-columns:repeat(3,1fr);}}
+.ccard{padding:12px 8px;background:var(--faint);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
+  border-radius:var(--r);transition:border-color .2s,background .2s;text-align:center;}
+.ccard:hover,.ccard.on{border-color:var(--acc);}
+.ccard.on{background:rgba(255,91,28,.07);}
+.ccard-icon{font-size:16px;line-height:1;}
+.ccard-name{font-family:var(--m);font-size:8px;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;}
+.ccard-desc{font-size:9px;color:var(--dim);line-height:1.3;}
+/* ── LAZY GRID ────────────────────────────────────────── */
+.lf{aspect-ratio:4/3;background:var(--bg3);border:1px solid var(--line);overflow:hidden;position:relative;min-height:80px;}
+.lf img{width:100%;height:100%;object-fit:cover;display:block;}
+/* ── PARALLAX ─────────────────────────────────────────── */
+.par-wrap{height:280px;overflow:hidden;border:1px solid var(--line);position:relative;}
+.par-img{width:100%;height:140%;object-fit:cover;will-change:transform;}
+/* ── GLITCH ───────────────────────────────────────────── */
+.gl-box{background:var(--bg2);border:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;}
+.gl-text{font-family:var(--s);font-weight:300;font-size:clamp(22px,5vw,56px);letter-spacing:-.02em;position:relative;display:inline-block;}
+/* ── STICKY STACK ─────────────────────────────────────── */
+.sk-item{background:var(--bg2);border:1px solid var(--line);padding:28px;border-radius:var(--r8);display:flex;align-items:center;justify-content:center;min-height:160px;}
+.sk-item h3{font-family:var(--s);font-size:clamp(16px,3vw,36px);font-weight:300;}
+/* ── LIGHTBOX ─────────────────────────────────────────── */
+.lbg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.lbi{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r);cursor:pointer;display:block;transition:opacity .2s,transform .15s;}
+.lbi:hover{opacity:.8;transform:scale(1.02);}
+@media(max-width:600px){.lbg{grid-template-columns:repeat(2,1fr);}}
+/* ── CARD GLOW ────────────────────────────────────────── */
+.gc{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r8);padding:16px;cursor:pointer;min-height:120px;display:flex;flex-direction:column;justify-content:space-between;}
+.gc h3{font-family:var(--s);font-weight:300;font-size:clamp(12px,2vw,17px);position:relative;z-index:3;line-height:1.2;}
+.gc p{font-size:10px;color:var(--dim);position:relative;z-index:3;margin-top:4px;}
+/* ── TEXT ─────────────────────────────────────────────── */
+.big-text{font-family:var(--s);font-weight:300;font-size:clamp(24px,5vw,64px);line-height:1;letter-spacing:-.02em;will-change:transform,filter;}
+.med-text{font-family:var(--s);font-weight:300;font-size:clamp(20px,4vw,50px);letter-spacing:-.03em;line-height:1.1;}
+.cnt-text{font-family:var(--s);font-weight:300;font-size:clamp(28px,5vw,68px);letter-spacing:-.04em;line-height:1;}
+.tf-text{font-family:var(--s);font-weight:900;font-size:clamp(26px,5.5vw,68px);letter-spacing:-.04em;line-height:1;-webkit-text-stroke:1.5px var(--ink);}
+.tw-text{font-family:var(--m);font-size:clamp(12px,1.8vw,16px);min-height:22px;}
+.shf-text{font-family:var(--s);font-weight:300;font-size:clamp(18px,3.5vw,46px);letter-spacing:-.02em;}
+/* ── PROGRESS BAR ─────────────────────────────────────── */
+[data-mk-progress]{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--acc);z-index:950;transform-origin:left;transform:scaleX(0);pointer-events:none;}
+/* ── TILT ─────────────────────────────────────────────── */
+.tilt-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r8);padding:24px;text-align:center;cursor:pointer;}
+.mag-btn{padding:12px 24px;background:var(--acc);color:#fff;border:none;font-family:var(--s);font-size:16px;font-weight:300;cursor:pointer;border-radius:var(--r);}
+/* ── PAGE REVEAL PREVIEW ──────────────────────────────── */
+.pv-btn{padding:18px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);text-align:center;cursor:pointer;transition:border-color .2s;}
+.pv-btn:hover{border-color:var(--acc);}
+.pv-btn b{font-family:var(--s);font-size:17px;font-weight:300;display:block;}
+.pv-btn p{font-size:11px;color:var(--dim);margin-top:4px;}
+/* ── NO RESULT ─────────────────────────────────────────── */
+#mk-no-result{padding:60px 20px;text-align:center;color:var(--dim);font-family:var(--m);font-size:11px;}
+.mk-cursor-active *{cursor:none!important;}
+/* ── LOADER ─────────────────────────────────────────────  */
+#pld{position:fixed;inset:0;z-index:99998;background:#080706;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+#pld p{font-family:var(--m);font-size:9px;color:#3a3530;letter-spacing:.25em;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<!-- Page Loader (실제 리소스 로드 연동) -->
+<div id="pld" role="status" aria-label="로딩 중" style="position:fixed;inset:0;z-index:99998;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+  <div style="position:relative;">
+    <p style="font-family:var(--s);font-weight:900;font-size:22px;letter-spacing:-.03em;color:var(--ink);">Motion<span style="color:var(--acc);">Kit</span></p>
+    <p style="font-family:var(--m);font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.2em;margin-top:4px;" id="pld-status">초기화 중...</p>
+  </div>
+  <div style="width:180px;height:1px;background:rgba(255,255,255,.07);overflow:hidden;border-radius:1px;">
+    <div id="pbar" style="width:0%;height:100%;background:var(--acc);transition:width .4s cubic-bezier(.4,0,.2,1);"></div>
+  </div>
+</div>
+<!-- Progress -->
+<div data-mk-progress aria-hidden="true"></div>
+<!-- Nav -->
+<nav class="nav" aria-label="주 내비게이션">
+  <a class="nav-logo" href="." aria-label="MotionKit 홈">Motion<span>Kit</span><sup>v0.5</sup></a>
+  <nav class="nav-tabs" role="tablist" aria-label="카테고리">
+    <button class="tab on" data-cat="all" role="tab" aria-selected="true">ALL</button>
+    <button class="tab" data-cat="interaction" role="tab" aria-selected="false">INTERACT</button>
+    <button class="tab" data-cat="text" role="tab" aria-selected="false">TEXT</button>
+    <button class="tab" data-cat="scroll" role="tab" aria-selected="false">SCROLL</button>
+    <button class="tab" data-cat="media" role="tab" aria-selected="false">MEDIA</button>
+    <button class="tab" data-cat="fx" role="tab" aria-selected="false">FX</button>
+    <button class="tab" data-cat="page" role="tab" aria-selected="false">PAGE</button>
+  </nav>
+  <div class="nav-search" role="search">
+    <label for="mk-search" class="sr-only">모듈 검색</label>
+    <input type="search" id="mk-search" placeholder="cursor · text · scroll…" autocomplete="off">
+    <button id="mk-search-clear" class="nav-search-clear" aria-label="지우기">✕</button>
+  </div>
+  <button class="th-btn" id="th-btn" role="switch" aria-checked="false" aria-label="테마 전환"></button>
+</nav>
+<main id="main">
+<div id="mk-no-result" hidden aria-live="polite"><p>검색 결과가 없습니다.</p></div>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="w">
+    <p class="sn" data-mk-reveal="fade-up">MOTIONKIT v0.5 — 28 MODULES</p>
+    <h1 class="hero-headline" id="hero-h1">
+      <span data-mk-reveal="fade-up" data-mk-delay=".08">Built for</span><br>
+      <em data-mk-reveal="fade-up" data-mk-delay=".18">motion-first</em><br>
+      <span data-mk-reveal="fade-up" data-mk-delay=".3">designers.</span>
+    </h1>
+    <p class="hero-sub" data-mk-reveal="fade-up" data-mk-delay=".42">28 modules · 한글 IME · Swiper.js · GSAP 3.12 · 웹표준/접근성 · 단계적 기능 축소</p>
+    <div class="hero-pills" data-mk-reveal="fade-up" data-mk-delay=".52">
+      <span class="pill">GSAP 3.12</span><span class="pill">Swiper 11</span><span class="pill">Lenis 1.1</span><span class="pill">WCAG 2.1</span><span class="pill">Progressive Enhancement</span>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 01 CURSOR ══════════════════════════════════════════ -->
+<section data-module="cursor" data-category="interaction" data-tags="마우스 포인터 trail orbit snake sparkle dot ring" aria-labelledby="cur-h">
+  <div class="w">
+    <div class="sh"><p class="sn">01 / CURSOR</p><h2 id="cur-h">Cursor — <em>12 types</em></h2><p>기본 8종 + trail · orbit · snake · sparkle 4종. 링크/버튼 hover 시 자동 확대.</p></div>
+    <div class="cur-grid" role="group" aria-label="커서 타입">
+      <div class="ccard on" data-type="dot" role="button" tabindex="0" aria-pressed="true"><span class="ccard-icon">●</span><span class="ccard-name">DOT</span><span class="ccard-desc">기본 점</span></div>
+      <div class="ccard" data-type="ring" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">○</span><span class="ccard-name">RING</span><span class="ccard-desc">원형 추종</span></div>
+      <div class="ccard" data-type="crosshair" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">✛</span><span class="ccard-name">CROSS</span><span class="ccard-desc">십자선</span></div>
+      <div class="ccard" data-type="blob" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">◉</span><span class="ccard-name">BLOB</span><span class="ccard-desc">물방울</span></div>
+      <div class="ccard" data-type="text" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">↻</span><span class="ccard-name">TEXT</span><span class="ccard-desc">회전 텍스트</span></div>
+      <div class="ccard" data-type="image" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">🖼</span><span class="ccard-name">IMAGE</span><span class="ccard-desc">이미지</span></div>
+      <div class="ccard" data-type="custom" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">✦</span><span class="ccard-name">HTML</span><span class="ccard-desc">커스텀</span></div>
+      <div class="ccard" data-type="none" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">✕</span><span class="ccard-name">OFF</span><span class="ccard-desc">기본 커서</span></div>
+      <div class="ccard" data-type="trail" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">〰</span><span class="ccard-name">TRAIL</span><span class="ccard-desc">탄성 꼬리</span></div>
+      <div class="ccard" data-type="orbit" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">⬤</span><span class="ccard-name">ORBIT</span><span class="ccard-desc">원형 궤도</span></div>
+      <div class="ccard" data-type="snake" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">≋</span><span class="ccard-name">SNAKE</span><span class="ccard-desc">뱀 텍스트</span></div>
+      <div class="ccard" data-type="sparkle" role="button" tabindex="0" aria-pressed="false"><span class="ccard-icon">✦</span><span class="ccard-name">SPARKLE</span><span class="ccard-desc">별 파티클</span></div>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">COLOR</label><input type="color" id="cur-color" value="#ff5b1c"></div>
+        <div class="mk-field"><label class="mk-label">DOT EASE</label><div class="mk-row"><input type="range" id="cur-de" min=".01" max="1" step=".01" value="1"><span class="mk-val" id="cur-de-v">1.00</span></div></div>
+        <div class="mk-field"><label class="mk-label">FOLLOW EASE</label><div class="mk-row"><input type="range" id="cur-fe" min=".01" max=".5" step=".01" value=".1"><span class="mk-val" id="cur-fe-v">0.10</span></div></div>
+        <div class="mk-field"><label class="mk-label">HOVER SCALE</label><div class="mk-row"><input type="range" id="cur-hs" min="1" max="4" step=".1" value="2"><span class="mk-val" id="cur-hs-v">2.0</span></div></div>
+        <div class="mk-field" id="cur-orbit-opt" hidden><label class="mk-label">ORBIT TEXT</label><input type="text" id="cur-orbit-text" value="MOTIONKIT · " style="width:120px;"></div>
+        <div class="mk-field" id="cur-snake-opt" hidden><label class="mk-label">SNAKE TEXT</label><input type="text" id="cur-snake-text" value="MOTIONKIT"></div>
+        <div class="mk-field" id="cur-trail-opt" hidden><label class="mk-label">TRAIL COUNT</label><div class="mk-row"><input type="range" id="cur-trail-n" min="3" max="16" step="1" value="8"><span class="mk-val" id="cur-trail-v">8</span></div></div>
+        <div class="mk-field" id="cur-rot-opt" hidden><label class="mk-label">ROTATE TEXT</label><input type="text" id="cur-rot-text" value="MOTIONKIT · " style="width:120px;"></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;" aria-label="hover 테스트">
+      <a href="#" onclick="return false;" style="color:var(--acc);font-family:var(--m);font-size:10px;padding:7px 12px;border:1px solid var(--acc);border-radius:var(--r);">링크 hover →</a>
+      <button class="btn">버튼 hover →</button>
+    </div>
+    <div class="mk-snip"><pre><code id="cur-snippet"></code></pre><button class="mk-copy" data-for="cur-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 02 REVEAL ══════════════════════════════════════════ -->
+<section data-module="reveal" data-category="scroll" data-tags="등장 애니메이션 스크롤 fade zoom flip blur" aria-labelledby="rv-h">
+  <div class="w">
+    <div class="sh"><p class="sn">02 / REVEAL</p><h2 id="rv-h">Reveal — <em>13 presets · scroll trigger</em></h2><p>스크롤 시 자동 등장. 모든 preset 실시간 확인.</p></div>
+    <div class="g3" id="reveal-grid"></div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">PRESET</label><select id="rv-preset"><option value="fade-up">fade-up</option><option value="fade-down">fade-down</option><option value="fade-left">fade-left</option><option value="fade-right">fade-right</option><option value="zoom">zoom</option><option value="zoom-out">zoom-out</option><option value="blur">blur</option><option value="rise">rise</option><option value="flip">flip</option><option value="flip-y">flip-y</option><option value="mask">mask</option><option value="mask-down">mask-down</option><option value="skew-up">skew-up</option></select></div>
+        <div class="mk-field"><label class="mk-label">DURATION</label><div class="mk-row"><input type="range" id="rv-dur" min=".3" max="3" step=".1" value="1"><span class="mk-val" id="rv-dur-v">1.0s</span></div></div>
+        <div class="mk-field"><label class="mk-label">DELAY</label><div class="mk-row"><input type="range" id="rv-delay" min="0" max="1" step=".05" value="0"><span class="mk-val" id="rv-delay-v">0s</span></div></div>
+        <div class="mk-field"><label class="mk-label">EASE</label><select id="rv-ease"><option value="power3.out">power3.out</option><option value="power2.out">power2.out</option><option value="expo.out">expo.out</option><option value="back.out(1.5)">back.out</option><option value="elastic.out(1,0.5)">elastic.out</option></select></div>
+        <div class="mk-field"><label class="mk-label">ONCE</label><select id="rv-once"><option value="true" selected>true</option><option value="false">false</option></select></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="rv-snippet"></code></pre><button class="mk-copy" data-for="rv-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 03 COUNTER ═════════════════════════════════════════ -->
+<section data-module="counter" data-category="text" data-tags="숫자 카운터 슬롯 임팩트" aria-labelledby="cnt-h">
+  <div class="w">
+    <div class="sh"><p class="sn">03 / COUNTER</p><h2 id="cnt-h">Counter — <em>slot · plain · impact</em></h2></div>
+    <div class="g3">
+      <div class="card" style="text-align:center;"><span class="cl">SLOT MACHINE</span><div class="cnt-text" id="c1">0</div></div>
+      <div class="card" style="text-align:center;"><span class="cl">PLAIN</span><div class="cnt-text" id="c2">0</div></div>
+      <div class="card" style="text-align:center;"><span class="cl">IMPACT ★</span><div class="cnt-text" id="c3">0</div></div>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">TARGET VALUE</label><input type="number" id="cnt-to" value="2024" min="0" max="9999999"></div>
+        <div class="mk-field"><label class="mk-label">DURATION</label><div class="mk-row"><input type="range" id="cnt-dur" min=".5" max="5" step=".1" value="2"><span class="mk-val" id="cnt-dur-v">2.0s</span></div></div>
+        <div class="mk-field"><label class="mk-label">EASE</label><select id="cnt-ease"><option value="power2.out">power2.out</option><option value="power3.out">power3.out</option><option value="expo.out">expo.out</option><option value="linear">linear</option></select></div>
+        <div class="mk-field"><label class="mk-label">FORMAT</label><select id="cnt-fmt"><option value="">숫자</option><option value=",">,콤마</option></select></div>
+        <div class="mk-field"><label class="mk-label">PREFIX</label><input type="text" id="cnt-pre" placeholder="$ ₩ +" style="width:50px;"></div>
+        <div class="mk-field"><label class="mk-label">SUFFIX</label><input type="text" id="cnt-suf" placeholder="% px" style="width:50px;"></div>
+        <button class="btn" onclick="window.rebuildCounters&&rebuildCounters()" style="margin-top:auto;">↺ REPLAY</button>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="cnt-snippet"></code></pre><button class="mk-copy" data-for="cnt-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 04 PARALLAX + MOUSE PARALLAX ══════════════════════ -->
+<section data-module="parallax" data-category="scroll" data-tags="시차 스크롤 마우스 parallax" aria-labelledby="par-h">
+  <div class="w">
+    <div class="sh"><p class="sn">04 / PARALLAX · MOUSE PARALLAX</p><h2 id="par-h">Parallax — <em>스크롤 시차 + 마우스 추종</em></h2></div>
+    <div class="g2" style="margin-bottom:14px;">
+      <div class="par-wrap"><img id="p1" class="par-img" src="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=800&q=80" alt="parallax 1" loading="lazy"></div>
+      <div class="par-wrap"><img id="p2" class="par-img" src="https://images.unsplash.com/photo-1682687218904-ce3e4ca8cca1?w=800&q=80" alt="parallax 2" loading="lazy"></div>
+    </div>
+    <div id="mps" style="height:200px;background:var(--bg2);border:1px solid var(--line);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" aria-label="마우스 패럴랙스">
+      <div id="mp1" style="position:absolute;width:60px;height:60px;background:var(--acc);border-radius:50%;opacity:.35;" aria-hidden="true"></div>
+      <div id="mp2" style="position:absolute;width:36px;height:36px;background:var(--acc2);border-radius:50%;opacity:.5;" aria-hidden="true"></div>
+      <p style="font-family:var(--s);font-size:clamp(16px,3vw,34px);font-weight:300;position:relative;z-index:2;" id="mp3">마우스를 움직여보세요</p>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">SCROLL SPEED</label><div class="mk-row"><input type="range" id="par-spd" min=".05" max="1.5" step=".05" value=".4"><span class="mk-val" id="par-spd-v">0.40</span></div></div>
+        <div class="mk-field"><label class="mk-label">AXIS</label><select id="par-axis"><option value="y">Y</option><option value="x">X</option></select></div>
+        <div class="mk-field"><label class="mk-label">MOUSE SPEED</label><div class="mk-row"><input type="range" id="mp-spd" min=".01" max=".5" step=".01" value=".08"><span class="mk-val" id="mp-spd-v">0.08</span></div></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="par-snippet"></code></pre><button class="mk-copy" data-for="par-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 05 LAZY ════════════════════════════════════════════ -->
+<section data-module="lazy" data-category="media" data-tags="이미지 로딩 skeleton pixelate blur polaroid print noise" aria-labelledby="lz-h">
+  <div class="w">
+    <div class="sh"><p class="sn">05 / LAZY</p><h2 id="lz-h">Lazy — <em>7 effects</em></h2><p>뷰포트 진입 시 자동 로드. ↺로 재실행.</p></div>
+    <div class="g6">
+      <div><div class="lf"><img id="li1" alt="skeleton" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">SKELETON</span><button class="rb" onclick="rlLazy('li1','skeleton')" aria-label="↺">↺</button></div></div>
+      <div><div class="lf"><img id="li2" alt="blur-up" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">BLUR-UP</span><button class="rb" onclick="rlLazy('li2','blur-up')" aria-label="↺">↺</button></div></div>
+      <div><div class="lf"><img id="li3" alt="pixelate" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">PIXELATE</span><button class="rb" onclick="rlLazy('li3','pixelate')" aria-label="↺">↺</button></div></div>
+      <div><div class="lf"><img id="li4" alt="polaroid" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">POLAROID</span><button class="rb" onclick="rlLazy('li4','polaroid')" aria-label="↺">↺</button></div></div>
+      <div><div class="lf"><img id="li5" alt="print" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">PRINT</span><button class="rb" onclick="rlLazy('li5','print')" aria-label="↺">↺</button></div></div>
+      <div><div class="lf"><img id="li6" alt="noise" loading="lazy"></div><div class="row-hd" style="margin-top:6px;"><span class="cl" style="margin:0;">NOISE</span><button class="rb" onclick="rlLazy('li6','noise')" aria-label="↺">↺</button></div></div>
+    </div>
+    <button class="rb" onclick="rlAll()" style="margin-top:8px;">↺ REPLAY ALL</button>
+    <div class="mk-snip"><pre><code id="lz-snippet">MK.lazy('#img', { effect: 'skeleton' });</code></pre><button class="mk-copy" data-for="lz-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 06 MARQUEE ═════════════════════════════════════════ -->
+<section data-module="marquee" data-category="text" data-tags="마퀴 흐르는 텍스트 스크롤 반응" aria-labelledby="mq-h" style="padding-bottom:0;">
+  <div class="w" style="margin-bottom:16px;"><div class="sh"><p class="sn">06 / MARQUEE</p><h2 id="mq-h">Marquee — <em>스크롤 속도·방향 반응</em></h2></div></div>
+  <div id="mq1" style="overflow:hidden;border:1px solid var(--line);padding:14px 0;background:var(--bg2);margin-bottom:2px;" aria-label="마퀴 1" aria-live="off"><div style="display:inline-flex;align-items:center;gap:24px;padding:0 16px;font-family:var(--s);font-size:clamp(20px,4vw,44px);font-weight:300;white-space:nowrap;" aria-hidden="true">Motion Kit <span style="color:var(--acc);">·</span> Design <span style="color:var(--acc);">·</span> Interaction <span style="color:var(--acc);">·</span> Animation <span style="color:var(--acc);">·</span> UX <span style="color:var(--acc);">·</span>&nbsp;</div></div>
+  <div id="mq2" style="overflow:hidden;border:1px solid var(--line);padding:14px 0;background:var(--bg2);" aria-label="마퀴 2" aria-live="off"><div style="display:inline-flex;align-items:center;gap:24px;padding:0 16px;font-family:var(--s);font-size:clamp(16px,3vw,36px);font-weight:300;font-style:italic;white-space:nowrap;" aria-hidden="true">모션킷 · 디자인 · 인터랙션 · 애니메이션 · 사용자경험 ·&nbsp;</div></div>
+  <div class="w" style="padding-top:14px;padding-bottom:64px;">
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">SPEED</label><div class="mk-row"><input type="range" id="mq-spd" min="10" max="200" step="5" value="55"><span class="mk-val" id="mq-spd-v">55</span></div></div>
+        <div class="mk-field"><label class="mk-label">SCROLL REACT</label><select id="mq-sr"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+        <div class="mk-field"><label class="mk-label">PAUSE ON HOVER</label><select id="mq-ph"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="mq-snippet"></code></pre><button class="mk-copy" data-for="mq-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 07 TEXT MODULES ════════════════════════════════════ -->
+<section data-module="text" data-category="text" data-tags="텍스트 타이포 reveal transition split blur typewriter shuffle fill shimmer" aria-labelledby="txt-h">
+  <div class="w">
+    <div class="sh"><p class="sn">07 / TEXT MODULES</p><h2 id="txt-h">Text — <em>Reveal · Transition · Split · Blur · Typewriter · Shuffle · Fill · Shimmer</em></h2></div>
+    <div class="g2" style="margin-bottom:10px;">
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ STREAM</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <label style="font-family:var(--m);font-size:9px;color:var(--dim);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="stream-hangul" style="accent-color:var(--acc);"> 한글</label>
+          <div style="display:flex;align-items:center;gap:4px;"><input type="range" id="stream-spd" min="15" max="120" value="50" style="width:60px;accent-color:var(--acc);"><span id="stream-spd-v" style="font-family:var(--m);font-size:9px;color:var(--dim);">50ms</span></div>
+          <button class="rb" id="stream-rb">↺</button>
+        </div></div>
+        <div id="tr1" style="font-size:13px;line-height:1.65;min-height:38px;" aria-live="polite"></div></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ HANGUL IME</span><button class="rb" id="hangul-rb">↺</button></div><div id="tr2" style="font-family:var(--s);font-size:clamp(14px,2vw,22px);font-weight:300;min-height:38px;" aria-live="polite"></div></div>
+    </div>
+    <div class="g3" style="margin-bottom:10px;">
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ TRANSITION <select id="tt1-eff" style="font-size:8px;padding:2px 4px;background:var(--faint);border:1px solid var(--line);color:var(--ink);border-radius:2px;cursor:pointer;"><option value="slide-up">slide-up</option><option value="blur">blur</option><option value="rise">rise</option><option value="clip">clip</option><option value="fade">fade</option></select></span><button class="rb" id="tt1-rb">↺</button></div><div id="tt1" style="font-family:var(--s);font-size:clamp(18px,3vw,38px);font-weight:300;overflow:hidden;min-height:46px;" aria-live="polite"></div></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ 다국어 한·EN·日</span><button class="rb" id="ml1-rb">↺</button></div><div id="ml1" style="font-family:var(--s);font-size:clamp(13px,2vw,24px);font-weight:300;overflow:hidden;min-height:46px;" aria-live="polite"></div></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ CHAR-LEVEL</span><button class="rb" id="tt4-rb">↺</button></div><div id="tt4" style="font-family:var(--s);font-size:clamp(18px,3vw,36px);font-weight:300;overflow:hidden;min-height:46px;" aria-live="polite"></div></div>
+    </div>
+    <div class="g2" style="margin-bottom:10px;">
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ DIV 전환 (hover→일시정지)</span><button class="rb" id="tt3-rb">↺</button></div><div id="tt3" style="overflow:hidden;min-height:68px;display:flex;align-items:center;" aria-live="polite"></div></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ TEXT SPLIT</span><button class="rb" id="ts1-rb">↺</button></div><p id="ts1" class="med-text">Motion First Design</p></div>
+    </div>
+    <div class="g3" style="margin-bottom:10px;">
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ BLUR TEXT</span><button class="rb" id="bt1-rb">↺</button></div><p id="bt1" style="font-family:var(--s);font-weight:300;font-size:clamp(16px,3vw,34px);line-height:1;">Feel the clarity.</p></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ TYPEWRITER</span><button class="rb" id="tw1-rb">↺</button></div><div id="tw1" class="tw-text" aria-live="polite"></div></div>
+      <div class="card"><div class="row-hd"><span class="cl" style="margin:0;">▸ SHUFFLE (hover↺)</span><button class="rb" id="shf1-rb">↺</button></div><p id="shf1" class="shf-text" style="cursor:default;">MOTIONKIT</p></div>
+    </div>
+    <div class="g2">
+      <div class="card"><span class="cl">▸ SHIMMER (AI 빛 흐름)</span><div id="shm1" style="font-family:var(--s);font-size:clamp(16px,3vw,34px);font-weight:300;min-height:36px;"></div></div>
+      <div class="card"><span class="cl">▸ TEXT FILL (스크롤→채워짐)</span><p id="tf1" class="tf-text" style="color:transparent;">FILL ON SCROLL</p></div>
+    </div>
+    <div class="mk-snip"><pre><code id="txt-snippet">MK.textTransition('#el', { texts: ['Design','Motion'], effect: 'slide-up', pause: 1800 });</code></pre><button class="mk-copy" data-for="txt-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 08 SCROLL VELOCITY ══════════════════════════════════ -->
+<section data-module="scrollVelocity" data-category="scroll" data-tags="스크롤 속도 기울기 왜곡" aria-labelledby="sv-h">
+  <div class="w">
+    <div class="sh"><p class="sn">08 / SCROLL VELOCITY</p><h2 id="sv-h">ScrollVelocity — <em>속도→왜곡</em></h2><p>빠르게 스크롤할수록 텍스트가 기울고 흐려집니다.</p></div>
+    <div class="card" style="text-align:center;padding:36px 16px;"><p id="sv1" class="big-text">스크롤 속도에 반응</p></div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">MAX SKEW</label><div class="mk-row"><input type="range" id="sv-skew" min="0" max="30" step="1" value="15"><span class="mk-val" id="sv-skew-v">15°</span></div></div>
+        <div class="mk-field"><label class="mk-label">MAX BLUR</label><div class="mk-row"><input type="range" id="sv-blur" min="0" max="20" step="1" value="8"><span class="mk-val" id="sv-blur-v">8px</span></div></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="sv-snippet"></code></pre><button class="mk-copy" data-for="sv-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 09 GLITCH ══════════════════════════════════════════ -->
+<section data-module="glitch" data-category="fx" data-tags="글리치 RGB 노이즈 CRT 아날로그" aria-labelledby="gl-h">
+  <div class="w">
+    <div class="sh"><p class="sn">09 / GLITCH</p><h2 id="gl-h">Glitch — <em>RGB Cinema · Digital Noise · CRT Analog</em></h2></div>
+    <div class="g3" style="margin-bottom:14px;">
+      <div class="gl-box"><span class="cl">RGB CINEMA (auto)</span><p class="gl-text" id="gl1">GLITCH</p><button class="rb" onclick="MKD.glitch('gl1')">▶</button></div>
+      <div class="gl-box"><span class="cl">DIGITAL NOISE (hover)</span><p class="gl-text" id="gl2" style="color:var(--acc2);">NOISE</p><button class="rb" onclick="MKD.glitch('gl2')">▶</button></div>
+      <div class="gl-box"><span class="cl">CRT ANALOG (auto)</span><p class="gl-text" id="gl3" style="color:var(--acc3);">ANALOG</p><button class="rb" onclick="MKD.glitch('gl3')">▶</button></div>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">PRESET</label><select id="gl-preset"><option value="rgb">rgb</option><option value="noise">noise</option><option value="crt">crt</option></select></div>
+        <div class="mk-field"><label class="mk-label">TRIGGER</label><select id="gl-trigger"><option value="auto">auto</option><option value="hover">hover</option><option value="scroll">scroll</option><option value="manual">manual</option></select></div>
+        <div class="mk-field"><label class="mk-label">INTENSITY</label><div class="mk-row"><input type="range" id="gl-int" min=".1" max="1" step=".05" value=".6"><span class="mk-val" id="gl-int-v">0.60</span></div></div>
+        <div class="mk-field"><label class="mk-label">SPEED</label><div class="mk-row"><input type="range" id="gl-spd" min=".2" max="4" step=".1" value="1"><span class="mk-val" id="gl-spd-v">1.0×</span></div></div>
+        <div class="mk-field"><label class="mk-label">LOOP</label><select id="gl-loop"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;"><div class="gl-box" style="max-width:340px;"><span class="cl">LIVE PREVIEW</span><p class="gl-text" id="gl-live" style="font-size:clamp(18px,4vw,44px);">LIVE GLITCH</p></div></div>
+    <div class="mk-snip"><pre><code id="gl-snippet"></code></pre><button class="mk-copy" data-for="gl-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 10 TILT + MAGNETIC ══════════════════════════════════ -->
+<section data-module="tilt" data-category="interaction" data-tags="틸트 자기장 magnetic 3D" aria-labelledby="ti-h">
+  <div class="w">
+    <div class="sh"><p class="sn">10 / TILT · MAGNETIC</p><h2 id="ti-h">Tilt & Magnetic — <em>3D 기울기 · 자기장</em></h2></div>
+    <div class="g3">
+      <div id="ti1" class="tilt-card"><span class="cl">▸ TILT</span><p style="font-family:var(--s);font-size:22px;font-weight:300;margin-top:6px;">3D 기울기</p></div>
+      <div id="ti2" class="tilt-card" style="background:linear-gradient(135deg,var(--bg2),#221b22);"><span class="cl">▸ TILT + SCALE</span><p style="font-family:var(--s);font-size:22px;font-weight:300;margin-top:6px;">hover 확대</p></div>
+      <div style="display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r8);position:relative;min-height:120px;">
+        <span class="cl" style="position:absolute;top:10px;left:14px;margin:0;">▸ MAGNETIC</span>
+        <button id="mag1" class="mag-btn">자석 버튼</button>
+      </div>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">TILT MAX</label><div class="mk-row"><input type="range" id="ti-max" min="2" max="40" step="1" value="18"><span class="mk-val" id="ti-max-v">18°</span></div></div>
+        <div class="mk-field"><label class="mk-label">SCALE</label><div class="mk-row"><input type="range" id="ti-scale" min="1" max="1.3" step=".01" value="1.05"><span class="mk-val" id="ti-scale-v">1.05</span></div></div>
+        <div class="mk-field"><label class="mk-label">EASE</label><div class="mk-row"><input type="range" id="ti-ease" min=".01" max=".3" step=".01" value=".1"><span class="mk-val" id="ti-ease-v">0.10</span></div></div>
+        <div class="mk-field"><label class="mk-label">MAG STRENGTH</label><div class="mk-row"><input type="range" id="mag-str" min=".1" max="1" step=".05" value=".45"><span class="mk-val" id="mag-str-v">0.45</span></div></div>
+        <div class="mk-field"><label class="mk-label">MAG RADIUS</label><div class="mk-row"><input type="range" id="mag-rad" min="30" max="200" step="10" value="90"><span class="mk-val" id="mag-rad-v">90px</span></div></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="ti-snippet"></code></pre><button class="mk-copy" data-for="ti-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 11 CARD GLOW ═══════════════════════════════════════ -->
+<section data-module="cardGlow" data-category="fx" data-tags="카드 glow 빛 border spotlight aurora" aria-labelledby="cg-h">
+  <div class="w">
+    <div class="sh"><p class="sn">11 / CARD GLOW</p><h2 id="cg-h">CardGlow — <em>6 modes</em></h2></div>
+    <div class="mk-panel" style="margin-bottom:12px;">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">COLOR 1</label><input type="color" id="cg-c1" value="#ff5b1c"></div>
+        <div class="mk-field"><label class="mk-label">COLOR 2</label><input type="color" id="cg-c2" value="#ffd166"></div>
+        <div class="mk-field"><label class="mk-label">SPEED</label><div class="mk-row"><input type="range" id="cg-spd" min=".5" max="12" step=".5" value="3"><span class="mk-val" id="cg-spd-v">3</span></div></div>
+        <div class="mk-field"><label class="mk-label">OPACITY</label><div class="mk-row"><input type="range" id="cg-op" min=".1" max="1" step=".05" value=".7"><span class="mk-val" id="cg-op-v">0.70</span></div></div>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="gc" id="gcb"><span class="cl">▸ BORDER</span><h3>CSS mask 테두리</h3><p>항상 활성</p></div>
+      <div class="gc" id="gcs"><span class="cl">▸ SPOTLIGHT</span><h3>마우스 추적</h3><p>hover 시 빛</p></div>
+      <div class="gc" id="gcf"><span class="cl">▸ FLOW</span><h3>Hover shine</h3><p>속도 반응</p></div>
+      <div class="gc" id="gca"><span class="cl">▸ AURORA</span><h3>오로라 혼합</h3><p>radial blend</p></div>
+      <div class="gc" id="gcg"><span class="cl">▸ GLOW</span><h3>Box-shadow 발광</h3><p>hover glow</p></div>
+      <div class="gc" id="gcr"><span class="cl">▸ RAINBOW</span><h3>전 스펙트럼</h3><p>무지개</p></div>
+    </div>
+    <div class="mk-snip"><pre><code id="cg-snippet"></code></pre><button class="mk-copy" data-for="cg-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 12 STICKY STACK ════════════════════════════════════ -->
+<section data-module="stickyStack" data-category="scroll" data-tags="sticky 카드 쌓임" aria-labelledby="ss-h">
+  <div class="w">
+    <div class="sh"><p class="sn">12 / STICKY STACK</p><h2 id="ss-h">StickyStack — <em>카드 쌓임</em></h2><p>위쪽 카드가 sticky로 고정되며 뒤 카드가 올라오면 축소됩니다.</p></div>
+    <div id="ss-wrap" style="position:relative;overflow:visible;">
+      <div class="sk-item" id="ss1" style="background:linear-gradient(135deg,var(--bg2),#2a1f17);"><h3>Card 01 — Sticky</h3></div>
+      <div class="sk-item" id="ss2" style="background:linear-gradient(135deg,var(--bg2),#1a2024);"><h3>Card 02 — 올라오면 01 축소</h3></div>
+      <div class="sk-item" id="ss3" style="background:linear-gradient(135deg,var(--bg2),#221b22);"><h3>Card 03 — 마지막</h3></div>
+    </div>
+    <div class="mk-snip" style="margin-top:12px;"><pre><code id="ss-snippet">MK.stickyStack('#container', { mode: 'stack', offsetY: 20 });</code></pre><button class="mk-copy" data-for="ss-snippet">COPY</button></div>
+  </div>
+</section>
+<!-- Horizontal scroll -->
+<div id="hs-outer" style="height:350vh;position:relative;">
+  <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+    <div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:10;font-family:var(--m);font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.2em;text-transform:uppercase;pointer-events:none;" aria-hidden="true">스크롤 ↓ → 가로 전환</div>
+    <div id="hs-track" style="display:flex;width:400%;height:100%;will-change:transform;">
+      <div style="width:25%;height:100%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),#2a1f17);padding:60px;"><p style="font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.2em;margin-bottom:14px;">01/04</p><h3 style="font-family:var(--s);font-weight:300;font-size:clamp(28px,5vw,68px);line-height:1;letter-spacing:-.03em;margin-bottom:14px;">가로 스크롤</h3><p style="font-size:13px;color:var(--dim);max-width:360px;text-align:center;">stickyStack mode:'horizontal'. 스크롤하면 패널이 옆으로.</p></div>
+      <div style="width:25%;height:100%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),#1a2024);padding:60px;"><p style="font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.2em;margin-bottom:14px;">02/04</p><h3 style="font-family:var(--s);font-weight:300;font-size:clamp(28px,5vw,68px);line-height:1;letter-spacing:-.03em;">ScrollTrigger</h3></div>
+      <div style="width:25%;height:100%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),#221b22);padding:60px;"><p style="font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.2em;margin-bottom:14px;">03/04</p><h3 style="font-family:var(--s);font-weight:300;font-size:clamp(28px,5vw,68px);line-height:1;letter-spacing:-.03em;">Horizontal</h3></div>
+      <div style="width:25%;height:100%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),#1f1a22);padding:60px;"><p style="font-family:var(--m);font-size:9px;color:var(--acc);text-transform:uppercase;letter-spacing:.2em;margin-bottom:14px;">04/04</p><h3 style="font-family:var(--s);font-weight:300;font-size:clamp(28px,5vw,68px);line-height:1;letter-spacing:-.03em;">Motion Kit</h3></div>
+    </div>
+    <div id="hs-dots" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;" aria-hidden="true">
+      <div class="hsd" style="width:6px;height:6px;border-radius:50%;background:var(--acc);transition:transform .3s,background .3s;"></div>
+      <div class="hsd" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:transform .3s,background .3s;"></div>
+      <div class="hsd" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:transform .3s,background .3s;"></div>
+      <div class="hsd" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:transform .3s,background .3s;"></div>
+    </div>
+  </div>
+</div>
+<div class="div"></div>
+
+<!-- ══ 13 LOADER ══════════════════════════════════════════ -->
+<section data-module="loader" data-category="fx" data-tags="로더 슬롯 카운터 진행" aria-labelledby="ld-h">
+  <div class="w">
+    <div class="sh"><p class="sn">13 / LOADER</p><h2 id="ld-h">Loader — <em>7 styles</em></h2></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" role="group">
+      <button class="btn" onclick="dlLoader('bar')">BAR</button>
+      <button class="btn" onclick="dlLoader('slot')">★ SLOT</button>
+      <button class="btn" onclick="dlLoader('counter')">COUNTER</button>
+      <button class="btn" onclick="dlLoader('circle')">CIRCLE</button>
+      <button class="btn" onclick="dlLoader('reveal')">REVEAL</button>
+      <button class="btn" onclick="dlLoader('split')">SPLIT</button>
+      <button class="btn" onclick="dlLoader('minimal')">MINIMAL</button>
+    </div>
+    <div class="mk-panel">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">SPEED×</label><div class="mk-row"><input type="range" id="ld-spd" min="1" max="40" value="10" oninput="document.getElementById('ld-v').textContent=(this.value/10).toFixed(1)"><span class="mk-val" id="ld-v">1.0</span></div></label></div>
+        <div class="mk-field"><label class="mk-label">FG</label><input type="color" id="ld-col" value="#ff5b1c"></div>
+        <div class="mk-field"><label class="mk-label">BG</label><input type="color" id="ld-bg" value="#080706"></div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="ld-snippet"></code></pre><button class="mk-copy" data-for="ld-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 14 LIGHTBOX ════════════════════════════════════════ -->
+<section data-module="lightbox" data-category="media" data-tags="라이트박스 갤러리 이미지 팝업" aria-labelledby="lb-h">
+  <div class="w">
+    <div class="sh"><p class="sn">14 / LIGHTBOX</p><h2 id="lb-h">Lightbox — <em>skeleton/spinner · 키보드 · 스와이프 · 줌</em></h2></div>
+    <div class="mk-panel" style="margin-bottom:12px;">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">ANIMATION</label><select id="lb-anim"><option value="zoom">zoom</option><option value="fade">fade</option></select></div>
+        <div class="mk-field"><label class="mk-label">LOADING</label><select id="lb-loading"><option value="skeleton" selected>skeleton</option><option value="spinner">spinner</option><option value="none">none</option></select></div>
+        <div class="mk-field"><label class="mk-label">COUNTER</label><select id="lb-counter"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+        <div class="mk-field"><label class="mk-label">CAPTION</label><select id="lb-caption"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+        <div class="mk-field"><label class="mk-label">ZOOM</label><select id="lb-zoom"><option value="true" selected>ON</option><option value="false">OFF</option></select></div>
+        <button class="btn" onclick="rebuildLightbox()" style="margin-top:auto;">APPLY</button>
+      </div>
+    </div>
+    <div class="lbg" id="lb-wrap" role="list">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=1400&q=90" data-caption="사진 01" src="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=500&q=70" alt="갤러리 1" loading="lazy">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1682687218904-ce3e4ca8cca1?w=1400&q=90" data-caption="사진 02" src="https://images.unsplash.com/photo-1682687218904-ce3e4ca8cca1?w=500&q=70" alt="갤러리 2" loading="lazy">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1706543954966-fdf54bb0e1d5?w=1400&q=90" data-caption="사진 03" src="https://images.unsplash.com/photo-1706543954966-fdf54bb0e1d5?w=500&q=70" alt="갤러리 3" loading="lazy">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1714906597702-ccae1ea1abf5?w=1400&q=90" data-caption="사진 04" src="https://images.unsplash.com/photo-1714906597702-ccae1ea1abf5?w=500&q=70" alt="갤러리 4" loading="lazy">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=1400&q=90" data-caption="사진 05" src="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=500&q=70" alt="갤러리 5" loading="lazy">
+      <img class="lbi" role="listitem" data-lightbox="https://images.unsplash.com/photo-1682687218904-ce3e4ca8cca1?w=1400&q=90" data-caption="사진 06" src="https://images.unsplash.com/photo-1682687218904-ce3e4ca8cca1?w=500&q=70" alt="갤러리 6" loading="lazy">
+    </div>
+    <div class="mk-snip"><pre><code id="lb-snippet"></code></pre><button class="mk-copy" data-for="lb-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 15 PAGE REVEAL ════════════════════════════════════ -->
+<section data-module="pageReveal" data-category="page" data-tags="페이지 진입 전환 curtain split" aria-labelledby="pr-h">
+  <div class="w">
+    <div class="sh"><p class="sn">15 / PAGE REVEAL</p><h2 id="pr-h">PageReveal — <em>5 effects · 커스터마이징</em></h2></div>
+    <div class="mk-panel" style="margin-bottom:12px;">
+      <div class="mk-opts">
+        <div class="mk-field"><label class="mk-label">COLOR</label><input type="color" id="pr-color" value="#ff5b1c"></div>
+        <div class="mk-field"><label class="mk-label">DURATION</label><div class="mk-row"><input type="range" id="pr-dur" min=".3" max="2" step=".1" value=".9"><span class="mk-val" id="pr-dur-v">0.9s</span></div></div>
+        <div class="mk-field"><label class="mk-label">EASE</label><select id="pr-ease"><option value="power3.inOut" selected>power3.inOut</option><option value="power2.inOut">power2.inOut</option><option value="expo.inOut">expo.inOut</option></select></div>
+      </div>
+    </div>
+    <div class="g3">
+      <button class="pv-btn" onclick="triggerPR('curtain')"><b>Curtain</b><p>커튼 내려왔다 올라감</p></button>
+      <button class="pv-btn" onclick="triggerPR('split')"><b>Split</b><p>위아래 갈라짐</p></button>
+      <button class="pv-btn" onclick="triggerPR('circle')"><b>Circle</b><p>원형 확장</p></button>
+      <button class="pv-btn" onclick="triggerPR('wipe')"><b>Wipe</b><p>가로 와이프</p></button>
+      <button class="pv-btn" onclick="triggerPR('diagonal')"><b>Diagonal</b><p>대각선 와이프</p></button>
+    </div>
+    <div class="mk-snip"><pre><code id="pr-snippet"></code></pre><button class="mk-copy" data-for="pr-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 16 AMBIENT MEDIA ══════════════════════════════════ -->
+<section data-module="ambientMedia" data-category="media" data-tags="ambient 배경 glow 이미지 비디오" aria-labelledby="am-h">
+  <div class="w">
+    <div class="sh"><p class="sn">16 / AMBIENT MEDIA</p><h2 id="am-h">AmbientMedia — <em>이미지·비디오 주변 glow</em></h2></div>
+    <div class="g2">
+      <div><span class="cl" style="margin-bottom:6px;">▸ IMAGE</span><div id="ai-w"><img id="a-img" src="https://images.unsplash.com/photo-1682687982107-14492010e05e?w=800&q=80" alt="ambient" loading="lazy" style="width:100%;border-radius:var(--r);"></div></div>
+      <div><span class="cl" style="margin-bottom:6px;">▸ VIDEO</span><div id="av-w"><video id="a-vid" muted loop playsinline controls style="width:100%;border-radius:var(--r);" aria-label="ambient 비디오"><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"></video></div></div>
+    </div>
+    <div class="mk-snip"><pre><code id="am-snippet">MK.ambientMedia('#img', { type: 'image', blur: 48, opacity: 0.6 });</code></pre><button class="mk-copy" data-for="am-snippet">COPY</button></div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══ 17 CSS SCROLL + VIBRATE + PAGE TRANSITION ═════════ -->
+<section data-module="cssScroll" data-category="scroll" data-tags="CSS 스크롤 변수 진동 페이지 전환" aria-labelledby="cs-h">
+  <div class="w">
+    <div class="sh"><p class="sn">17 / CSS SCROLL · VIBRATE · PAGE TRANSITION</p><h2 id="cs-h">기타 모듈</h2></div>
+    <div class="g2">
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:130px;position:relative;">
+        <span class="cl" style="position:absolute;top:12px;left:14px;margin:0;">▸ CSS SCROLL (회전)</span>
+        <div id="cs1" style="width:72px;height:72px;background:var(--acc);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;font-family:var(--s);font-size:12px;font-weight:300;" aria-label="스크롤 회전">CSS↔Scroll</div>
+      </div>
+      <div class="card">
+        <span class="cl">▸ PAGE TRANSITION</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+          <button class="btn" onclick="triggerPT('curtain')">Curtain</button>
+          <button class="btn" onclick="triggerPT('split')">Split</button>
+          <button class="btn" onclick="triggerPT('circle')">Circle</button>
+          <button class="btn" onclick="triggerPT('wipe')">Wipe</button>
+        </div>
+        <span class="cl">▸ VIBRATE (모바일)</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+          <button class="btn" data-mk-vibrate data-mk-duration="30">단진동 30ms</button>
+          <button class="btn" data-mk-vibrate data-mk-pattern="[100,50,100]">패턴 100·50·100</button>
+          <button class="btn" data-mk-vibrate data-mk-duration="150" data-mk-event="mouseenter">Hover 진동</button>
+        </div>
+      </div>
+    </div>
+    <div class="mk-snip"><pre><code id="cs-snippet">MK.cssScroll('#el', { property: '--progress', rangeStart: 0, rangeEnd: 360, onUpdate: v => el.style.transform = `rotate(${v}deg)` });</code></pre><button class="mk-copy" data-for="cs-snippet">COPY</button></div>
+  </div>
+</section>
+
+</main>
+<footer style="padding:44px 20px 28px;border-top:1px solid var(--line);background:var(--bg2);" role="contentinfo">
+  <div class="w"><p style="font-family:var(--s);font-weight:900;font-size:26px;letter-spacing:-.04em;margin-bottom:4px;">Motion<span style="color:var(--acc);">Kit</span></p><p style="font-family:var(--m);font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.15em;">v0.5 · 28 MODULES · MIT © 2026 · GSAP 3.12 + LENIS 1.1</p></div>
+</footer>
+
+<script src="../dist/motionkit.umd.js"></script>
+<script src="motionkit-demo.js"></script>
+</body>
+</html>

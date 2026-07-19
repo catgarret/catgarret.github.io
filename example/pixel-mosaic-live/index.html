@@ -917,8 +917,8 @@
             <div class="install-option">
               <strong>CDN</strong>
               <span data-i18n="cdnDescription">별도 빌드 과정 없이 HTML에서 바로 사용하는 방식</span>
-              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.css</code>
-              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.js</code>
+              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader/dist/pixel-mosaic.min.css</code>
+              <code class="install-command">https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader/dist/pixel-mosaic.min.js</code>
             </div>
           </div>
           <h3 class="usage-subtitle" data-i18n="usageOrder">사용 순서</h3>
@@ -1127,7 +1127,7 @@
 
     function updateGeneratedCode() {
       const noise = Number(noiseAmount.value);
-      generatedCode.textContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.css">
+      generatedCode.textContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader/dist/pixel-mosaic.min.css">
 
 <img
   data-pixel-mosaic
@@ -1137,7 +1137,7 @@
   alt="${t('codeImageAlt')}"
 >
 
-<script src="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader@1.3.4/dist/pixel-mosaic.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/@dong-gri/pixel-mosaic-lazy-loader/dist/pixel-mosaic.min.js"><\/script>
 <script>
 const mosaic = PixelMosaic.init({
   duration: ${Number(duration.value)},

@@ -712,8 +712,54 @@
       font-size: 13px;
     }
 
+    .kineto-promo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      margin-top: 92px;
+      padding: 30px 32px;
+      border: 1px solid #dcdce1;
+      border-radius: 22px;
+      background: #202023;
+      color: #fff;
+    }
+
+    .kineto-promo-copy { max-width: 760px; }
+
+    .kineto-promo h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 720;
+      letter-spacing: -.035em;
+    }
+
+    .kineto-promo p {
+      margin: 8px 0 0;
+      color: #c7c7cc;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .kineto-link {
+      display: inline-flex;
+      min-height: 44px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 12px;
+      color: #202023;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 720;
+      text-decoration: none;
+    }
+
+    .kineto-link:hover { background: #f0f0f2; }
+
     .footnote {
-      margin: 92px 0 34px;
+      margin: 34px 0;
       padding: 24px 0;
       border-top: 1px solid #e2e2e5;
       color: #85858b;
@@ -780,6 +826,8 @@
       .tier { text-align: left; }
       .support-current { align-items: flex-start; flex-direction: column; }
       .support-current .tier { text-align: left; }
+      .kineto-promo { align-items: stretch; flex-direction: column; padding: 24px; }
+      .kineto-link { width: 100%; }
       .format-item { display: block; }
       .format-media { margin: 8px 8px 0; }
       .static-media img { height: 68vw; min-height: 250px; }
@@ -1059,6 +1107,14 @@
         </article>
       </div>
     </section>
+
+    <aside class="kineto-promo" aria-labelledby="kineto-title">
+      <div class="kineto-promo-copy">
+        <h2 id="kineto-title" data-i18n="kinetoTitle">이 효과가 마음에 드셨나요?</h2>
+        <p data-i18n="kinetoDescription">Kineto에서 픽셀 모자이크와 더 많은 웹 모션을 직접 조정하고, 코드를 바로 복사해 보세요.</p>
+      </div>
+      <a class="kineto-link" href="https://kineto.dongri.me/" target="_blank" rel="noreferrer" data-i18n="kinetoCta">Kineto에서 더 보기</a>
+    </aside>
 
     <p class="footnote" data-i18n="footnote">기기에서 동작 줄이기를 사용 중이면 모자이크와 노이즈를 생략하고 원본 이미지를 바로 표시합니다.</p>
   </main>

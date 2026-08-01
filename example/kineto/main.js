@@ -5,11 +5,52 @@
       document.documentElement.classList.remove('kt-preload');
       throw new Error('Kineto failed to load');
     }
+    // Image Cover Reveal examples demonstrate the real per-image sampler by
+    // default. This runs before autoInit on the live page; browser QA injects
+    // scripts after DOM ready, so recreate an already-started instance there.
+    document.querySelectorAll('[data-kt-cover-reveal]').forEach((target)=>{
+      if(!target.querySelector('img'))return;
+      const gallery=Boolean(target.closest('#cover-gallery-demo'));
+      target.setAttribute('data-kt-color-mode','auto');
+      target.removeAttribute('data-kt-colors');
+      if(gallery)target.setAttribute('data-kt-mask','false');
+      if(Kineto.getInstance(target,'coverReveal')){
+        Kineto.updateModule(target,'coverReveal',{colorMode:'auto',colors:'',...(gallery?{mask:false}:{})});
+      }
+    });
+    const radialDemo=document.querySelector('[data-kt-slider="radial"]');
+    if(radialDemo){
+      radialDemo.setAttribute('data-kt-position','bottom');
+      radialDemo.setAttribute('data-kt-radius','180');
+      radialDemo.setAttribute('data-kt-step','34');
+      if(Kineto.getInstance(radialDemo,'slider')){
+        Kineto.updateModule(radialDemo,'slider',{position:'bottom',radius:180,step:34});
+      }
+    }
+    document.addEventListener('change',(event)=>{
+      const field=event.target.closest?.('.kt-playground__field[data-module="slider"][data-key="position"]');
+      if(!field||!radialDemo)return;
+      const scope=field.closest('.kt-drawer-sheet,.kt-playground__body,.kt-playground')||document;
+      const radius=event.target.value==='center'?96:180;
+      const radiusInput=scope.querySelector('.kt-playground__field[data-module="slider"][data-key="radius"] input[data-option]');
+      if(radiusInput&&Number(radiusInput.value)!==radius){
+        radiusInput.value=String(radius);
+        radiusInput.dispatchEvent(new Event('input',{bubbles:true}));
+      }
+    });
     // The demo ships WITH smooth scrolling on — it is one of the library's
     // features, so the default page should show it. The Smooth Scroll card
     // lets a visitor switch it off and feel the difference immediately.
     // Respect prefers-reduced-motion: never hijack scrolling for those users.
     const wantsSmooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      // WebKit's native trackpad momentum already has a longer decay. A shorter
+      // Lenis duration avoids stacking two long easing tails, and a slightly
+      // longer hover roll compensates for WebKit's sharper transition finish.
+      document.querySelectorAll('[data-kt-overflow-text="rolling"][data-kt-trigger="hover"]')
+        .forEach((item) => item.setAttribute('data-kt-roll-duration', '380'));
+    }
     try{ Kineto.config({smooth:false}); }catch(_){}
     // B-2: when the page opens with a #mod-… deep link, don't let the scroll
     // observer clear the hash before the initial restore scroll runs. Unlocked
@@ -46,11 +87,17 @@
         'cursor-frame':'문구 뒤의 커서로 진행 상태를 표시합니다.',
         'compound-frame':'스피너와 상태 정보를 한 줄에 조합합니다.'
       };
+      const presetDescriptions={
+        braille:'두 점이 셀 가장자리를 따라 회전하는 점자 스피너입니다.',
+        'braille-pulse':'점자 세로 막대가 차오르고 잠시 멈춘 뒤 비워집니다.',
+        circle:'부채꼴 문자가 시계 방향으로 회전합니다.',
+        clock:'시계 얼굴이 12시·3시·6시·9시 순서로 바뀝니다.'
+      };
       document.querySelectorAll('.loader-preview--frame [data-kt-terminal-style]').forEach((node)=>{
         const card=node.closest('article.card');
         if(!card||card.querySelector(':scope > p'))return;
         const preset=byId.get(node.getAttribute('data-kt-terminal-style'));
-        const description=descriptions[preset?.renderer];
+        const description=presetDescriptions[preset?.id]||descriptions[preset?.renderer];
         if(!description)return;
         const p=document.createElement('p');
         p.textContent=description;
@@ -578,7 +625,8 @@
 
     const runPageReveal=(effect='curtain')=>{
       // pageReveal instances are one-shot: drop the previous record first so
-      // every button press runs a fresh reveal.
+      // every button press runs a fresh reveal. The whole page is the intended
+      // demo surface, including the persistent header.
       Kineto.destroyModule(document.body,'pageReveal');
       const panelOptions=window.KinetoPlayground?.pageRevealOptions?.()||{duration:.65,color:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#ff5b1c',color2:'#101318'};
       Kineto.pageReveal(document.body,{...panelOptions,effect});
@@ -610,7 +658,7 @@
       const shouldRun=smoothWanted()&&pastHero();
       if(shouldRun===smoothOn)return;
       smoothOn=shouldRun;
-      try{ shouldRun?Kineto.enableSmooth({duration:1.05}):Kineto.disableSmooth(); }catch(_){}
+      try{ shouldRun?Kineto.enableSmooth({duration:isSafari?.72:1.05}):Kineto.disableSmooth(); }catch(_){}
     };
     if(smoothToggle){
       smoothToggle.checked=wantsSmooth;
@@ -623,7 +671,7 @@
       // An explicit choice wins over the hero heuristic from here on.
       smoothManual=true;
       smoothOn=checked;
-      if(checked)Kineto.enableSmooth({duration:1.05});
+      if(checked)Kineto.enableSmooth({duration:isSafari?.72:1.05});
       else Kineto.disableSmooth();
       syncSmoothLabel(checked);
     });

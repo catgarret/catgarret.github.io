@@ -459,6 +459,23 @@
   });
 })();
 
+(function () {
+  const sets = window.MK_HELP_I18N;
+  if (!sets) return;
+  const copy = {
+    ko: { mask: '마지막 색상 패널을 색 없는 콘텐츠 마스크로 대체합니다. layers가 2이면 color2는 사용하지 않습니다.', color2: '두 번째 패널 색입니다. Mask를 켜 마지막 패널이 마스크로 대체되면 사용되지 않습니다.' },
+    en: { mask: 'Replaces the final colored panel with a colorless content mask. With two layers, color2 is not used.', color2: 'Color of the second panel. It is unused when Mask replaces that final panel.' },
+    ja: { mask: '最後の色付きパネルを色のないコンテンツマスクに置き換えます。2レイヤーではcolor2を使いません。', color2: '2枚目のパネル色。Maskが最後のパネルを置き換える場合は使われません。' },
+    'zh-CN': { mask: '用无颜色的内容遮罩替代最后一个彩色面板。两层时不使用 color2。', color2: '第二个面板的颜色。Mask 替代最后面板时不会使用。' },
+    'zh-TW': { mask: '以無顏色的內容遮罩取代最後一個彩色面板。兩層時不使用 color2。', color2: '第二個面板的顏色。Mask 取代最後面板時不會使用。' },
+    ru: { mask: 'Заменяет последнюю цветную панель бесцветной маской контента. При двух слоях color2 не используется.', color2: 'Цвет второй панели. Не используется, когда Mask заменяет последнюю панель.' },
+    it: { mask: 'Sostituisce l’ultimo pannello colorato con una maschera del contenuto senza colore. Con due livelli color2 non viene usato.', color2: 'Colore del secondo pannello. Non viene usato quando Mask sostituisce il pannello finale.' }
+  };
+  Object.entries(copy).forEach(([lang, tips]) => {
+    sets[lang].coverReveal = { ...(sets[lang].coverReveal || {}), ...tips };
+  });
+})();
+
 // Responsive top-level Mega Menu flow.
 (() => {
   const sets = window.MK_HELP_I18N;
@@ -540,7 +557,7 @@
       "spinnerMode": "원호가 움직이는 방식입니다. spin=일정한 길이로 회전, grow=늘었다 줄며 회전, fill=진행률만큼 차오름(퍼센트 표시용).",
       "track": "원호 뒤에 옅은 배경 레일을 깝니다. 진행률을 보여줄 때 전체 길이를 가늠하기 좋습니다.",
       "rotateSpokes": "막대 하나하나가 밝아지는 대신, 스포크 뭉치 전체가 회전합니다.",
-      "barMode": "막대가 움직이는 방식입니다. slide=일정한 폭으로 가로지르고, grow=길이가 늘었다 줄며 지나갑니다.",
+      "barMode": "막대가 움직이는 방식입니다. slide=한 방향 횡단, grow=늘었다 줄며 횡단, pingpong=일정한 폭으로 좌우 왕복합니다.",
       "spread": "동시에 켜지는 칸 수입니다. 트랙 길이(dotCount)와 따로 지정합니다.",
       "emptyChar": "아직 채워지지 않은 칸에 쓸 문자입니다. 기본값 ░.",
       "fillChar": "채워진 칸에 쓸 문자입니다. 기본값 █.",
@@ -603,7 +620,7 @@
       "spinnerMode": "How the arc moves: spin (fixed length), grow (stretches and shrinks) or fill (length follows progress).",
       "track": "Draw a faint rail behind the arc, useful when showing real progress.",
       "rotateSpokes": "Rotate the whole spoke cluster instead of lighting each spoke in turn.",
-      "barMode": "How the bar travels: slide keeps a constant width, grow stretches and shrinks.",
+      "barMode": "How the bar travels: slide crosses once, grow stretches while crossing, and pingpong bounces left and right.",
       "spread": "How many cells light up at once, set independently of the track length.",
       "emptyChar": "Character for unfilled cells. Defaults to ░.",
       "fillChar": "Character for filled cells. Defaults to █.",
@@ -666,7 +683,7 @@
       "spinnerMode": "弧の動き方です。spin=一定長で回転、grow=伸縮しながら回転、fill=進捗に応じて満ちる。",
       "track": "弧の後ろに薄いレールを敷きます。進捗表示に便利です。",
       "rotateSpokes": "各スポークを順に光らせる代わりに、全体を回転させます。",
-      "barMode": "バーの動き方です。slide は一定幅で横断、grow は伸縮します。",
+      "barMode": "バーの動き方です。slide は一方向に横断、grow は伸縮しながら横断、pingpong は左右に往復します。",
       "spread": "同時に点灯するセル数です。トラック長とは別に指定します。",
       "emptyChar": "未充填セルの文字です（既定 ░）。",
       "fillChar": "充填済みセルの文字です（既定 █）。",
@@ -729,7 +746,7 @@
       "spinnerMode": "圆弧的运动方式：spin 定长旋转、grow 伸缩旋转、fill 按进度填充。",
       "track": "在圆弧后绘制淡色轨道，便于显示真实进度。",
       "rotateSpokes": "整组辐条一起旋转，而不是逐条点亮。",
-      "barMode": "进度条的移动方式：slide 等宽横穿，grow 伸缩通过。",
+      "barMode": "进度条的移动方式：slide 单向横穿，grow 伸缩横穿，pingpong 等宽左右往返。",
       "spread": "同时点亮的格数，可与轨道长度分开设置。",
       "emptyChar": "未填充格子的字符，默认 ░。",
       "fillChar": "已填充格子的字符，默认 █。",
@@ -792,7 +809,7 @@
       "spinnerMode": "圓弧的運動方式：spin 定長旋轉、grow 伸縮旋轉、fill 依進度填滿。",
       "track": "在圓弧後繪製淡色軌道，便於顯示真實進度。",
       "rotateSpokes": "整組輻條一起旋轉，而不是逐條點亮。",
-      "barMode": "進度條的移動方式：slide 等寬橫越，grow 伸縮通過。",
+      "barMode": "進度條的移動方式：slide 單向橫越，grow 伸縮橫越，pingpong 等寬左右往返。",
       "spread": "同時點亮的格數，可與軌道長度分開設定。",
       "emptyChar": "未填滿格子的字元，預設 ░。",
       "fillChar": "已填滿格子的字元，預設 █。",
@@ -855,7 +872,7 @@
       "spinnerMode": "Движение дуги: spin — фиксированная длина, grow — растёт и сжимается, fill — по прогрессу.",
       "track": "Бледная дорожка позади дуги — полезна при показе прогресса.",
       "rotateSpokes": "Вращать весь пучок спиц вместо поочерёдной подсветки.",
-      "barMode": "Движение полосы: slide — постоянная ширина, grow — растёт и сжимается.",
+      "barMode": "Движение полосы: slide идёт в одну сторону, grow растёт и сжимается, pingpong движется туда и обратно.",
       "spread": "Сколько ячеек горит одновременно, независимо от длины дорожки.",
       "emptyChar": "Символ для пустых ячеек. По умолчанию ░.",
       "fillChar": "Символ для заполненных ячеек. По умолчанию █.",
@@ -918,7 +935,7 @@
       "spinnerMode": "Movimento dell’arco: spin, grow (si allunga e accorcia) o fill (segue il progresso).",
       "track": "Disegna una guida tenue dietro l’arco, utile per il progresso reale.",
       "rotateSpokes": "Ruota l’intero gruppo di raggi invece di accenderli a turno.",
-      "barMode": "Movimento della barra: slide a larghezza fissa, grow si allunga e accorcia.",
+      "barMode": "Movimento della barra: slide attraversa in una direzione, grow si allunga, pingpong oscilla a sinistra e destra.",
       "spread": "Quante celle si accendono insieme, indipendentemente dalla traccia.",
       "emptyChar": "Carattere per le celle vuote. Predefinito ░.",
       "fillChar": "Carattere per le celle piene. Predefinito █.",
@@ -1713,6 +1730,54 @@
       waveSliceHeight: 'Altezza di ogni fascia orizzontale dell’onda, in px.'
     }
   };
+  const FLIP_HELP = {
+    ko: {
+      mode: '재배치 방식입니다. none=즉시 변경, slide=이동, fade=사라진 뒤 새 위치에서 등장, crossfade=두 상태가 교차 전환, fade-slide=이동+페이드, scale=축소 후 확대.',
+      duration: '재배치 모션 한 번의 시간(초)입니다. mode가 none이면 적용되지 않습니다.',
+      stagger: '여러 항목의 모션이 시작되는 시간 간격(초)입니다.',
+      watch: '외부 코드가 직계 자식 DOM을 추가·삭제·재배치할 때 자동 재생합니다. shuffle(), sort(), reorder() 같은 인스턴스 메서드는 이 설정과 관계없이 직접 재생됩니다.'
+    },
+    en: {
+      mode: 'Reorder style: none=instant, slide=move, fade=fade out then in, crossfade=dissolve between layouts, fade-slide=move and fade, scale=shrink then grow.',
+      duration: 'Duration of one reorder animation in seconds. It is ignored when mode is none.',
+      stagger: 'Delay in seconds between the starts of item animations.',
+      watch: 'Automatically plays when external code adds, removes, or reorders direct child DOM nodes. Instance methods such as shuffle(), sort(), and reorder() play directly regardless of this setting.'
+    },
+    ja: {
+      mode: '項目を並べ替える動きです。noneはモーションなしで新しい位置へ即座に切り替えます。',
+      duration: '1回の並べ替えモーションの時間（秒）。modeがnoneの場合は適用されません。',
+      stagger: '各項目のモーション開始間隔（秒）です。',
+      watch: '外部コードが直下のDOM子要素を追加・削除・並べ替えた時に自動再生します。shuffle()、sort()、reorder()はこの設定に関係なく直接再生します。'
+    },
+    'zh-CN': {
+      mode: '项目重新排列时的移动方式。none 会无动画地立即切换到新位置。',
+      duration: '单次重排动画时长（秒）；mode 为 none 时不生效。',
+      stagger: '各项目动画开始之间的间隔（秒）。',
+      watch: '外部代码添加、删除或重排直属 DOM 子节点时自动播放。shuffle()、sort()、reorder() 等实例方法不受此设置影响，会直接播放。'
+    },
+    'zh-TW': {
+      mode: '項目重新排列時的移動方式。none 會不使用動畫，立即切換到新位置。',
+      duration: '單次重排動畫時間（秒）；mode 為 none 時不套用。',
+      stagger: '各項目動畫開始之間的間隔（秒）。',
+      watch: '外部程式碼新增、刪除或重排直屬 DOM 子節點時自動播放。shuffle()、sort()、reorder() 等實例方法不受此設定影響，會直接播放。'
+    },
+    ru: {
+      mode: 'Способ перехода элементов на новые места. none применяет новую раскладку сразу, без анимации.',
+      duration: 'Длительность одной анимации перестановки в секундах. Не используется при mode none.',
+      stagger: 'Задержка между началом анимации элементов в секундах.',
+      watch: 'Автозапуск при добавлении, удалении или перестановке прямых дочерних DOM-узлов внешним кодом. Методы shuffle(), sort() и reorder() запускаются напрямую независимо от этой настройки.'
+    },
+    it: {
+      mode: 'Come gli elementi raggiungono la nuova posizione. none applica subito il nuovo layout senza animazione.',
+      duration: 'Durata di una transizione di riordino, in secondi. Non si applica con mode none.',
+      stagger: 'Intervallo in secondi tra l’avvio delle animazioni degli elementi.',
+      watch: 'Avvia automaticamente quando codice esterno aggiunge, rimuove o riordina figli DOM diretti. I metodi shuffle(), sort() e reorder() si avviano direttamente indipendentemente da questa opzione.'
+    }
+  };
+  for (const [lang, tips] of Object.entries(FLIP_HELP)) {
+    OVERRIDE[lang] = OVERRIDE[lang] || {};
+    OVERRIDE[lang].flip = Object.assign({}, OVERRIDE[lang].flip, tips);
+  }
   for (const [lang, tips] of Object.entries(LAZY_WAVE)) {
     OVERRIDE[lang] = OVERRIDE[lang] || {};
     OVERRIDE[lang].lazy = Object.assign({}, OVERRIDE[lang].lazy, tips);

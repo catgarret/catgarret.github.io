@@ -97,6 +97,13 @@
     .lead{font-size:clamp(1rem,2.2vw,1.3rem);color:var(--muted);max-width:720px;margin:0 auto;line-height:1.7;word-break:keep-all;text-wrap:pretty}
     .lead-line{display:block}
     .hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:38px}
+    a.hero-github{gap:0}
+    .hero-github .ph-github-logo{font-size:16px}
+    .hero-badges{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:18px 0 0;min-height:20px}
+    .hero-badges a{display:inline-flex;height:20px;border-radius:4px;transition:opacity .15s ease,transform .15s ease}
+    .hero-badges a:hover{opacity:.82;transform:translateY(-1px)}
+    .hero-badges a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    .hero-badges img{display:block;width:auto;height:20px}
     .hero-chips{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:20px 0 0;padding:0}
     .hero-chips li{position:relative;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:color-mix(in srgb,var(--panel) 78%,transparent);color:var(--muted);font:600 11.5px/1 var(--font-sans);letter-spacing:.01em;word-break:keep-all;cursor:help;transition:color .15s ease,border-color .15s ease}
     .hero-chips li:hover,.hero-chips li:focus-visible{color:var(--text);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
@@ -315,19 +322,16 @@
     .marquee-line span{padding-right:36px}
 
     .slider-demo{width:100%;overflow:hidden;padding:18px 0}
-    /* Coverflow's active-slide drop-shadow spills past the slide on all four
-       sides, and `overflow:hidden` above cut it off. clip-path with a negative
-       inset keeps a clipping box (so neighbouring slides still disappear at the
-       edges) while leaving room for the shadow — plain `overflow:visible` would
-       let the whole track bleed across the card. */
+    /* The inner wrap may paint the active shadow, while this outer demo boundary
+       still clips off-screen previews so the track cannot bleed across cards. */
     /* The module puts `kt-slider--active-shadow` on the SLIDER element, which in
        this demo IS `.slider-demo` — so it has to be matched with a compound
        selector, not `:has()` on a descendant. Both forms are listed because a
        nested `[data-kt-slider]` is also legal markup. */
     .slider-demo.kt-slider--active-shadow,
-    .slider-demo:has(>.kt-slider--active-shadow){overflow:clip;overflow-clip-margin:36px}
+    .slider-demo:has(>.kt-slider--active-shadow){overflow:hidden}
     .slider-demo--dissolve{height:clamp(230px,31vw,320px);padding:0;border-radius:var(--r-stage);background:var(--panel2)}
-    .slider-demo--dissolve>.kt-slider-wrap,.slider-demo--dissolve .kt-slider-track,.slider-demo--dissolve .kt-slide{height:100%}
+    .slider-demo--dissolve>.kt-slider-wrap,.slider-demo--dissolve .kt-slider-track,.slider-demo--dissolve .kt-slide{height:100%;border-radius:inherit;overflow:hidden;clip-path:inset(0 round var(--r-stage));-webkit-mask-image:-webkit-radial-gradient(white,black)}
     .slider-demo--dissolve .kt-slide{min-height:0}
     .slider-demo--dissolve .kt-slider-wrap,.slider-demo--dissolve .kt-slider-track,.slider-demo--dissolve .kt-slide{width:100%!important}
     .slider-demo--dissolve .kt-slide{position:relative;border-radius:0;background:var(--panel2);overflow:hidden}
@@ -386,7 +390,7 @@
     .kt-slide:nth-child(2){background:linear-gradient(150deg,#e08a2f,#7a4410)}
     .kt-slide:nth-child(3){background:linear-gradient(150deg,#c2551f,#5f230c)}
     .lightbox-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,minmax(0,1fr));width:100%;height:auto;aspect-ratio:4/3;gap:8px;padding:8px;border-radius:var(--r-stage);background:var(--panel2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 55%,transparent);overflow:hidden}
-    .lightbox-grid img{display:block;width:100%;height:100%;object-fit:cover;border-radius:12px;cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease}
+    .lightbox-grid img{display:block;min-width:0;min-height:0;width:100%;height:100%;object-fit:cover;border-radius:12px;cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease}
     .lightbox-grid img:hover{transform:scale(1.015);box-shadow:0 14px 40px rgba(18,22,33,.18)}
     @media(max-width:850px){.lightbox-grid{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}.lightbox-grid img{height:100%;aspect-ratio:auto}}
 
@@ -693,10 +697,11 @@
 }
 
 /* Radial carousel — emphasise the active item (active gets .kt-active). */
-.kt-radial-item img { width:112px!important; height:112px!important; transition: transform .45s cubic-bezier(.22,.8,.3,1), opacity .45s ease, box-shadow .45s ease; }
+.kt-radial-item img { width:76px!important; height:76px!important; transition:transform .45s cubic-bezier(.22,.8,.3,1),box-shadow .45s ease; }
 /* Clearer active↔inactive size difference: inactive shrink, active grow. */
-.kt-radial-item:not(.kt-active) img { opacity: .6; transform: scale(.78); }
-.kt-radial-item.kt-active img { transform: scale(1.25); box-shadow: 0 16px 36px rgba(0,0,0,.5); }
+.kt-radial-item:not(.kt-active) img { opacity:1; transform:scale(.92); }
+.kt-radial-item.kt-active img { opacity:1; transform:scale(1.12); box-shadow:0 12px 28px rgba(0,0,0,.36); }
+.kt-radial--center .kt-radial-item img{width:82px!important;height:82px!important}
 
 /* Segmented tabs demo: white active pill in light theme, light overlay in dark. */
 .kt-tabs--segment { --kt-seg-active: rgba(255,255,255,.14); --kt-seg-bg: rgba(255,255,255,.06); }
@@ -1014,6 +1019,7 @@ html.light .sticky-stack-unit .sticky-vertical-stage{background:#f6f6f6}
 #mod-slider .slider-demo.kt-slider--active-shadow .kt-slide.is-active,
 #mod-slider .slider-demo .kt-slider--active-shadow .kt-slide.is-active{overflow:visible}
 #mod-slider .slider-demo .kt-slide img{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover}
+#mod-slider .slider-demo.kt-slider--active-shadow{box-sizing:content-box;padding-bottom:70px;margin-bottom:-70px}
 #mod-slider .slider-controls{margin-top:12px}
 #mod-cardGlow .module-block-body{grid-template-columns:repeat(6,minmax(0,1fr))}
 #mod-cardGlow .module-block-body>.card{grid-column:span 2}
@@ -1060,7 +1066,7 @@ html.light .sticky-stack-unit .sticky-vertical-stage{background:#f6f6f6}
 .demo-css-11f48d49{padding:0;min-height:220px;align-items:stretch}
 .demo-css-3fc0df0b{width:100%;height:100%;object-fit:cover;border-radius:16px}
 .demo-css-adc847d6{padding:0;aspect-ratio:auto;height:clamp(240px,34vw,360px);width:100%;overflow:hidden}
-.demo-css-a61468e1{height:300px;padding:0;overflow:hidden}
+.demo-css-a61468e1{height:340px;padding:0;overflow:hidden}
 .demo-css-681e47c8{border-bottom-left-radius:0;border-bottom-right-radius:0}
 .demo-css-07c24c3d{min-height:150px;overflow:hidden;display:grid;place-items:center}
 .demo-css-ec89346f{font:800 2.2rem var(--font-sans);letter-spacing:-.02em;color:var(--accent)}

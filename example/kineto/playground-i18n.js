@@ -241,79 +241,79 @@
       summary: '설정 · 코드', groupMotion: '모션 · 타이밍', groupTrigger: '트리거 · 범위',
       groupLook: '외형', groupBehavior: '동작', groupAdvanced: '고급 · API',
       run: '실행', replay: '다시 재생', reset: '초기화', settings: '설정', code: '코드',
-      wrap: '자동 줄바꿈', copyCode: '코드 복사', copied: '복사됨', copy: '복사',
+      wrap: '자동 줄바꿈', copyCode: '코드 복사', copied: '복사됨', copy: '복사', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'CSS vars',
       liveHint: '옵션을 바꾸면 위 예제에 바로 반영됩니다.', closeOptions: '옵션 닫기',
       options: '옵션 설정', resize: '설정창 높이 조절 (드래그 또는 ↑/↓)',
       resizeTitle: '드래그: 높이 조절 · 더블클릭: 초기화', chooseColor: '색상 선택',
       colorValue: 'CSS 색상 값: HEX, RGB, RGBA, HSL 또는 HSLA', openSettings: '설정 열기',
       replayDone: '다시 재생했습니다', resetDone: '기본값으로 되돌렸습니다',
-      copyDone: '복사되었습니다', demoLink: '데모로 이동'
+      copyDone: '복사되었습니다', shareSettings: '설정 링크 복사', shareDone: '설정 링크를 복사했습니다', shareRestored: '공유 설정을 적용했습니다', demoLink: '데모로 이동'
     },
     en: {
       summary: 'Settings · Code', groupMotion: 'Motion · Timing', groupTrigger: 'Trigger · Range',
       groupLook: 'Appearance', groupBehavior: 'Behavior', groupAdvanced: 'Advanced · API',
       run: 'Run', replay: 'Replay', reset: 'Reset', settings: 'Settings', code: 'Code',
-      wrap: 'Wrap lines', copyCode: 'Copy code', copied: 'Copied', copy: 'Copy',
+      wrap: 'Wrap lines', copyCode: 'Copy code', copied: 'Copied', copy: 'Copy', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'CSS vars',
       liveHint: 'Changes are applied to the example above.', closeOptions: 'Close options',
       options: 'Module options', resize: 'Resize settings drawer (drag or ↑/↓)',
       resizeTitle: 'Drag to resize · Double-click to reset', chooseColor: 'Choose color',
       colorValue: 'CSS color: HEX, RGB, RGBA, HSL, or HSLA', openSettings: 'Open settings',
-      replayDone: 'Replayed', resetDone: 'Restored defaults', copyDone: 'Copied', demoLink: 'Go to demo'
+      replayDone: 'Replayed', resetDone: 'Restored defaults', copyDone: 'Copied', shareSettings: 'Copy settings link', shareDone: 'Settings link copied', shareRestored: 'Shared settings applied', demoLink: 'Go to demo'
     },
     ja: {
       summary: '設定 · コード', groupMotion: 'モーション · タイミング', groupTrigger: 'トリガー · 範囲',
       groupLook: '外観', groupBehavior: '動作', groupAdvanced: '詳細 · API',
       run: '実行', replay: '再生', reset: 'リセット', settings: '設定', code: 'コード',
-      wrap: '行を折り返す', copyCode: 'コードをコピー', copied: 'コピー済み', copy: 'コピー',
+      wrap: '行を折り返す', copyCode: 'コードをコピー', copied: 'コピー済み', copy: 'コピー', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'CSS vars',
       liveHint: '変更は上の例にすぐ反映されます。', closeOptions: '設定を閉じる',
       options: 'モジュール設定', resize: '設定パネルの高さを調整（ドラッグまたは↑/↓）',
       resizeTitle: 'ドラッグで調整 · ダブルクリックでリセット', chooseColor: '色を選択',
       colorValue: 'CSSカラー: HEX、RGB、RGBA、HSL、HSLA', openSettings: '設定を開く',
-      replayDone: '再生しました', resetDone: '初期値に戻しました', copyDone: 'コピーしました', demoLink: 'デモへ移動'
+      replayDone: '再生しました', resetDone: '初期値に戻しました', copyDone: 'コピーしました', shareSettings: '設定リンクをコピー', shareDone: '設定リンクをコピーしました', shareRestored: '共有設定を適用しました', demoLink: 'デモへ移動'
     },
     'zh-CN': {
       summary: '设置 · 代码', groupMotion: '动效 · 时间', groupTrigger: '触发 · 范围',
       groupLook: '外观', groupBehavior: '行为', groupAdvanced: '高级 · API',
       run: '运行', replay: '重新播放', reset: '重置', settings: '设置', code: '代码',
-      wrap: '自动换行', copyCode: '复制代码', copied: '已复制', copy: '复制',
+      wrap: '自动换行', copyCode: '复制代码', copied: '已复制', copy: '复制', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'CSS 变量',
       liveHint: '修改会立即应用到上方示例。', closeOptions: '关闭设置',
       options: '模块设置', resize: '调整设置面板高度（拖动或↑/↓）',
       resizeTitle: '拖动调整 · 双击重置', chooseColor: '选择颜色',
       colorValue: 'CSS 颜色：HEX、RGB、RGBA、HSL 或 HSLA', openSettings: '打开设置',
-      replayDone: '已重新播放', resetDone: '已恢复默认值', copyDone: '已复制', demoLink: '前往示例'
+      replayDone: '已重新播放', resetDone: '已恢复默认值', copyDone: '已复制', shareSettings: '复制设置链接', shareDone: '已复制设置链接', shareRestored: '已应用共享设置', demoLink: '前往示例'
     },
     'zh-TW': {
       summary: '設定 · 程式碼', groupMotion: '動效 · 時間', groupTrigger: '觸發 · 範圍',
       groupLook: '外觀', groupBehavior: '行為', groupAdvanced: '進階 · API',
       run: '執行', replay: '重新播放', reset: '重設', settings: '設定', code: '程式碼',
-      wrap: '自動換行', copyCode: '複製程式碼', copied: '已複製', copy: '複製',
+      wrap: '自動換行', copyCode: '複製程式碼', copied: '已複製', copy: '複製', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'CSS 變數',
       liveHint: '修改會立即套用到上方範例。', closeOptions: '關閉設定',
       options: '模組設定', resize: '調整設定面板高度（拖曳或↑/↓）',
       resizeTitle: '拖曳調整 · 雙擊重設', chooseColor: '選擇顏色',
       colorValue: 'CSS 顏色：HEX、RGB、RGBA、HSL 或 HSLA', openSettings: '開啟設定',
-      replayDone: '已重新播放', resetDone: '已還原預設值', copyDone: '已複製', demoLink: '前往範例'
+      replayDone: '已重新播放', resetDone: '已還原預設值', copyDone: '已複製', shareSettings: '複製設定連結', shareDone: '已複製設定連結', shareRestored: '已套用共享設定', demoLink: '前往範例'
     },
     ru: {
       summary: 'Настройки · Код', groupMotion: 'Движение · Время', groupTrigger: 'Триггер · Диапазон',
       groupLook: 'Внешний вид', groupBehavior: 'Поведение', groupAdvanced: 'Дополнительно · API',
       run: 'Запустить', replay: 'Повторить', reset: 'Сбросить', settings: 'Настройки', code: 'Код',
-      wrap: 'Перенос строк', copyCode: 'Копировать код', copied: 'Скопировано', copy: 'Копировать',
+      wrap: 'Перенос строк', copyCode: 'Копировать код', copied: 'Скопировано', copy: 'Копировать', htmlCode: 'HTML', jsCode: 'Vanilla JS', reactCode: 'React', vueCode: 'Vue', cssCode: 'Переменные CSS',
       liveHint: 'Изменения сразу применяются к примеру выше.', closeOptions: 'Закрыть настройки',
       options: 'Настройки модуля', resize: 'Изменить высоту панели (перетаскивание или ↑/↓)',
       resizeTitle: 'Перетащить для изменения · Двойной щелчок для сброса', chooseColor: 'Выбрать цвет',
       colorValue: 'Цвет CSS: HEX, RGB, RGBA, HSL или HSLA', openSettings: 'Открыть настройки',
-      replayDone: 'Повтор запущен', resetDone: 'Настройки сброшены', copyDone: 'Скопировано', demoLink: 'Перейти к демо'
+      replayDone: 'Повтор запущен', resetDone: 'Настройки сброшены', copyDone: 'Скопировано', shareSettings: 'Копировать ссылку настроек', shareDone: 'Ссылка настроек скопирована', shareRestored: 'Общие настройки применены', demoLink: 'Перейти к демо'
     },
     it: {
       summary: 'Impostazioni · Codice', groupMotion: 'Movimento · Tempi', groupTrigger: 'Attivazione · Intervallo',
       groupLook: 'Aspetto', groupBehavior: 'Comportamento', groupAdvanced: 'Avanzate · API',
       run: 'Esegui', replay: 'Riproduci', reset: 'Ripristina', settings: 'Impostazioni', code: 'Codice',
-      wrap: 'A capo automatico', copyCode: 'Copia codice', copied: 'Copiato', copy: 'Copia',
+      wrap: 'A capo automatico', copyCode: 'Copia codice', copied: 'Copiato', copy: 'Copia', htmlCode: 'HTML', jsCode: 'JavaScript vanilla', reactCode: 'React', vueCode: 'Vue', cssCode: 'Variabili CSS',
       liveHint: 'Le modifiche si applicano subito all’esempio sopra.', closeOptions: 'Chiudi impostazioni',
       options: 'Impostazioni modulo', resize: 'Ridimensiona il pannello (trascina o ↑/↓)',
       resizeTitle: 'Trascina per ridimensionare · Doppio clic per ripristinare', chooseColor: 'Scegli colore',
       colorValue: 'Colore CSS: HEX, RGB, RGBA, HSL o HSLA', openSettings: 'Apri impostazioni',
-      replayDone: 'Riprodotto', resetDone: 'Valori predefiniti ripristinati', copyDone: 'Copiato', demoLink: 'Vai alla demo'
+      replayDone: 'Riprodotto', resetDone: 'Valori predefiniti ripristinati', copyDone: 'Copiato', shareSettings: 'Copia link impostazioni', shareDone: 'Link impostazioni copiato', shareRestored: 'Impostazioni condivise applicate', demoLink: 'Vai alla demo'
     }
   };
 

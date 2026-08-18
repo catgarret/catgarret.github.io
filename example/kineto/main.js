@@ -5,6 +5,14 @@
       document.documentElement.classList.remove('kt-preload');
       throw new Error('Kineto failed to load');
     }
+    // Seed relative-time cards from the visitor's current clock so the demo
+    // always exercises the server-date parser without becoming stale. Each card
+    // can opt into a different past/future offset and mode in markup.
+    document.querySelectorAll('[data-demo-relative-time]').forEach((node)=>{
+      const offset=Number(node.getAttribute('data-demo-relative-offset')||-5*60*1000);
+      node.setAttribute('data-kt-date',new Date(Date.now()+offset).toISOString());
+      if(!node.hasAttribute('data-kt-mode'))node.setAttribute('data-kt-mode','relative');
+    });
     // Image Cover Reveal examples demonstrate the real per-image sampler by
     // default. This runs before autoInit on the live page; browser QA injects
     // scripts after DOM ready, so recreate an already-started instance there.
@@ -215,7 +223,7 @@
       setTimeout(finishIntro,9000); // absolute backstop regardless of load
     })();
     const MODULE_GROUPS={
-      'Text':['textSplit','blurText','typewriter','textReveal','textTransition','textFill','overflowText','glitch','counter'],
+      'Text':['textSplit','blurText','typewriter','textReveal','textTransition','textFill','overflowText','glitch','counter','dateTime'],
       'Media':['lazy','lightbox','slider','ambientMedia','brushReveal','scrollSequence','marquee','coverReveal'],
       'Scroll':['parallax','reveal','stickyStack','scrollVelocity','cssScroll','scrollShadows','stickyHeader','horizontalScroll','progress','fullpage'],
       'Pointer':['cursor','tilt','cardGlow','magnetic','ripple','vibrate','mouseParallax','gesture','drag'],
@@ -318,8 +326,16 @@
       // ─────────────────────────────────────────────────────────────────────
       const LABEL_OVERRIDE={cssScroll:'CSS Scroll',loader:'Loader'};
       const labelOf=(n)=>LABEL_OVERRIDE[n]||labelize(n);
+      const MODULE_STATUS=window.KINETO_MODULE_METADATA||{};
+      const qualityMeta=(name)=>{
+        const meta=MODULE_STATUS[name];
+        if(!meta)return '';
+        const labels=[['A11Y',meta.accessibility],['PERF',meta.performance],['RM',meta.reducedMotion]];
+        const aria=labels.map(([label,value])=>`${label} ${value}`).join(' · ');
+        return `<span class="module-quality-meta" data-module-quality="${name}" aria-label="${aria}" title="${aria}">${labels.map(([label,value])=>`<span class="module-quality-meta__item module-quality-meta__item--${value}" data-quality-${label.toLowerCase()}="${value}"><b>${label}</b> ${value}</span>`).join('')}</span>`;
+      };
       const SUBS={
-        textSplit:'문장을 글자·단어 단위로 쪼개 3D로 등장·교체.',blurText:'흐림에서 또렷하게, 스태거로 등장.',shuffle:'랜덤 글리프로 흩뿌린 뒤 확정.',typewriter:'타이핑·한글 자모 조합·캐럿.',textReveal:'글자별 점멸 후 확정되는 등장.',textTransition:'문장을 글자 단위로 교체.',textFill:'스크롤 진행률로 글자에 색이 차오름.',overflowText:'컨테이너보다 긴 텍스트의 여덟 가지 순환.',glitch:'RGB 분리·픽셀 시프트·데이터모시.',counter:'카운트업·플립·시계·카운트다운.',
+        textSplit:'문장을 글자·단어 단위로 쪼개 3D로 등장·교체.',blurText:'흐림에서 또렷하게, 스태거로 등장.',shuffle:'랜덤 글리프로 흩뿌린 뒤 확정.',typewriter:'타이핑·한글 자모 조합·캐럿.',textReveal:'글자별 점멸 후 확정되는 등장.',textTransition:'문장을 글자 단위로 교체.',textFill:'스크롤 진행률로 글자에 색이 차오름.',overflowText:'컨테이너보다 긴 텍스트의 여덟 가지 순환.',glitch:'RGB 분리·픽셀 시프트·데이터모시.',counter:'카운트업·플립·시계·카운트다운.',dateTime:'서버 날짜를 상대 시간·절대 시간으로 표시.',
         lazy:'이미지 로딩 중 재생되는 전환들.',lightbox:'전체화면 그룹 뷰어 — 줌·미니맵·필름스트립.',slider:'커버플로우 슬라이더.',ambientMedia:'재생 프레임을 샘플링한 주변광.',brushReveal:'포인터로 문질러 드러내는 브러시 마스크.',scrollSequence:'스크롤로 이미지 프레임을 스크럽.',marquee:'무한 흐름 마퀴.',radial:'원형 캐러셀(도크형).',coverReveal:'커버가 걷히며 콘텐츠 등장.',
         parallax:'레이어가 다른 속도로 움직여 깊이를 만듦.',reveal:'진입 시 방향·마스크·클록 등장.',stickyStack:'핀 고정 스택 — 세로·가로·플로팅.',scrollVelocity:'스크롤 속도·방향에 반응.',cssScroll:'CSS 애니메이션 타임라인에 연결.',scrollShadows:'스크롤 가능 영역에 엣지 그림자.',stickyHeader:'스크롤에 반응하는 고정 헤더.',horizontalScroll:'세로 스크롤로 가로 이동.',progress:'읽기 진행률 바·링.',fullpage:'한 화면씩 넘기는 풀페이지.',
         cursor:'커스텀 커서 프리셋.',tilt:'포인터 추종 3D 틸트 + 글레어.',cardGlow:'표면 반사·외곽 광택 글로우.',magnetic:'포인터로 끌려오는 자석 버튼.',ripple:'클릭 지점에서 퍼지는 리플.',vibrate:'햅틱 진동 패턴.',mouseParallax:'마우스·자이로 시차 이동.',gesture:'hover·press 스프링 제스처.',drag:'관성·경계·키보드 드래그.',
@@ -359,7 +375,7 @@
           .filter(g=>g.items.length)
           .map(({group,items})=>{
             const cells=items.map(n=>
-              `<button type="button" class="mod-index-item" data-module="${n}" title="데모로 이동"><span class="mii-name">${labelOf(n)}</span><span class="mii-sub">${SUBS[n]||''}</span></button>`
+              `<button type="button" class="mod-index-item" data-module="${n}" title="데모로 이동"><span class="mii-name">${labelOf(n)}</span><span class="mii-sub">${SUBS[n]||''}</span>${qualityMeta(n)}</button>`
             ).join('');
             return `<div class="module-group"><p class="module-group-label">${group}</p><div class="module-group-chips">${cells}</div></div>`;
           }).join('');
@@ -407,6 +423,10 @@
             ['텍스트', u=>u.querySelector('[data-kt-loading-indicator="shimmer"],[data-kt-loading-indicator="shimmer-wave"]')],
             ['터미널 · 미터/커서', u=>u.querySelector('[data-kt-terminal-style="meter"],[data-kt-terminal-style="cursor"],[data-kt-terminal-style="dots"],[data-kt-terminal-style="blocks"]')],
             ['터미널 · 프레임 스피너', u=>u.querySelector('[data-kt-loading-indicator="terminal"]')]
+          ],
+          counter:[
+            ['숫자', u=>!['Clock','Elapsed seconds','Countdown'].includes(u.querySelector('h3')?.textContent.trim())],
+            ['시간', u=>['Clock','Elapsed seconds','Countdown'].includes(u.querySelector('h3')?.textContent.trim())]
           ]
         };
         const groupUnits=(list,rules)=>{
@@ -497,6 +517,10 @@
             const h=document.createElement('h3'); h.className='module-block-title'; h.textContent=labelOf(n);
             const p=document.createElement('p'); p.className='module-block-sub'; p.textContent=SUBS[n]||'';
             block.append(h,p);
+            const quality=document.createElement('div');
+            quality.className='module-block-quality';
+            quality.innerHTML=qualityMeta(n);
+            block.append(quality);
             // Some modules ship far too many demos for one flat grid (Loading
             // Indicator alone has 40+). Those declare a sub-grouping so the
             // block reads as a few short, labelled sets instead of one wall.
@@ -506,6 +530,7 @@
                 const sh=document.createElement('h4');
                 sh.className='module-subgroup'; sh.textContent=label;
                 const sb=document.createElement('div'); sb.className=layoutFor(units);
+                if(n==='counter'&&label==='시간')sb.classList.add('module-block-body--counter-time');
                 // A long set of tiny previews (the 35 frame spinners) would run
                 // for a dozen rows at the default 3-up. Pack those denser.
                 if(units.length>=12) sb.classList.add('module-block-body--dense');
@@ -654,6 +679,9 @@
     const pastHero=()=>!heroEl||window.scrollY>heroEl.offsetHeight-120;
     let smoothOn=false;
     const syncSmoothForScroll=()=>{
+      // The hero scene controller owns this short programmatic landing. Starting
+      // Lenis in the middle of it turns an instant snap into a second easing pass.
+      if(window.__ktHeroSceneSnap)return;
       if(smoothManual)return;
       const shouldRun=smoothWanted()&&pastHero();
       if(shouldRun===smoothOn)return;
@@ -724,6 +752,16 @@
       const CARD_I18N=window.KINETO_COPY_I18N?.cards||{};
       const TITLE_I18N=window.KINETO_COPY_I18N?.titles||{};
       const UI_I18N=window.KINETO_COPY_I18N?.ui||{};
+      Object.assign(CARD_I18N,{
+        '서버가 내려준 날짜를 n분 전 같은 상대 시간으로 표시합니다.':[
+          'Shows a server-rendered timestamp as relative time, such as n minutes ago.',
+          'サーバー日時を「n分前」のような相対時刻で表示します。',
+          '将服务器日期显示为“n 分钟前”等相对时间。',
+          '將伺服器日期顯示為「n 分鐘前」等相對時間。',
+          'Показывает дату с сервера как относительное время, например «n минут назад».',
+          'Mostra una data del server in forma relativa, ad esempio «n minuti fa».'
+        ]
+      });
       const LANG_IDX={"en": 0, "ja": 1, "zh-CN": 2, "zh-TW": 3, "ru": 4, "it": 5};
       const cleanCopy=(value)=>value.replace(/\s+/g,' ').trim();
       const cardNodes=[...document.querySelectorAll([
@@ -841,67 +879,89 @@
       // Clear the hash if we settle back at the very top (hero) after scrolling up.
       window.addEventListener('scroll',()=>{if(window.scrollY<48&&location.hash&&!navScrollLock&&allowHashClear)clearHash();},{passive:true});
     })();
-    // First-screen snap: one scroll gesture in the hero jumps to #counter,
-    // everything after that is normal scrolling. Momentum is grouped into
-    // gestures so the flick tail never keeps pushing the page. Respects
-    // prefers-reduced-motion (no hijack) and touch swipes on mobile.
+    // First-screen snap: a deliberate first wheel/touch gesture moves between
+    // the hero and the first content scene. Momentum from that gesture is held
+    // until the landing settles, so it cannot trigger the opposite snap.
     (()=>{
       if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
       const hero=document.querySelector('.hero');
-      // First content = the first module in the manifest (#mod-textSplit), not a
-      // hardcoded #counter (B-2). Fall back to the first module block if missing.
       const target=document.getElementById('mod-textSplit')||document.querySelector('main [data-module-block]');
       if(!hero||!target)return;
       const firstModule=(target.id||'').replace(/^mod-/,'')||'textSplit';
-      // Land on the group's intro ("Text" + its description), not on the first
-      // module card — snapping past the heading hid it behind the header and the
-      // section read as starting at Text Split.
       const landing=document.querySelector('main .section-head')||target;
-      let snapping=false,lastAt=0,consumed=false;
-      const inHero=()=>window.scrollY<hero.offsetHeight-120;
-      // Only snap once the hero's own content is fully scrolled into view — if the
-      // hero is taller than the viewport (low-res / small window), let the cut-off
-      // content scroll natively first instead of jumping straight to the first module.
-      const heroFullySeen=()=>window.scrollY+window.innerHeight>=hero.offsetHeight-4;
-      const snap=()=>{
-        snapping=true;
-        landing.scrollIntoView({behavior:'smooth',block:'start'});
-        try{history.replaceState({ktModule:firstModule},'','#mod-'+firstModule);}catch(_){/* file:// */}
-        setTimeout(()=>{snapping=false;},900);
+      const SNAP_TAIL_MS=1200;
+      let snapping=false,lastAt=0,consumed=false,ignoreUntil=0,snapDirection=0;
+      const scrollScene=(top)=>{
+        // Keep the intentional one-gesture scene transition visually smooth.
+        // Lenis can otherwise take ownership midway through the native scene
+        // scroll (especially going back to the hero) and leave it unfinished.
+        const lenis=window.Kineto?.lenis;
+        lenis?.stop?.();
+        window.scrollTo({top,behavior:'smooth'});
+        setTimeout(()=>lenis?.start?.(),900);
       };
       const snapTop=()=>{
         snapping=true;
-        window.scrollTo({top:0,behavior:'smooth'});
+        snapDirection=-1;
+        window.__ktHeroSceneSnap=true;
+        ignoreUntil=performance.now()+SNAP_TAIL_MS;
+        scrollScene(0);
         try{history.replaceState(null,'',location.pathname+location.search);}catch(_){/* file:// */}
-        setTimeout(()=>{snapping=false;},900);
+        setTimeout(()=>{snapping=false;snapDirection=0;window.__ktHeroSceneSnap=false;window.dispatchEvent(new Event('scroll'));},1000);
       };
-      // 첫 섹션 상단부에서 위로 올리면 히어로로 똑같이 스냅 (대칭 동작)
-      const nearFirstSection=()=>window.scrollY>60&&window.scrollY<=target.offsetTop+140;
+      const inHero=()=>window.scrollY<hero.offsetHeight-120;
+      const heroFullySeen=()=>window.scrollY+window.innerHeight>=hero.offsetHeight-4;
+      const nearFirstSection=()=>window.scrollY>60&&window.scrollY<=landing.offsetTop+24;
+      const snap=()=>{
+        snapping=true;
+        snapDirection=1;
+        window.__ktHeroSceneSnap=true;
+        ignoreUntil=performance.now()+SNAP_TAIL_MS;
+        // Use an explicit document position. `scrollIntoView()` can be ignored
+        // during a cancelled wheel event in WebKit, which left the URL changed
+        // but the first scene still at the hero.
+        const landingTop=Math.max(0,landing.offsetTop-96);
+        scrollScene(landingTop);
+        try{history.replaceState({ktModule:firstModule},'','#mod-'+firstModule);}catch(_){/* file:// */}
+        setTimeout(()=>{snapping=false;snapDirection=0;window.__ktHeroSceneSnap=false;window.dispatchEvent(new Event('scroll'));},1000);
+      };
       window.addEventListener('wheel',(event)=>{
         const now=performance.now();
+        // Preserve physical momentum in the direction of travel. Only suppress
+        // the short opposite-direction tail that used to re-trigger the other
+        // scene and make the transition look like a bounce.
+        if(now<ignoreUntil&&Math.sign(event.deltaY)!==snapDirection){event.preventDefault();return;}
         const sameGesture=now-lastAt<280;
         lastAt=now;
         if(!sameGesture)consumed=false;
-        if(snapping||(sameGesture&&consumed)){event.preventDefault();return;}
+        if(snapping||(sameGesture&&consumed))return;
         if(inHero()&&heroFullySeen()&&event.deltaY>8){event.preventDefault();consumed=true;snap();}
         else if(nearFirstSection()&&event.deltaY<-8){event.preventDefault();consumed=true;snapTop();}
       },{passive:false});
       document.getElementById('brand-home')?.addEventListener('click',snapTop);
+      // The same intentional one-swipe movement is available on touch screens.
+      // Listen on window so the reverse gesture still works in the intro gap;
+      // only prevent its native scroll once this handler actually owns the swipe.
       let touchY=null,touchDone=false;
-      hero.addEventListener('touchstart',(event)=>{touchY=event.touches[0].clientY;touchDone=false;},{passive:true});
-      hero.addEventListener('touchmove',(event)=>{
-        if(touchY==null||!inHero()||!heroFullySeen())return;
-        if(snapping||touchDone){event.preventDefault();return;}
-        const delta=touchY-event.touches[0].clientY;
-        if(delta>10){event.preventDefault();if(delta>26){touchDone=true;snap();}}
+      window.addEventListener('touchstart',(event)=>{
+        touchY=event.touches[0]?.clientY??null;
+        touchDone=false;
+      },{passive:true});
+      window.addEventListener('touchmove',(event)=>{
+        if(touchY==null)return;
+        if(performance.now()<ignoreUntil||snapping||touchDone){
+          if(touchDone||performance.now()<ignoreUntil)event.preventDefault();
+          return;
+        }
+        const delta=touchY-(event.touches[0]?.clientY??touchY);
+        const down=inHero()&&heroFullySeen()&&delta>26;
+        const up=nearFirstSection()&&delta<-26;
+        if(!down&&!up)return;
+        event.preventDefault();
+        touchDone=true;
+        if(down)snap();else snapTop();
       },{passive:false});
-      target.addEventListener('touchstart',(event)=>{touchY=event.touches[0].clientY;touchDone=false;},{passive:true});
-      target.addEventListener('touchmove',(event)=>{
-        if(touchY==null||!nearFirstSection())return;
-        if(snapping||touchDone){event.preventDefault();return;}
-        const delta=touchY-event.touches[0].clientY;
-        if(delta<-10){event.preventDefault();if(delta<-26){touchDone=true;snapTop();}}
-      },{passive:false});
+      window.addEventListener('touchend',()=>{touchY=null;},{passive:true});
     })();
     // optional dependency toggles → conditional CDN rows
     document.querySelectorAll('.extra-toggle input[data-extra]').forEach(input=>input.addEventListener('change',()=>{
@@ -998,6 +1058,12 @@
       }));
       addEventListener('resize',()=>moveIndicator(stage.querySelector('[data-pt-preview].is-active')),{passive:true});
     })();
+    // FLIP demo: stable layout ids make the opt-in View Transitions control
+    // demonstrable while the default remains the existing JS FLIP path.
+    const flipDemoGrid = document.getElementById('flip-grid');
+    flipDemoGrid?.querySelectorAll('.flip-chip').forEach((item, index) => {
+      item.dataset.ktLayoutId = `flip-${index}`;
+    });
     // FLIP demo: record once, reorder as one DOM transaction, then animate
     // existing items directly to their new boxes (no disappear/re-enter pass).
     document.getElementById('flip-shuffle')?.addEventListener('click',()=>{

@@ -173,6 +173,7 @@
 .kt-playground__drawer-heading{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 0}
 .kt-playground__drawer-heading strong{font-size:16px;font-weight:800;letter-spacing:-.015em}
 .kt-playground__drawer-sub{font-size:12px;color:var(--muted)}
+.kt-playground__drawer-quality{display:block;margin-top:2px;color:var(--muted);font:600 9px/1.2 var(--font-mono);letter-spacing:.03em;text-transform:uppercase}
 .kt-playground__head-actions{display:flex;align-items:center;gap:10px;flex:1 1 0;justify-content:flex-end}
 .kt-playground__viewtabs{margin:0 auto}
 .kt-playground__head-actions .kt-playground__toolbar{margin:0}
@@ -292,6 +293,7 @@
 /* Toolbar buttons in the head read as pill actions. */
 .kt-playground__head-actions .kt-playground__toolbar button{padding:9px 15px;border-radius:10px}
 .kt-playground__code-actions{display:flex;align-items:center}
+.kt-playground__tabs{min-width:0;overflow-x:auto;scrollbar-width:none}.kt-playground__tabs::-webkit-scrollbar{display:none}.kt-playground__tab{white-space:nowrap}
 .kt-playground__wrap{border:0;border-left:1px solid #272d37;background:transparent;color:#9aa6b7;padding:9px 12px;cursor:pointer;font-size:12px}
 .kt-playground__wrap:hover,.kt-playground__wrap.is-active{color:#fff;background:#222833}
 
@@ -394,6 +396,10 @@
    + on the right. Centre it explicitly. */
 .kt-playground>summary>.kt-playground__summary-name{flex:0 1 auto;min-width:0;max-width:58%;overflow:hidden;white-space:nowrap;display:inline-flex;align-items:center;align-self:center;line-height:1}
 .kt-playground>summary>.kt-playground__summary-name>*{display:inline-flex;align-items:center}
+
+/* The pseudo-element is a flex item. Center it as a real box rather than on
+   the text baseline so the plus/minus aligns with the left settings label. */
+.kt-playground>summary::after{display:grid;place-items:center;align-self:stretch;text-align:initial}
 
 /* Apple-style thin scrollbars for the settings drawer list + code block only. */
 .kt-playground__viewstage>.kt-playground__groups{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 42%,transparent) transparent}

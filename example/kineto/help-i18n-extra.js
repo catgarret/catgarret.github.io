@@ -462,6 +462,103 @@
 (function () {
   const sets = window.MK_HELP_I18N;
   if (!sets) return;
+
+  const DATE_TIME_HELP = {
+    ko: {
+      date: '서버가 내려준 원본 시각입니다. ISO 8601, Unix 초·밀리초, 한글 날짜와 점·슬래시 날짜 형식을 해석합니다.',
+      mode: '상대 시간, 현지화된 절대 시간, 또는 두 표기를 함께 표시할지 선택합니다.',
+      locale: 'Intl 표기에 사용할 BCP 47 로케일입니다. 예: ko-KR, en-US.',
+      numeric: 'auto는 어제 같은 자연어를 허용하고, always는 항상 숫자로 표시합니다.',
+      dateStyle: '절대 표기에서 달력 날짜의 상세 수준을 정합니다.',
+      timeStyle: '절대 표기에서 시각의 상세 수준을 정합니다. 비우면 시각을 숨깁니다.',
+      timeZone: '절대 표기에 쓸 IANA 시간대입니다. 예: Asia/Seoul.',
+      live: '상대 시간이 자동으로 갱신됩니다. 서버 렌더 결과를 고정하려면 끕니다.',
+      updateInterval: '상대 시간을 다시 계산하는 주기입니다. 최소값은 1초입니다.',
+      fallback: '날짜를 해석할 수 없을 때 그대로 표시할 문구입니다.'
+    },
+    en: {
+      date: 'Source timestamp from the server. ISO 8601, Unix seconds or milliseconds, Korean dates, and common dot or slash dates are accepted.',
+      mode: 'Choose relative time, localized absolute time, or both together.',
+      locale: 'BCP 47 locale used by Intl formatting, for example ko-KR or en-US.',
+      numeric: 'auto allows words such as yesterday; always uses a numeric amount.',
+      dateStyle: 'Level of detail for the localized calendar date.',
+      timeStyle: 'Optional detail for the localized clock time. Leave blank to hide it.',
+      timeZone: 'IANA time zone used for absolute output, for example Asia/Seoul.',
+      live: 'Refreshes relative time automatically. Turn off for a fixed server-rendered snapshot.',
+      updateInterval: 'Milliseconds between relative-time refreshes; the minimum is one second.',
+      fallback: 'Shown unchanged when the supplied timestamp cannot be interpreted.'
+    },
+    ja: {
+      date: 'サーバーから渡される元の日時です。ISO 8601、Unix秒・ミリ秒、韓国語表記、ドット・スラッシュ区切りの日付を解釈します。',
+      mode: '相対時刻、ローカライズされた絶対時刻、または両方を表示します。',
+      locale: 'Intlの表示に使うBCP 47ロケールです。例: ko-KR、en-US。',
+      numeric: 'autoは「昨日」のような表現を許可し、alwaysは常に数値で表示します。',
+      dateStyle: '絶対表示のカレンダー日付の詳しさを決めます。',
+      timeStyle: '絶対表示の時刻の詳しさです。空欄なら時刻を隠します。',
+      timeZone: '絶対表示に使うIANAタイムゾーンです。例: Asia/Seoul。',
+      live: '相対時刻を自動更新します。サーバー出力を固定する場合はオフにします。',
+      updateInterval: '相対時刻を再計算する間隔です。最小値は1秒です。',
+      fallback: '日時を解釈できないときにそのまま表示する文言です。'
+    },
+    'zh-CN': {
+      date: '服务器提供的原始时间。支持 ISO 8601、Unix 秒或毫秒、韩文日期及常见的点号或斜杠日期。',
+      mode: '选择相对时间、本地化绝对时间，或同时显示两者。',
+      locale: 'Intl 格式化使用的 BCP 47 区域设置，例如 ko-KR 或 en-US。',
+      numeric: 'auto 可使用“昨天”等自然语言；always 始终显示数值。',
+      dateStyle: '设置绝对时间中日历日期的详细程度。',
+      timeStyle: '设置绝对时间中时刻的详细程度。留空则隐藏时刻。',
+      timeZone: '绝对时间使用的 IANA 时区，例如 Asia/Seoul。',
+      live: '自动刷新相对时间。若要固定服务器渲染结果，请关闭。',
+      updateInterval: '重新计算相对时间的间隔，最小为一秒。',
+      fallback: '无法解析时间时原样显示的文字。'
+    },
+    'zh-TW': {
+      date: '伺服器提供的原始時間。支援 ISO 8601、Unix 秒或毫秒、韓文日期及常見的點號或斜線日期。',
+      mode: '選擇相對時間、在地化絕對時間，或同時顯示兩者。',
+      locale: 'Intl 格式化使用的 BCP 47 地區設定，例如 ko-KR 或 en-US。',
+      numeric: 'auto 可使用「昨天」等自然語言；always 一律顯示數值。',
+      dateStyle: '設定絕對時間中日曆日期的詳細程度。',
+      timeStyle: '設定絕對時間中時刻的詳細程度。留空則隱藏時刻。',
+      timeZone: '絕對時間使用的 IANA 時區，例如 Asia/Seoul。',
+      live: '自動更新相對時間。若要固定伺服器渲染結果，請關閉。',
+      updateInterval: '重新計算相對時間的間隔，最小為一秒。',
+      fallback: '無法解析時間時原樣顯示的文字。'
+    },
+    ru: {
+      date: 'Исходная дата от сервера. Поддерживаются ISO 8601, Unix в секундах и миллисекундах, корейские даты и обычные даты с точками или слешами.',
+      mode: 'Выберите относительное время, локализованное абсолютное время или оба варианта.',
+      locale: 'Локаль BCP 47 для форматирования Intl, например ko-KR или en-US.',
+      numeric: 'auto допускает слова вроде «вчера», always всегда использует число.',
+      dateStyle: 'Степень детализации календарной даты в абсолютном формате.',
+      timeStyle: 'Детализация времени в абсолютном формате. Оставьте пустым, чтобы скрыть его.',
+      timeZone: 'Часовой пояс IANA для абсолютного формата, например Asia/Seoul.',
+      live: 'Автоматически обновляет относительное время. Отключите для фиксированного серверного снимка.',
+      updateInterval: 'Интервал пересчёта относительного времени в миллисекундах; минимум одна секунда.',
+      fallback: 'Текст, который показывается без изменений, если дату нельзя распознать.'
+    },
+    it: {
+      date: 'Timestamp sorgente dal server. Sono accettati ISO 8601, Unix in secondi o millisecondi, date coreane e comuni date con punti o barre.',
+      mode: 'Scegli tempo relativo, tempo assoluto localizzato oppure entrambi.',
+      locale: 'Locale BCP 47 usato da Intl, per esempio ko-KR o en-US.',
+      numeric: 'auto consente parole come ieri; always usa sempre un valore numerico.',
+      dateStyle: 'Livello di dettaglio della data di calendario nel formato assoluto.',
+      timeStyle: 'Dettaglio dell’orario nel formato assoluto. Lascia vuoto per nasconderlo.',
+      timeZone: 'Fuso orario IANA per il formato assoluto, per esempio Asia/Seoul.',
+      live: 'Aggiorna automaticamente il tempo relativo. Disattivalo per una vista server fissa.',
+      updateInterval: 'Millisecondi tra gli aggiornamenti del tempo relativo; il minimo è un secondo.',
+      fallback: 'Testo mostrato invariato quando il timestamp non può essere interpretato.'
+    }
+  };
+
+  for (const [lang, tips] of Object.entries(DATE_TIME_HELP)) {
+    sets[lang] = sets[lang] || {};
+    sets[lang].dateTime = Object.assign({}, sets[lang].dateTime, tips);
+  }
+})();
+
+(function () {
+  const sets = window.MK_HELP_I18N;
+  if (!sets) return;
   const copy = {
     ko: { mask: '마지막 색상 패널을 색 없는 콘텐츠 마스크로 대체합니다. layers가 2이면 color2는 사용하지 않습니다.', color2: '두 번째 패널 색입니다. Mask를 켜 마지막 패널이 마스크로 대체되면 사용되지 않습니다.' },
     en: { mask: 'Replaces the final colored panel with a colorless content mask. With two layers, color2 is not used.', color2: 'Color of the second panel. It is unused when Mask replaces that final panel.' },
@@ -534,6 +631,7 @@
       "progress": "남은 자동재생 시간을 보여주는 진행 표시를 켭니다.",
       "progressType": "진행 표시 모양입니다. bar=가로 막대, ring=원형 링.",
       "pauseButton": "자동재생을 멈추고 다시 재생하는 버튼을 표시합니다.",
+      "pauseWhenOffscreen": "화면 밖에서는 자동재생과 전환 프레임을 멈춥니다.",
       "pauseOnHover": "마우스를 올린 동안 자동재생을 멈춥니다."
     },
     "lightbox": {
@@ -597,6 +695,7 @@
       "progress": "Show how much autoplay time is left.",
       "progressType": "Progress shape: bar or ring.",
       "pauseButton": "Show a pause/resume control for autoplay.",
+      "pauseWhenOffscreen": "Pause autoplay and transition frames while the slider is offscreen.",
       "pauseOnHover": "Pause autoplay while the pointer is over the slider."
     },
     "lightbox": {
@@ -660,6 +759,7 @@
       "progress": "自動再生の残り時間を表示します。",
       "progressType": "進行表示の形（bar / ring）です。",
       "pauseButton": "自動再生の一時停止ボタンを表示します。",
+      "pauseWhenOffscreen": "画面外では自動再生と切り替えフレームを停止します。",
       "pauseOnHover": "ポインターが乗っている間は自動再生を止めます。"
     },
     "lightbox": {
@@ -723,6 +823,7 @@
       "progress": "显示自动播放剩余时间。",
       "progressType": "进度形状：bar 或 ring。",
       "pauseButton": "显示自动播放的暂停/继续按钮。",
+      "pauseWhenOffscreen": "滑块离开屏幕后暂停自动播放和过渡帧。",
       "pauseOnHover": "指针悬停时暂停自动播放。"
     },
     "lightbox": {
@@ -786,6 +887,7 @@
       "progress": "顯示自動播放剩餘時間。",
       "progressType": "進度形狀：bar 或 ring。",
       "pauseButton": "顯示自動播放的暫停/繼續按鈕。",
+      "pauseWhenOffscreen": "滑塊離開畫面後暫停自動播放與轉場影格。",
       "pauseOnHover": "指標停留時暫停自動播放。"
     },
     "lightbox": {
@@ -849,6 +951,7 @@
       "progress": "Показывать остаток времени автопрокрутки.",
       "progressType": "Форма индикатора: полоса или кольцо.",
       "pauseButton": "Показывать кнопку паузы автопрокрутки.",
+      "pauseWhenOffscreen": "Останавливать автопрокрутку и кадры перехода вне экрана.",
       "pauseOnHover": "Пауза автопрокрутки при наведении."
     },
     "lightbox": {
@@ -912,6 +1015,7 @@
       "progress": "Mostra il tempo rimanente dell’autoplay.",
       "progressType": "Forma del progresso: barra o anello.",
       "pauseButton": "Mostra un controllo di pausa per l’autoplay.",
+      "pauseWhenOffscreen": "Metti in pausa autoplay e fotogrammi di transizione quando la slide è fuori schermo.",
       "pauseOnHover": "Metti in pausa l’autoplay al passaggio del puntatore."
     },
     "lightbox": {
@@ -974,6 +1078,11 @@
         "breakpoints": "화면 폭별 설정을 JSON으로 덮어씁니다. 예: {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "마우스를 올리면 잡는 손 모양 커서로 바꿔 드래그 가능함을 알립니다.",
         "slideToClickedSlide": "옆에 있는 슬라이드를 클릭하면 그 슬라이드가 활성 위치로 옵니다."
+        ,"velocityInfluence": "드래그를 놓을 때 남는 관성의 배율입니다. 0이면 플링을 끄고, 1보다 크게 하면 더 멀리 이동합니다. Radial에는 적용되지 않습니다."
+        ,"spring": "트랙 정착에 스프링 물리를 사용합니다. 기본 보간을 유지하려면 끕니다."
+        ,"stiffness": "스프링이 목표 위치로 끌어당기는 강도입니다."
+        ,"damping": "스프링 속도를 감쇠해 튀는 정도를 조절합니다."
+        ,"mass": "스프링 질량입니다. 값이 클수록 정착이 느려집니다."
       },
       "glitch": {
         "seed": "난수 시드입니다. 같은 값이면 같은 버스트 순서가 재현되므로 마음에 든 연출을 고정할 수 있습니다.",
@@ -1011,6 +1120,11 @@
         "breakpoints": "Per-width overrides as JSON, e.g. {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "Swap in a grab cursor on hover so it reads as draggable.",
         "slideToClickedSlide": "Clicking a neighbouring slide brings it to the active position."
+        ,"velocityInfluence": "Multiplier for release momentum. Use 0 to disable the fling or a value above 1 to travel farther; it does not affect Radial."
+        ,"spring": "Uses spring physics for track settling. Leave it off to keep the default interpolation."
+        ,"stiffness": "Controls how strongly the spring pulls toward its target."
+        ,"damping": "Damps spring velocity and controls how much it bounces."
+        ,"mass": "Sets spring mass; larger values settle more slowly."
       },
       "glitch": {
         "seed": "Random seed. The same value replays the same burst sequence, so you can lock a take you like.",
@@ -1048,6 +1162,11 @@
         "breakpoints": "画面幅ごとの設定を JSON で上書きします。例: {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "ホバー時につかむ形のカーソルに変え、ドラッグできることを示します。",
         "slideToClickedSlide": "隣のスライドをクリックすると、そのスライドがアクティブ位置に来ます。"
+        ,"velocityInfluence": "解放時の慣性倍率。0 でフリングを無効にし、1 より大きくすると遠くまで移動します。Radial には適用されません。"
+        ,"spring": "トラックの定着にばね物理を使います。標準補間を使う場合はオフにします。"
+        ,"stiffness": "目標へ引くばねの強さを設定します。"
+        ,"damping": "ばねの速度を減衰させ、跳ね返りを調整します。"
+        ,"mass": "ばねの質量です。大きいほどゆっくり定着します。"
       },
       "glitch": {
         "seed": "乱数シード。同じ値なら同じバースト順が再現されるので、気に入った演出を固定できます。",
@@ -1085,6 +1204,11 @@
         "breakpoints": "以 JSON 按屏幕宽度覆盖设置，例如 {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "悬停时切换为抓取光标，提示可以拖动。",
         "slideToClickedSlide": "点击旁边的滑块即可将其移到当前位置。"
+        ,"velocityInfluence": "释放时的惯性倍率。设为 0 可关闭甩动，设为大于 1 可移动更远；不适用于 Radial。"
+        ,"spring": "使用弹簧物理进行轨道定位。关闭后保持默认插值。"
+        ,"stiffness": "设置弹簧拉向目标的力度。"
+        ,"damping": "衰减弹簧速度并调整回弹程度。"
+        ,"mass": "设置弹簧质量；数值越大，定位越慢。"
       },
       "glitch": {
         "seed": "随机种子。相同数值会重现相同的爆发序列，可固定满意的效果。",
@@ -1122,6 +1246,11 @@
         "breakpoints": "以 JSON 按螢幕寬度覆寫設定，例如 {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "停留時切換為抓取游標，提示可以拖曳。",
         "slideToClickedSlide": "點擊旁邊的滑塊即可將其移到目前位置。"
+        ,"velocityInfluence": "釋放時的慣性倍率。設為 0 可關閉甩動，設為大於 1 可移動更遠；不適用於 Radial。"
+        ,"spring": "使用彈簧物理進行軌道定位。關閉後維持預設插值。"
+        ,"stiffness": "設定彈簧拉向目標的力度。"
+        ,"damping": "衰減彈簧速度並調整回彈程度。"
+        ,"mass": "設定彈簧質量；數值越大，定位越慢。"
       },
       "glitch": {
         "seed": "隨機種子。相同數值會重現相同的爆發序列，可固定滿意的效果。",
@@ -1159,6 +1288,11 @@
         "breakpoints": "Переопределения по ширине в JSON, напр. {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "Курсор-«рука» при наведении, чтобы было видно: можно тащить.",
         "slideToClickedSlide": "Клик по соседнему слайду выводит его в активную позицию."
+        ,"velocityInfluence": "Множитель инерции при отпускании. 0 отключает рывок, значение выше 1 ведёт дальше; на Radial не действует."
+        ,"spring": "Использует пружинную физику для стабилизации трека. Выключите, чтобы сохранить интерполяцию по умолчанию."
+        ,"stiffness": "Задаёт силу притяжения пружины к цели."
+        ,"damping": "Ослабляет скорость пружины и регулирует отскок."
+        ,"mass": "Задаёт массу пружины; большие значения замедляют стабилизацию."
       },
       "glitch": {
         "seed": "Сид случайности. При том же значении повторяется та же серия вспышек — можно закрепить удачный вариант.",
@@ -1196,6 +1330,11 @@
         "breakpoints": "Override per larghezza in JSON, es. {\"640\":{\"perView\":2},\"1024\":{\"perView\":3}}",
         "grabCursor": "Cursore a mano al passaggio del mouse, per far capire che si può trascinare.",
         "slideToClickedSlide": "Cliccando una slide vicina, questa passa in posizione attiva."
+        ,"velocityInfluence": "Moltiplicatore dell’inerzia al rilascio. 0 disattiva lo slancio, oltre 1 porta più lontano; non vale per Radial."
+        ,"spring": "Usa la fisica della molla per stabilizzare il track. Disattivalo per mantenere l’interpolazione predefinita."
+        ,"stiffness": "Controlla la forza con cui la molla raggiunge il target."
+        ,"damping": "Smorza la velocità della molla e regola il rimbalzo."
+        ,"mass": "Imposta la massa della molla; valori maggiori rallentano la stabilizzazione."
       },
       "glitch": {
         "seed": "Seme casuale. Lo stesso valore ripete la stessa sequenza di burst, così puoi fissare quella che preferisci.",
@@ -1735,43 +1874,50 @@
       mode: '재배치 방식입니다. none=즉시 변경, slide=이동, fade=사라진 뒤 새 위치에서 등장, crossfade=두 상태가 교차 전환, fade-slide=이동+페이드, scale=축소 후 확대.',
       duration: '재배치 모션 한 번의 시간(초)입니다. mode가 none이면 적용되지 않습니다.',
       stagger: '여러 항목의 모션이 시작되는 시간 간격(초)입니다.',
-      watch: '외부 코드가 직계 자식 DOM을 추가·삭제·재배치할 때 자동 재생합니다. shuffle(), sort(), reorder() 같은 인스턴스 메서드는 이 설정과 관계없이 직접 재생됩니다.'
+      watch: '외부 코드가 직계 자식 DOM을 추가·삭제·재배치할 때 자동 재생합니다. shuffle(), sort(), reorder() 같은 인스턴스 메서드는 이 설정과 관계없이 직접 재생됩니다.',
+      viewTransition: '같은 문서의 data-kt-layout-id 항목 재배치에 브라우저 View Transitions를 사용합니다. 지원하지 않거나 식별자가 없으면 기존 FLIP으로 돌아갑니다.'
     },
     en: {
       mode: 'Reorder style: none=instant, slide=move, fade=fade out then in, crossfade=dissolve between layouts, fade-slide=move and fade, scale=shrink then grow.',
       duration: 'Duration of one reorder animation in seconds. It is ignored when mode is none.',
       stagger: 'Delay in seconds between the starts of item animations.',
-      watch: 'Automatically plays when external code adds, removes, or reorders direct child DOM nodes. Instance methods such as shuffle(), sort(), and reorder() play directly regardless of this setting.'
+      watch: 'Automatically plays when external code adds, removes, or reorders direct child DOM nodes. Instance methods such as shuffle(), sort(), and reorder() play directly regardless of this setting.',
+      viewTransition: 'Uses same-document View Transitions for items with data-kt-layout-id. Unsupported browsers or missing IDs fall back to the existing FLIP path.'
     },
     ja: {
       mode: '項目を並べ替える動きです。noneはモーションなしで新しい位置へ即座に切り替えます。',
       duration: '1回の並べ替えモーションの時間（秒）。modeがnoneの場合は適用されません。',
       stagger: '各項目のモーション開始間隔（秒）です。',
-      watch: '外部コードが直下のDOM子要素を追加・削除・並べ替えた時に自動再生します。shuffle()、sort()、reorder()はこの設定に関係なく直接再生します。'
+      watch: '外部コードが直下のDOM子要素を追加・削除・並べ替えた時に自動再生します。shuffle()、sort()、reorder()はこの設定に関係なく直接再生します。',
+      viewTransition: 'data-kt-layout-id付きの同一文書の再配置でView Transitionsを使います。非対応環境やID未設定時はFLIPに戻ります。'
     },
     'zh-CN': {
       mode: '项目重新排列时的移动方式。none 会无动画地立即切换到新位置。',
       duration: '单次重排动画时长（秒）；mode 为 none 时不生效。',
       stagger: '各项目动画开始之间的间隔（秒）。',
-      watch: '外部代码添加、删除或重排直属 DOM 子节点时自动播放。shuffle()、sort()、reorder() 等实例方法不受此设置影响，会直接播放。'
+      watch: '外部代码添加、删除或重排直属 DOM 子节点时自动播放。shuffle()、sort()、reorder() 等实例方法不受此设置影响，会直接播放。',
+      viewTransition: '对带有 data-kt-layout-id 的同文档重排使用 View Transitions。不支持或缺少 ID 时回退到现有 FLIP。'
     },
     'zh-TW': {
       mode: '項目重新排列時的移動方式。none 會不使用動畫，立即切換到新位置。',
       duration: '單次重排動畫時間（秒）；mode 為 none 時不套用。',
       stagger: '各項目動畫開始之間的間隔（秒）。',
-      watch: '外部程式碼新增、刪除或重排直屬 DOM 子節點時自動播放。shuffle()、sort()、reorder() 等實例方法不受此設定影響，會直接播放。'
+      watch: '外部程式碼新增、刪除或重排直屬 DOM 子節點時自動播放。shuffle()、sort()、reorder() 等實例方法不受此設定影響，會直接播放。',
+      viewTransition: '對帶有 data-kt-layout-id 的同文件重排使用 View Transitions。不支援或缺少 ID 時回退到現有 FLIP。'
     },
     ru: {
       mode: 'Способ перехода элементов на новые места. none применяет новую раскладку сразу, без анимации.',
       duration: 'Длительность одной анимации перестановки в секундах. Не используется при mode none.',
       stagger: 'Задержка между началом анимации элементов в секундах.',
-      watch: 'Автозапуск при добавлении, удалении или перестановке прямых дочерних DOM-узлов внешним кодом. Методы shuffle(), sort() и reorder() запускаются напрямую независимо от этой настройки.'
+      watch: 'Автозапуск при добавлении, удалении или перестановке прямых дочерних DOM-узлов внешним кодом. Методы shuffle(), sort() и reorder() запускаются напрямую независимо от этой настройки.',
+      viewTransition: 'Использует View Transitions для перестановки элементов с data-kt-layout-id в одном документе. При отсутствии поддержки или ID используется текущий FLIP.'
     },
     it: {
       mode: 'Come gli elementi raggiungono la nuova posizione. none applica subito il nuovo layout senza animazione.',
       duration: 'Durata di una transizione di riordino, in secondi. Non si applica con mode none.',
       stagger: 'Intervallo in secondi tra l’avvio delle animazioni degli elementi.',
-      watch: 'Avvia automaticamente quando codice esterno aggiunge, rimuove o riordina figli DOM diretti. I metodi shuffle(), sort() e reorder() si avviano direttamente indipendentemente da questa opzione.'
+      watch: 'Avvia automaticamente quando codice esterno aggiunge, rimuove o riordina figli DOM diretti. I metodi shuffle(), sort() e reorder() si avviano direttamente indipendentemente da questa opzione.',
+      viewTransition: 'Usa View Transitions nello stesso documento per elementi con data-kt-layout-id. Se non supportato o senza ID, torna al percorso FLIP esistente.'
     }
   };
   for (const [lang, tips] of Object.entries(FLIP_HELP)) {
@@ -1787,5 +1933,83 @@
     for (const [moduleName, tips] of Object.entries(modules)) {
       sets[lang][moduleName] = Object.assign({}, sets[lang][moduleName], tips);
     }
+  }
+})();
+
+(function () {
+  const sets = window.MK_HELP_I18N;
+  if (!sets) return;
+  const tips = {
+    ko: '시계 대신 경과 초 또는 남은 초를 000S 형식으로 표시합니다. since는 경과 시간, until은 카운트다운입니다.',
+    en: 'Shows elapsed or remaining seconds as 000S. Use since for elapsed time and until for a countdown.',
+    ja: '時計の代わりに経過秒または残り秒を000S形式で表示します。sinceは経過時間、untilはカウントダウンです。',
+    'zh-CN': '以 000S 显示经过秒数或剩余秒数。since 用于经过时间，until 用于倒计时。',
+    'zh-TW': '以 000S 顯示經過秒數或剩餘秒數。since 用於經過時間，until 用於倒數計時。',
+    ru: 'Показывает прошедшие или оставшиеся секунды как 000S. since — прошедшее время, until — обратный отсчёт.',
+    it: 'Mostra secondi trascorsi o rimanenti come 000S. Usa since per il trascorso e until per il conto alla rovescia.'
+  };
+  for (const [lang, text] of Object.entries(tips)) {
+    sets[lang] = sets[lang] || {};
+    sets[lang].counter = Object.assign({}, sets[lang].counter, { secondsOnly: text });
+  }
+})();
+
+(function () {
+  const sets = window.MK_HELP_I18N;
+  if (!sets) return;
+  const tips = {
+    ko: {
+      relativeStyle: '상대 시간의 길이를 정합니다. long은 “5분 전”, short와 narrow는 더 짧은 표기를 사용합니다.',
+      relativeUnit: 'auto는 시간 차이에 맞는 단위를 고릅니다. 특정 단위를 고르면 모든 값을 그 단위로 계산합니다.',
+      relativeRounding: '단위를 나눈 소수 값을 반올림, 내림, 올림 또는 버림할지 정합니다.',
+      relativeCutoff: '이 기간을 넘기면 relative 모드가 현지화된 원래 날짜로 전환됩니다. 0은 전환하지 않습니다.',
+      relativeCutoffUnit: '절대 날짜 전환 기준에 사용할 시간 단위입니다.'
+    },
+    en: {
+      relativeStyle: 'Controls relative-time length. long uses words; short and narrow use compact output.',
+      relativeUnit: 'auto chooses from the time difference. A chosen unit calculates every value in that unit.',
+      relativeRounding: 'How fractional unit values are rounded: nearest, down, up, or toward zero.',
+      relativeCutoff: 'After this age, relative mode switches to the localized original date. Zero disables the handoff.',
+      relativeCutoffUnit: 'Time unit used for the absolute-date handoff threshold.'
+    },
+    ja: {
+      relativeStyle: '相対時刻の長さです。longは語句、shortとnarrowは短い表記を使います。',
+      relativeUnit: 'autoは時間差に合う単位を選びます。固定するとすべてその単位で計算します。',
+      relativeRounding: '単位で割った小数を四捨五入、切り捨て、切り上げ、またはゼロ方向へ丸めます。',
+      relativeCutoff: 'この期間を超えるとrelative表示は現地化された元の日付へ切り替わります。0は無効です。',
+      relativeCutoffUnit: '絶対日付へ切り替える基準に使う時間単位です。'
+    },
+    'zh-CN': {
+      relativeStyle: '控制相对时间的长度。long 使用完整文字；short 和 narrow 使用紧凑格式。',
+      relativeUnit: 'auto 根据时间差选择单位。指定单位后所有值都按该单位计算。',
+      relativeRounding: '设置单位换算后的小数如何取整：四舍五入、向下、向上或向零。',
+      relativeCutoff: '超过此时长后，relative 模式切换为本地化的原始日期。0 表示不切换。',
+      relativeCutoffUnit: '绝对日期切换阈值使用的时间单位。'
+    },
+    'zh-TW': {
+      relativeStyle: '控制相對時間的長度。long 使用完整文字；short 和 narrow 使用精簡格式。',
+      relativeUnit: 'auto 依時間差選擇單位。指定單位後所有值都按該單位計算。',
+      relativeRounding: '設定單位換算後的小數如何取整：四捨五入、向下、向上或向零。',
+      relativeCutoff: '超過此時長後，relative 模式切換為在地化的原始日期。0 表示不切換。',
+      relativeCutoffUnit: '絕對日期切換門檻使用的時間單位。'
+    },
+    ru: {
+      relativeStyle: 'Длина относительной записи. long использует слова, short и narrow — компактный вид.',
+      relativeUnit: 'auto выбирает единицу по разнице времени. Выбранная единица применяется ко всем значениям.',
+      relativeRounding: 'Как округлять дробное значение единицы: до ближайшего, вниз, вверх или к нулю.',
+      relativeCutoff: 'После этого возраста relative переключается на локализованную исходную дату. Ноль отключает переключение.',
+      relativeCutoffUnit: 'Единица времени для порога перехода к абсолютной дате.'
+    },
+    it: {
+      relativeStyle: 'Lunghezza del tempo relativo. long usa parole, short e narrow una forma compatta.',
+      relativeUnit: 'auto sceglie dall’intervallo. Un’unità scelta calcola ogni valore con quella unità.',
+      relativeRounding: 'Come arrotondare valori frazionari: al più vicino, per difetto, per eccesso o verso zero.',
+      relativeCutoff: 'Dopo questa età relative passa alla data originale localizzata. Zero disabilita il passaggio.',
+      relativeCutoffUnit: 'Unità di tempo usata per la soglia di passaggio alla data assoluta.'
+    }
+  };
+  for (const [lang, values] of Object.entries(tips)) {
+    sets[lang] = sets[lang] || {};
+    sets[lang].dateTime = Object.assign({}, sets[lang].dateTime, values);
   }
 })();

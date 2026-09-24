@@ -15,7 +15,7 @@ concurrency:
 jobs:
   build:
     name: Build latest successful Kineto CI commit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       source-sha: ${{ steps.source.outputs.sha }}
@@ -73,7 +73,7 @@ jobs:
   sync:
     name: Replace only the Kineto backup
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write

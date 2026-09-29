@@ -13,39 +13,61 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build latest successful Kineto CI commit
+  resolve:
+    name: Resolve the verified tip of Kineto main
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 5
     outputs:
       source-sha: ${{ steps.source.outputs.sha }}
 
     steps:
-      - name: Resolve the latest successful Kineto main build
+      # Publish only the current tip of main, and only once that exact commit's
+      # push CI has passed. The old step trusted "the latest successful run",
+      # which can answer with an older run: on 2026-09-29 it returned an August
+      # commit and the backup went back to v0.8.104. The tip comes from git
+      # itself, and its CI run is looked up by exact SHA, so the backup can lag
+      # behind main while CI runs but can never move backwards.
+      - name: Resolve the tip and its push CI
         id: source
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          tip="$(git ls-remote https://github.com/catgarret/kineto.git refs/heads/main | cut -f1)"
+          if ! [[ "$tip" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Could not resolve the tip of Kineto main."
+            exit 1
+          fi
           response="$(curl --fail-with-body --silent --show-error \
             --retry 3 --retry-all-errors --connect-timeout 10 --max-time 30 \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/catgarret/kineto/actions/workflows/ci.yml/runs?branch=main&event=push&status=success&per_page=1")"
-          source_sha="$(jq -r '.workflow_runs[0].head_sha // empty' <<<"$response")"
-          if ! [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]; then
-            echo "No successful Kineto main CI commit was returned."
-            exit 1
+            "https://api.github.com/repos/catgarret/kineto/actions/workflows/ci.yml/runs?head_sha=$tip&branch=main&event=push&per_page=20")"
+          passed="$(jq -r --arg sha "$tip" \
+            '[.workflow_runs[] | select(.head_sha == $sha and .conclusion == "success")] | length' <<<"$response")"
+          if [ "$passed" = "0" ]; then
+            echo "main ${tip:0:7} has no successful push CI yet; the backup is left as it is."
+            exit 0
           fi
-          printf 'sha=%s\n' "$source_sha" >> "$GITHUB_OUTPUT"
+          printf 'sha=%s\n' "$tip" >> "$GITHUB_OUTPUT"
 
+  build:
+    name: Build the verified Kineto commit
+    needs: resolve
+    if: needs.resolve.outputs.source-sha != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      source-sha: ${{ needs.resolve.outputs.source-sha }}
+
+    steps:
       - name: Checkout the verified Kineto source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: catgarret/kineto
-          ref: ${{ steps.source.outputs.sha }}
+          ref: ${{ needs.resolve.outputs.source-sha }}
           persist-credentials: false
 
       - name: Set up Node.js

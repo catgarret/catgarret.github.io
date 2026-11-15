@@ -1,6 +1,6 @@
 # Kineto
 
-> @dong-gri/kineto v0.13.0 — vanilla-first web motion & media effects library (53 modules, React/Vue/jQuery adapters, zero runtime dependencies). Attach effects with data-kt-* attributes on any markup, including shadcn/ui, Bootstrap, MUI, Mantine, Chakra, Ant Design, daisyUI, Nuxt UI, PrimeVue and Vuetify components.
+> @dong-gri/kineto v0.15.0 — vanilla-first web motion & media effects library (53 modules, React/Vue/jQuery adapters, zero runtime dependencies). Attach effects with data-kt-* attributes on any markup, including shadcn/ui, Bootstrap, MUI, Mantine, Chakra, Ant Design, daisyUI, Nuxt UI, PrimeVue and Vuetify components.
 
 ## Start here
 
@@ -23,7 +23,7 @@
 - [daisyUI](https://github.com/catgarret/kineto/blob/main/docs/integrations/daisyui.md)
 - [Nuxt UI (Reka UI + Tailwind)](https://github.com/catgarret/kineto/blob/main/docs/integrations/nuxt-ui.md)
 - [PrimeVue v4](https://github.com/catgarret/kineto/blob/main/docs/integrations/primevue.md)
-- [Vuetify 3](https://github.com/catgarret/kineto/blob/main/docs/integrations/vuetify.md)
+- [Vuetify 4](https://github.com/catgarret/kineto/blob/main/docs/integrations/vuetify.md)
 - [Figma MCP workflow](https://github.com/catgarret/kineto/blob/main/docs/integrations/figma-mcp.md)
 
 ## Tools
